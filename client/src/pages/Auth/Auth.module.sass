@@ -1,0 +1,29 @@
+@import "../../styles/_vars"
+
+.wrapper
+	width: 300px
+	position: absolute
+	top: 50%
+	left: 50%
+	transform: translate(-50%, -50%)
+	display: grid
+	grid-template-rows: auto 1fr auto
+	gap: 10px
+
+.title
+	font-weight: 800
+	text-align: center
+
+.form
+	display: flex
+	flex-direction: column
+	gap: 10px
+	margin-top: 20px
+
+.text
+	font-size: 15px
+	margin-top: 15px
+	& a
+		color: $pink
+		&:hover
+			text-decoration: underline
