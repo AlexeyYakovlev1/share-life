@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Logo from "../../components/Header/Logo";
 import Button from "../../components/UI/Button/Button";
 import Input from "../../components/UI/Input/Input";
 import classes from "./Auth.module.sass";
@@ -11,7 +12,7 @@ function Register() {
 
 	return (
 		<div className={classes.wrapper}>
-			<h1 className={classes.title}>Share Life</h1>
+			<Logo className={classes.title} />
 			<form className={classes.form}>
 				<Input
 					type="text"
