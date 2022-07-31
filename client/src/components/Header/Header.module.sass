@@ -11,6 +11,8 @@
 	font-family: $fontInter
 	font-weight: 600
 	color: #000
+	&::first-letter
+		color: $pink
 	&Header
 		font-size: 25px
 		grid-area: logo
@@ -44,7 +46,7 @@
 
 .list
 	display: grid
-	grid-template-columns: repeat(2, 25px)
+	grid-template-columns: repeat(3, 25px)
 	gap: 20px
 
 .item svg, path

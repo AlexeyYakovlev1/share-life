@@ -1,0 +1,74 @@
+@import "../../styles/_vars"
+
+.wrapper
+	position: fixed
+	top: 0
+	bottom: 0
+	right: 0
+	left: 0
+	background-color: rgba(0,0,0,.4)
+	z-index: 99
+
+.content
+	position: absolute
+	top: 50%
+	left: 50%
+	transform: translate(-50%, -50%)
+	background-color: #fff
+	width: $containerWidth
+	display: grid
+	grid-template-columns: 1fr 350px
+	align-items: flex-start
+
+.photo
+	width: 100%
+	min-height: 500px
+	background-size: cover
+	background-position: center
+	background-repeat: no-repeat
+
+.info
+	display: grid
+	grid-template-rows: 70px 1fr
+	&Header
+		padding: 15px
+		border-bottom: 1px solid $grayDark
+		display: grid
+		grid-template-columns: 1fr auto
+		justify-content: space-between
+		align-items: center
+		gap: 10px
+		&Description
+			display: flex
+			align-items: center
+			gap: 10px
+	&User
+		display: flex
+		flex-direction: column
+		font-weight: 600
+		font-size: 15px
+		gap: 3px
+	&BtnSettings
+		cursor: pointer
+		background: transparent
+		border: none
+		& svg
+			width: 25px
+			height: 25px
+	&Body
+		height: calc(500px - 70px)
+		display: grid
+		grid-template-rows: 1fr 150px
+	&Comments
+		padding: 15px
+		border-bottom: 1px solid $grayDark
+	&Actions
+		padding: 15px
+
+.avatar
+	width: 40px
+	border-radius: 50%
+
+.location
+	font-weight: 400
+	font-size: 14px

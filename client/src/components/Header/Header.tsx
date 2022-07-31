@@ -4,6 +4,7 @@ import Logo from "./Logo";
 import { ReactComponent as SearchIcon } from "../../assets/images/search.svg";
 import { ReactComponent as UserIcon } from "../../assets/images/user.svg";
 import { ReactComponent as LikeIcon } from "../../assets/images/heart.svg";
+import { ReactComponent as PlusIcon } from "../../assets/images/plus.svg";
 import { Link } from "react-router-dom";
 import { DetailedHTMLProps, FunctionComponent, HTMLAttributes, SVGProps } from "react";
 import cn from "classnames";
@@ -18,8 +19,13 @@ function Header({ className }: IHeaderProps): JSX.Element {
 		img: FunctionComponent<SVGProps<SVGSVGElement>>;
 	}
 
-	const isAuth = false;
+	const isAuth = true;
 	const menu: Array<IMenu> = [
+		{
+			name: "Add post",
+			url: "/write",
+			img: PlusIcon
+		},
 		{
 			name: "Likes",
 			url: "/likes",
@@ -29,7 +35,7 @@ function Header({ className }: IHeaderProps): JSX.Element {
 			name: "Profile",
 			url: "/profile/:id",
 			img: UserIcon
-		},
+		}
 	];
 
 	return (
