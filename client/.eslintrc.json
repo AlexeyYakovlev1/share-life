@@ -27,6 +27,7 @@
 			"error",
 			"tab"
 		],
+		"indent": 0,
 		"linebreak-style": "off",
 		"quotes": [
 			"error",

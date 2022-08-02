@@ -1,7 +1,14 @@
-import { IPost } from "../../models/post.models";
+import { IComment, IPost } from "../../models/post.models";
 import classes from "./OpenPost.module.sass";
 import { ReactComponent as ThreeDotsIcon } from "../../assets/images/three_dots.svg";
+import { ReactComponent as LikeIcon } from "../../assets/images/heart.svg";
+import { ReactComponent as ArrowLeftIcon } from "../../assets/images/arrow-left.svg";
 import { useLocation, useNavigate } from "react-router-dom";
+import Comment from "./Comment";
+import Input from "../UI/Input/Input";
+import Button from "../UI/Button/Button";
+import cn from "classnames";
+import React from "react";
 
 function OpenPost({ postId }: { postId: string }): JSX.Element {
 	const currentPost = {
@@ -19,19 +26,70 @@ function OpenPost({ postId }: { postId: string }): JSX.Element {
 		email: "alex@gmail.com",
 		avatar: "https://image.api.playstation.com/cdn/EP1965/CUSA05528_00/pImhj205rhCZ3oHbfkKZzvvFL2S3IyL7.png?w=960&h=960"
 	};
+	const commentsPost: Array<IComment> = [
+		{
+			id: 1,
+			ownerId: 1,
+			text: "So cool picture!",
+			createdAt: "20:15"
+		},
+		{
+			id: 2,
+			ownerId: 2,
+			text: "you suck",
+			createdAt: "21:32"
+		},
+		{
+			id: 3,
+			ownerId: 1,
+			text: "lorem ipsum dolor sit am, lorem ipsum dolor sit am!!!",
+			createdAt: "09:21"
+		},
+		{
+			id: 4,
+			ownerId: 2,
+			text: "So good",
+			createdAt: "17:02"
+		}
+	];
 	const isTrue = true;
 	const location = useLocation();
-	const query = Boolean(new URLSearchParams(location.search).get("watch"));
+	const query = new URLSearchParams(location.search);
+	const queryWatch = Boolean(query.get("watch"));
 	const navigate = useNavigate();
+	const queryPostId: any = query.get("post_id");
+	const [currentPostId, setCurrentPostId] = React.useState<number>(+queryPostId);
 
 	function closePost() {
-		const params = new URLSearchParams({ watch: `${!query}` });
+		const params = new URLSearchParams({ watch: `${!queryWatch}` });
 		navigate({ pathname: location.pathname, search: params.toString() });
+	}
+
+	function switchPost(side: "LEFT" | "RIGHT") {
+		if (side === "LEFT") {
+			setCurrentPostId(currentPostId - 1);
+		} else if (side === "RIGHT") {
+			setCurrentPostId(currentPostId + 1);
+		}
 	}
 
 	return (
 		<div className={classes.wrapper} onClick={closePost}>
 			<div className={classes.content} onClick={event => event.stopPropagation()}>
+				<div className={classes.switchPost}>
+					<button
+						className={cn(classes.switchBtn, classes.switchLeft)}
+						onClick={() => switchPost("LEFT")}
+					>
+						<ArrowLeftIcon />
+					</button>
+					<button
+						className={cn(classes.switchBtn, classes.switchRight)}
+						onClick={() => switchPost("RIGHT")}
+					>
+						<ArrowLeftIcon />
+					</button>
+				</div>
 				<div className={classes.left}>
 					<div
 						className={classes.photo}
@@ -62,10 +120,32 @@ function OpenPost({ postId }: { postId: string }): JSX.Element {
 					</header>
 					<div className={classes.infoBody}>
 						<div className={classes.infoComments}>
-							<h3>Comments</h3>
+							<ul className={classes.infoCommentsList}>
+								{commentsPost.map((comment: IComment) => (
+									<Comment key={comment.id} info={comment} />
+								))}
+							</ul>
 						</div>
 						<div className={classes.infoActions}>
-							<h3>Actions</h3>
+							<div className={classes.infoActionsTop}>
+								<div className={classes.infoActionsBtns}>
+									<button
+										className={cn(classes.infoActionsLike, {
+											[classes.infoActionsLikeActive]: isTrue
+										})}
+									>
+										<LikeIcon />
+									</button>
+								</div>
+								<span className={classes.infoActionsLikesNum}>1,085 likes</span>
+								<span className={classes.infoActionsCreatedAt}>March 26</span>
+							</div>
+							<form className={classes.infoActionsForm}>
+								<Input
+									placeholder="Add a comment..."
+								/>
+								<Button>Post</Button>
+							</form>
 						</div>
 					</div>
 				</div>

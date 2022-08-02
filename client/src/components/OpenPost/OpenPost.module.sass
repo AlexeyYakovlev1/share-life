@@ -20,6 +20,28 @@
 	grid-template-columns: 1fr 350px
 	align-items: flex-start
 
+.switch
+	&Post
+		position: fixed
+		top: 50%
+		left: 50%
+		transform: translate(-50%, -50%)
+		width: 108%
+		z-index: 999
+		display: flex
+		justify-content: space-between
+		align-items: center
+	&Btn
+		background: transparent
+		border: none
+		cursor: pointer
+		& svg, path
+			fill: #fff !important
+			width: 30px
+			height: 30px
+	&Right svg
+		transform: rotate(180deg)
+
 .photo
 	width: 100%
 	min-height: 500px
@@ -58,12 +80,46 @@
 	&Body
 		height: calc(500px - 70px)
 		display: grid
-		grid-template-rows: 1fr 150px
+		grid-template-rows: 1fr 168px
 	&Comments
+		overflow-y: auto
 		padding: 15px
 		border-bottom: 1px solid $grayDark
+		&List
+			display: flex
+			flex-direction: column
 	&Actions
-		padding: 15px
+		display: grid
+		grid-template-rows: 1fr 60px
+		&Top
+			padding: 15px
+			display: flex
+			flex-direction: column
+			gap: 10px
+		&Btns
+			display: flex
+			align-items: center
+			justify-content: space-between
+			& button
+				cursor: pointer
+				background: transparent
+				border: none
+				display: flex
+				align-items: center
+				justify-content: center
+		&Like
+			&Active svg, path
+				fill: red !important
+		&LikesNum
+			font-size: 14px
+			font-weight: 600
+		&CreatedAt
+			font-size: 13px
+			text-transform: uppercase
+			color: $grayDark
+		&Form
+			display: grid
+			grid-template-columns: 1fr 80px
 
 .avatar
 	width: 40px
@@ -72,3 +128,27 @@
 .location
 	font-weight: 400
 	font-size: 14px
+
+.comment
+	display: grid
+	grid-template-columns: 40px 1fr
+	gap: 15px
+	align-items: flex-start
+	justify-content: space-between
+	&Avatar
+		border-radius: 50%
+	&Info
+		display: flex
+		flex-direction: column
+		gap: 15px
+	&:not(:first-child)
+		margin-top: 20px
+	&Name
+		font-weight: 600
+		font-size: 15px
+	&CreatedAt
+		font-size: 14px
+		color: $grayDark
+	&Text:not(a)
+		font-size: 15px
+		line-height: 22px

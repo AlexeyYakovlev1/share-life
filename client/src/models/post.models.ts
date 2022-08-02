@@ -6,3 +6,10 @@ export interface IPost {
 	usersLikesIds: Array<number>;
 	usersCommentsIds: Array<number>;
 }
+
+export interface IComment {
+	id: number;
+	ownerId: number;
+	text: string;
+	createdAt: Date | string;
+}
