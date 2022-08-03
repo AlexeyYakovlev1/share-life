@@ -1,0 +1,80 @@
+@import "../../styles/_vars"
+
+.post
+	display: grid
+	grid-template-rows: 70px 1fr
+	border-radius: 3px
+	border: 1px solid $grayDark
+	background-color: #fff
+
+.header
+	padding: 15px
+	display: grid
+	grid-template-columns: 1fr 28px
+	justify-content: space-between
+	align-items: center
+	&Left
+		display: flex
+		align-items: center
+		gap: 15px
+	&Name
+		font-weight: 600
+	&Info
+		display: flex
+		flex-direction: column
+		gap: 3px
+	&Location
+		font-size: 13px
+		color: $grayDark
+	&Settings
+		background: transparent
+		border: none
+		cursor: pointer
+		& svg
+			width: 28px
+			height: 28px
+
+.avatar
+	width: 40px
+	height: 40px
+	border-radius: 50%
+
+.body
+	display: grid
+	grid-template-rows: 1fr auto
+	&Description
+		display: grid
+		grid-template-rows: 1fr 50px
+		&Top
+			padding: 15px
+			display: grid
+			grid-template-rows: repeat(2, auto) 1fr
+			gap: 10px
+		&Btns
+			display: flex
+			justify-content: space-between
+			gap: 15px
+			& button
+				background: transparent
+				border: none
+				cursor: pointer
+		&LikeActive svg, path
+			fill: red !important
+		&LikesNum
+			font-weight: 600
+		&Text
+			line-height: 22px
+			font-size: 15px
+			&HideSide
+				display: -webkit-box
+				-webkit-line-clamp: 2
+				-webkit-box-orient: vertical
+				overflow: hidden
+				text-overflow: ellipsis
+		&More
+			margin-top: 10px
+
+.formComment input
+	border-left: none
+	border-right: none
+	border-bottom: none

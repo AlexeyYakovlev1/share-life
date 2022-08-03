@@ -11,7 +11,7 @@ function Logo({ className, ...props }: ILogoProps) {
 			className={cn(classes.logo, className)}
 			{...props}
 		>
-			<Link to="/</h1>">Share Life</Link>
+			<Link to="/">Share Life</Link>
 		</h1>
 	);
 }

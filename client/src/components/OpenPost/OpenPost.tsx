@@ -1,14 +1,13 @@
-import { IComment, IPost } from "../../models/post.models";
+import { IComment } from "../../models/post.models";
 import classes from "./OpenPost.module.sass";
 import { ReactComponent as ThreeDotsIcon } from "../../assets/images/three_dots.svg";
 import { ReactComponent as LikeIcon } from "../../assets/images/heart.svg";
 import { ReactComponent as ArrowLeftIcon } from "../../assets/images/arrow-left.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import Comment from "./Comment";
-import Input from "../UI/Input/Input";
-import Button from "../UI/Button/Button";
 import cn from "classnames";
 import React from "react";
+import AddComment from "../AddComment/AddComment";
 
 function OpenPost({ postId }: { postId: string }): JSX.Element {
 	const currentPost = {
@@ -140,12 +139,7 @@ function OpenPost({ postId }: { postId: string }): JSX.Element {
 								<span className={classes.infoActionsLikesNum}>1,085 likes</span>
 								<span className={classes.infoActionsCreatedAt}>March 26</span>
 							</div>
-							<form className={classes.infoActionsForm}>
-								<Input
-									placeholder="Add a comment..."
-								/>
-								<Button>Post</Button>
-							</form>
+							<AddComment />
 						</div>
 					</div>
 				</div>
