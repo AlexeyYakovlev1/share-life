@@ -41,15 +41,14 @@
 
 .body
 	display: grid
-	grid-template-rows: 1fr auto
+	grid-template-rows: 1fr repeat(2, auto) 50px
 	&Description
 		display: grid
-		grid-template-rows: 1fr 50px
-		&Top
-			padding: 15px
-			display: grid
-			grid-template-rows: repeat(2, auto) 1fr
-			gap: 10px
+		grid-template-rows: 1fr
+		padding: 15px
+		display: grid
+		grid-template-rows: repeat(2, auto) 1fr
+		gap: 10px
 		&Btns
 			display: flex
 			justify-content: space-between
@@ -73,6 +72,8 @@
 				text-overflow: ellipsis
 		&More
 			margin-top: 10px
+	&Comments
+		padding: 0 15px 15px
 
 .formComment input
 	border-left: none
