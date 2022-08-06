@@ -1,10 +1,14 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import MainLayout from "../../components/Layouts/MainLayout/MainLayout";
 import OpenPost from "../../components/OpenPost/OpenPost";
-import Post from "../../components/Post/Post";
+import Post from "./Post";
 import Button from "../../components/UI/Button/Button";
 import { IPost } from "../../models/post.models";
 import classes from "./Profile.module.sass";
+import React from "react";
+import { ReactComponent as ArrowLeftIcon } from "../../assets/images/arrow-left.svg";
+import cn from "classnames";
+import { useSlider } from "../../hooks/useSlider";
 
 function Profile(): JSX.Element {
 	const currentUser = true;
@@ -38,11 +42,50 @@ function Profile(): JSX.Element {
 	const query = new URLSearchParams(search);
 	const queryPostId = query.get("post_id");
 	const queryPostOpen = query.get("watch");
+	const { setCount, count } = useSlider({ list: posts });
+	const navigate = useNavigate();
+
+	React.useEffect(() => {
+		if (queryPostId) {
+			setCount(+queryPostId);
+		}
+	}, [queryPostId, count]);
+
+	React.useEffect(() => {
+		const params = new URLSearchParams({ post_id: `${count}` });
+		navigate({ pathname: location.pathname, search: params.toString() });
+	}, [count]);
+
+	function switchPost(side: "LEFT" | "RIGHT") {
+		if (side === "LEFT") {
+			setCount(count - 1);
+		} else if (side === "RIGHT") {
+			setCount(count + 1);
+		}
+	}
 
 	return (
 		<MainLayout>
-			{(queryPostOpen && queryPostId) && <OpenPost postId={queryPostId} />}
 			<div className={classes.wrapper}>
+				{(queryPostOpen && queryPostId) &&
+					<React.Fragment>
+						<div className={classes.switchPost}>
+							<button
+								className={cn(classes.switchBtn, classes.switchLeft)}
+								onClick={() => switchPost("LEFT")}
+							>
+								<ArrowLeftIcon />
+							</button>
+							<button
+								className={cn(classes.switchBtn, classes.switchRight)}
+								onClick={() => switchPost("RIGHT")}
+							>
+								<ArrowLeftIcon />
+							</button>
+						</div>
+						<OpenPost postId={count.toString()} />
+					</React.Fragment>
+				}
 				<div className={classes.top}>
 					<img
 						className={classes.avatar}

@@ -5,6 +5,7 @@ import classes from "./AddPost.module.sass";
 import cn from "classnames";
 import { ReactComponent as ArrowLeftIcon } from "../../assets/images/arrow-left.svg";
 import { useSlider } from "../../hooks/useSlider";
+import React from "react";
 
 function AddPost(): JSX.Element {
 	const user = {
@@ -29,6 +30,18 @@ function AddPost(): JSX.Element {
 		}
 	];
 	const { setCount, sliderWrapperRef, count, widthSlider } = useSlider({ list: photos });
+	const uploadRef = React.useRef<HTMLInputElement | null>(null);
+
+	function uploadHandler(event: any) {
+		if (!event.target?.files.length) return;
+		const formData = new FormData();
+
+		formData.append("photos", event.target.files);
+	}
+
+	function sharePost(event: React.ChangeEvent<HTMLFormElement>) {
+		event.preventDefault();
+	}
 
 	return (
 		<MainLayout>
@@ -69,24 +82,46 @@ function AddPost(): JSX.Element {
 					</div>
 					<div className={classes.right}>
 						<div className={classes.rightHeader}>
-							<img
-								className={classes.rightAvatar}
-								src={user.avatar}
-								alt={user.userName}
-							/>
-							<span className={classes.rightUserName}>{user.userName}</span>
+							<div>
+								<input
+									ref={uploadRef}
+									type="file"
+									style={{ display: "none" }}
+									accept="image/*"
+									multiple
+									required
+									onChange={uploadHandler}
+								/>
+								<Button
+									onClick={() => uploadRef.current?.click()}
+									className={classes.rightHeaderUploadBtn}
+								>
+									Upload photos
+								</Button>
+							</div>
+							<div className={classes.rightHeaderUser}>
+								<img
+									className={classes.rightAvatar}
+									src={user.avatar}
+									alt={user.userName}
+								/>
+								<span className={classes.rightUserName}>{user.userName}</span>
+							</div>
 						</div>
-						<textarea
-							className={classes.rightCaption}
-							placeholder="Write a caption..."
-						/>
-						<div className={classes.rightDown}>
+						<form
+							className={classes.rightDown}
+							onSubmit={sharePost}
+						>
+							<textarea
+								className={classes.rightCaption}
+								placeholder="Write a caption..."
+							/>
 							<Input
 								type="text"
 								placeholder="Add location"
 							/>
 							<Button>Share</Button>
-						</div>
+						</form>
 					</div>
 				</div>
 			</div>

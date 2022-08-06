@@ -45,20 +45,23 @@
 
 .right
 	display: grid
-	grid-template-rows: 60px minmax(200px, 1fr) auto
+	grid-template-rows: 105px auto
 	&Header
-		display: flex
-		align-items: center
-		gap: 10px
+		display: grid
+		grid-template-rows: repeat(2, auto)
 		padding: 10px 10px 0 10px
 		border-left: 1px solid $grayDark
+		&User
+			display: flex
+			align-items: center
+			gap: 10px
+			&Name
+				font-size: 15px
+				font-weight: 600
 	&Avatar
 		width: 40px
 		height: 40px
 		border-radius: 50%
-	&UserName
-		font-size: 15px
-		font-weight: 600
 	&Caption
 		border: none
 		border-left: 1px solid $grayDark
@@ -69,4 +72,4 @@
 		resize: none
 	&Down
 		display: grid
-		grid-template-rows: repeat(2, minmax(auto, 40px))
+		grid-template-rows: minmax(200px, 1fr) repeat(2, minmax(auto, 40px))

@@ -2,12 +2,11 @@ import { IComment } from "../../models/post.models";
 import classes from "./OpenPost.module.sass";
 import { ReactComponent as ThreeDotsIcon } from "../../assets/images/three_dots.svg";
 import { ReactComponent as LikeIcon } from "../../assets/images/heart.svg";
-import { ReactComponent as ArrowLeftIcon } from "../../assets/images/arrow-left.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import Comment from "./Comment";
 import cn from "classnames";
-import React from "react";
 import AddComment from "../AddComment/AddComment";
+import React from "react";
 
 function OpenPost({ postId }: { postId: string }): JSX.Element {
 	const currentPost = {
@@ -56,39 +55,20 @@ function OpenPost({ postId }: { postId: string }): JSX.Element {
 	const query = new URLSearchParams(location.search);
 	const queryWatch = Boolean(query.get("watch"));
 	const navigate = useNavigate();
-	const queryPostId: any = query.get("post_id");
-	const [currentPostId, setCurrentPostId] = React.useState<number>(+queryPostId);
 
 	function closePost() {
 		const params = new URLSearchParams({ watch: `${!queryWatch}` });
 		navigate({ pathname: location.pathname, search: params.toString() });
 	}
 
-	function switchPost(side: "LEFT" | "RIGHT") {
-		if (side === "LEFT") {
-			setCurrentPostId(currentPostId - 1);
-		} else if (side === "RIGHT") {
-			setCurrentPostId(currentPostId + 1);
-		}
-	}
+	React.useEffect(() => {
+		console.log(postId);
+	}, [postId]);
 
 	return (
 		<div className={classes.wrapper} onClick={closePost}>
 			<div className={classes.content} onClick={event => event.stopPropagation()}>
-				<div className={classes.switchPost}>
-					<button
-						className={cn(classes.switchBtn, classes.switchLeft)}
-						onClick={() => switchPost("LEFT")}
-					>
-						<ArrowLeftIcon />
-					</button>
-					<button
-						className={cn(classes.switchBtn, classes.switchRight)}
-						onClick={() => switchPost("RIGHT")}
-					>
-						<ArrowLeftIcon />
-					</button>
-				</div>
+
 				<div className={classes.left}>
 					<div
 						className={classes.photo}
