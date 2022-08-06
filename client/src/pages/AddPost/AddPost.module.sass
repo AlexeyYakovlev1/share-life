@@ -1,0 +1,72 @@
+@import "../../styles/_vars"
+
+.wrapper
+	background-color: #fff
+	display: flex
+	flex-direction: column
+
+.header
+	padding: 15px
+	border-bottom: 1px solid $grayDark
+
+.title
+	font-size: 15px
+	text-align: center
+
+.content
+	display: grid
+	grid-template-columns: 1fr minmax(auto, 300px)
+
+.slider
+	position: relative
+	user-select: none
+	width: 100%
+	max-height: 80vh
+	overflow: hidden
+	&Btn
+		position: absolute
+		border: none
+		background-color: transparent
+		cursor: pointer
+		top: 50%
+		z-index: 99
+		&Right
+			right: 5%
+			& svg
+				transform: rotate(180deg)
+		&Left
+			left: 5%
+	&List
+		display: flex
+		& li
+			transition: all .5s ease
+			background-size: contain
+			background-repeat: no-repeat
+
+.right
+	display: grid
+	grid-template-rows: 60px minmax(200px, 1fr) auto
+	&Header
+		display: flex
+		align-items: center
+		gap: 10px
+		padding: 10px 10px 0 10px
+		border-left: 1px solid $grayDark
+	&Avatar
+		width: 40px
+		height: 40px
+		border-radius: 50%
+	&UserName
+		font-size: 15px
+		font-weight: 600
+	&Caption
+		border: none
+		border-left: 1px solid $grayDark
+		font-family: $fontInter
+		font-size: 15px
+		line-height: 22px
+		padding: 10px
+		resize: none
+	&Down
+		display: grid
+		grid-template-rows: repeat(2, minmax(auto, 40px))

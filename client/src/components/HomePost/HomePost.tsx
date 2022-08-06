@@ -1,4 +1,4 @@
-import { IComment, IPost } from "../../models/post.models";
+import { IPost } from "../../models/post.models";
 import classes from "./HomePost.module.sass";
 import { ReactComponent as ThreeDotsIcon } from "../../assets/images/three_dots.svg";
 import { ReactComponent as LikeIcon } from "../../assets/images/heart.svg";
