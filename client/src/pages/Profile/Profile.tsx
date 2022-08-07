@@ -14,7 +14,7 @@ function Profile(): JSX.Element {
 	const currentUser = true;
 	const posts: Array<IPost> = [
 		{
-			id: 3,
+			id: 12,
 			ownerId: 1,
 			photos: ["https://cdn.akamai.steamstatic.com/steam/apps/109600/ss_f7c2a3639d782aec69c6d8d075177de7fe291441.1920x1080.jpg?t=1655927857", "https://cdn2.unrealengine.com/nw-m21-bard-1920x1080-3c7e59ea31ec.jpg", "https://cdn.akamai.steamstatic.com/steam/apps/109600/ss_95fa23b07c9bca7ba1cf6941cf169c3df822b6bd.1920x1080.jpg?t=1655927857", "https://cdn.cloudflare.steamstatic.com/steam/apps/109600/ss_0e639f7e5af0ff5219efebd0110af7afe0799820.1920x1080.jpg?t=1655927857"],
 			description: "New post from neverwinter",
@@ -22,7 +22,7 @@ function Profile(): JSX.Element {
 			usersCommentsIds: [2, 4, 1]
 		},
 		{
-			id: 4,
+			id: 93,
 			ownerId: 1,
 			photos: ["https://cdn2.unrealengine.com/nw-m21-bard-1920x1080-3c7e59ea31ec.jpg", "https://cdn.akamai.steamstatic.com/steam/apps/109600/ss_95fa23b07c9bca7ba1cf6941cf169c3df822b6bd.1920x1080.jpg?t=1655927857", "https://cdn.cloudflare.steamstatic.com/steam/apps/109600/ss_0e639f7e5af0ff5219efebd0110af7afe0799820.1920x1080.jpg?t=1655927857"],
 			description: "New post from neverwinter",
@@ -30,7 +30,7 @@ function Profile(): JSX.Element {
 			usersCommentsIds: [1]
 		},
 		{
-			id: 5,
+			id: 65,
 			ownerId: 1,
 			photos: ["https://cdn.akamai.steamstatic.com/steam/apps/109600/ss_95fa23b07c9bca7ba1cf6941cf169c3df822b6bd.1920x1080.jpg?t=1655927857", "https://cdn.cloudflare.steamstatic.com/steam/apps/109600/ss_0e639f7e5af0ff5219efebd0110af7afe0799820.1920x1080.jpg?t=1655927857"],
 			description: "New post from neverwinter",
@@ -41,19 +41,21 @@ function Profile(): JSX.Element {
 	const search = useLocation().search;
 	const query = new URLSearchParams(search);
 	const queryPostOpen = query.get("watch");
-	const { setCount, count } = useSlider({ list: posts });
 	const [searchParams, setSearchParams] = useSearchParams();
 	const queryPostId = searchParams.get("post_id");
+	const { setCount, count } = useSlider({ list: posts });
 
-	function switchPost(side: "LEFT" | "RIGHT") {
-		if (side === "LEFT") {
-			setCount(count - 1);
-		} else {
-			setCount(count + 1);
+	React.useEffect(() => {
+		if (posts[count] && queryPostOpen === "true") {
+			setSearchParams({ watch: `${!!queryPostOpen}`, post_id: `${posts[count].id}` });
 		}
+	}, [count]);
 
-		setSearchParams({ watch: `${!!queryPostOpen}`, post_id: `${count}` });
-	}
+	React.useEffect(() => {
+		if (queryPostId) {
+			setCount(posts.findIndex(item => item.id === +queryPostId));
+		}
+	}, [queryPostId]);
 
 	return (
 		<MainLayout>
@@ -63,13 +65,13 @@ function Profile(): JSX.Element {
 						<div className={classes.switchPost}>
 							<button
 								className={cn(classes.switchBtn, classes.switchLeft)}
-								onClick={() => switchPost("LEFT")}
+								onClick={() => setCount(count - 1)}
 							>
 								<ArrowLeftIcon />
 							</button>
 							<button
 								className={cn(classes.switchBtn, classes.switchRight)}
-								onClick={() => switchPost("RIGHT")}
+								onClick={() => setCount(count + 1)}
 							>
 								<ArrowLeftIcon />
 							</button>
@@ -123,6 +125,7 @@ function Profile(): JSX.Element {
 									photos={post.photos}
 									comments={post.usersCommentsIds.length}
 									likes={post.usersLikesIds.length}
+									postId={post.id}
 								/>
 							);
 						}) : <span>No posts...</span>}

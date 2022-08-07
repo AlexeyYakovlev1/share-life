@@ -61,10 +61,6 @@ function OpenPost({ postId }: { postId: string }): JSX.Element {
 		navigate({ pathname: location.pathname, search: params.toString() });
 	}
 
-	React.useEffect(() => {
-		console.log(postId);
-	}, [postId]);
-
 	return (
 		<div className={classes.wrapper} onClick={closePost}>
 			<div className={classes.content} onClick={event => event.stopPropagation()}>

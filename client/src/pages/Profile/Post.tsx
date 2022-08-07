@@ -8,9 +8,10 @@ interface IPostProps {
 	photos: Array<string>;
 	comments: number;
 	likes: number;
+	postId: number;
 }
 
-function Post({ photos, comments, likes }: IPostProps): JSX.Element {
+function Post({ photos, comments, likes, postId }: IPostProps): JSX.Element {
 	const [hover, setHover] = React.useState<boolean>(false);
 
 	return (
@@ -20,7 +21,7 @@ function Post({ photos, comments, likes }: IPostProps): JSX.Element {
 			style={{ backgroundImage: `url(${photos[0]})` }}
 			className={classes.contentItem}
 		>
-			{hover && <Link to={`/profile/${2}?watch=true&post_id=${4}`}>
+			{hover && <Link to={`/profile/${2}?watch=true&post_id=${postId}`}>
 				<div className={classes.contentItemInfo}>
 					<span><LikeIcon /> {likes}</span>
 					<span><CommentsIcon /> {comments}</span>

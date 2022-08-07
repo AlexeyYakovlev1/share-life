@@ -1,9 +1,14 @@
 import React from "react";
 
-export function useSlider({ list }: { list: Array<any> }) {
+interface IUseSliderProps {
+	list: Array<any>;
+	defaultCountValue?: number;
+}
+
+export function useSlider({ list, defaultCountValue = 0 }: IUseSliderProps) {
 	const sliderWrapperRef = React.useRef<HTMLDivElement | null>(null);
 	const [widthSlider, setWidthSlider] = React.useState<number>(1);
-	const [count, setCount] = React.useState<number>(0);
+	const [count, setCount] = React.useState<number>(defaultCountValue);
 
 	React.useEffect(() => {
 		if (sliderWrapperRef.current) {
