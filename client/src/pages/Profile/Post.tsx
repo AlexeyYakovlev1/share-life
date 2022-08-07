@@ -20,7 +20,7 @@ function Post({ photos, comments, likes }: IPostProps): JSX.Element {
 			style={{ backgroundImage: `url(${photos[0]})` }}
 			className={classes.contentItem}
 		>
-			{hover && <Link to={`/profile/${2}?watch=true&post_id=4`}>
+			{hover && <Link to={`/profile/${2}?watch=true&post_id=${4}`}>
 				<div className={classes.contentItemInfo}>
 					<span><LikeIcon /> {likes}</span>
 					<span><CommentsIcon /> {comments}</span>

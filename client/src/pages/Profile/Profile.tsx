@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import MainLayout from "../../components/Layouts/MainLayout/MainLayout";
 import OpenPost from "../../components/OpenPost/OpenPost";
 import Post from "./Post";
@@ -40,28 +40,19 @@ function Profile(): JSX.Element {
 	];
 	const search = useLocation().search;
 	const query = new URLSearchParams(search);
-	const queryPostId = query.get("post_id");
 	const queryPostOpen = query.get("watch");
 	const { setCount, count } = useSlider({ list: posts });
-	const navigate = useNavigate();
-
-	React.useEffect(() => {
-		if (queryPostId) {
-			setCount(+queryPostId);
-		}
-	}, [queryPostId, count]);
-
-	React.useEffect(() => {
-		const params = new URLSearchParams({ post_id: `${count}` });
-		navigate({ pathname: location.pathname, search: params.toString() });
-	}, [count]);
+	const [searchParams, setSearchParams] = useSearchParams();
+	const queryPostId = searchParams.get("post_id");
 
 	function switchPost(side: "LEFT" | "RIGHT") {
 		if (side === "LEFT") {
 			setCount(count - 1);
-		} else if (side === "RIGHT") {
+		} else {
 			setCount(count + 1);
 		}
+
+		setSearchParams({ watch: `${!!queryPostOpen}`, post_id: `${count}` });
 	}
 
 	return (
@@ -83,7 +74,7 @@ function Profile(): JSX.Element {
 								<ArrowLeftIcon />
 							</button>
 						</div>
-						<OpenPost postId={count.toString()} />
+						<OpenPost postId={queryPostId} />
 					</React.Fragment>
 				}
 				<div className={classes.top}>

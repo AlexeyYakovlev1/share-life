@@ -68,7 +68,6 @@ function OpenPost({ postId }: { postId: string }): JSX.Element {
 	return (
 		<div className={classes.wrapper} onClick={closePost}>
 			<div className={classes.content} onClick={event => event.stopPropagation()}>
-
 				<div className={classes.left}>
 					<div
 						className={classes.photo}
