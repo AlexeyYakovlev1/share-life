@@ -16,16 +16,36 @@
 	transform: translate(-50%, -50%)
 	background-color: #fff
 	width: $containerWidth
+	max-height: 65vh
 	display: grid
 	grid-template-columns: 1fr 350px
 	align-items: flex-start
 
-.photo
+.left
+	position: relative
+	user-select: none
 	width: 100%
-	min-height: 500px
-	background-size: cover
-	background-position: center
-	background-repeat: no-repeat
+	max-height: 65vh
+	overflow: hidden
+	&Btn
+		position: absolute
+		border: none
+		background-color: transparent
+		cursor: pointer
+		top: 60%
+		z-index: 99
+		&Right
+			right: 3%
+			& svg
+				transform: rotate(180deg)
+		&Left
+			left: 3%
+	&List
+		display: flex
+		height: 65vh
+		& img
+			transition: all .5s ease
+			object-fit: contain
 
 .info
 	display: grid
@@ -56,7 +76,7 @@
 			width: 25px
 			height: 25px
 	&Body
-		height: calc(500px - 70px)
+		height: calc(65vh - 70px)
 		display: grid
 		grid-template-rows: 1fr 168px
 	&Comments

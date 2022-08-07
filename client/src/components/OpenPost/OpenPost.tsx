@@ -2,11 +2,12 @@ import { IComment } from "../../models/post.models";
 import classes from "./OpenPost.module.sass";
 import { ReactComponent as ThreeDotsIcon } from "../../assets/images/three_dots.svg";
 import { ReactComponent as LikeIcon } from "../../assets/images/heart.svg";
+import { ReactComponent as ArrowLeftIcon } from "../../assets/images/arrow-left.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import Comment from "./Comment";
 import cn from "classnames";
 import AddComment from "../AddComment/AddComment";
-import React from "react";
+import { useSlider } from "../../hooks/useSlider";
 
 function OpenPost({ postId }: { postId: string }): JSX.Element {
 	const currentPost = {
@@ -55,6 +56,7 @@ function OpenPost({ postId }: { postId: string }): JSX.Element {
 	const query = new URLSearchParams(location.search);
 	const queryWatch = Boolean(query.get("watch"));
 	const navigate = useNavigate();
+	const { setCount, sliderWrapperRef, count, widthSlider } = useSlider({ list: currentPost.photos });
 
 	function closePost() {
 		const params = new URLSearchParams({ watch: `${!queryWatch}` });
@@ -64,11 +66,36 @@ function OpenPost({ postId }: { postId: string }): JSX.Element {
 	return (
 		<div className={classes.wrapper} onClick={closePost}>
 			<div className={classes.content} onClick={event => event.stopPropagation()}>
-				<div className={classes.left}>
-					<div
-						className={classes.photo}
-						style={{ backgroundImage: `url(${currentPost.photos[0]}` }}
-					></div>
+				<div className={classes.left} ref={sliderWrapperRef}>
+					<button
+						className={cn(classes.leftBtn, classes.leftBtnLeft)}
+						onClick={() => setCount(count - 1)}
+					>
+						<ArrowLeftIcon />
+					</button>
+					<button
+						className={cn(classes.leftBtn, classes.leftBtnRight)}
+						onClick={() => setCount(count + 1)}
+					>
+						<ArrowLeftIcon />
+					</button>
+					<ul
+						className={classes.leftList}
+						style={{ width: `${widthSlider * currentPost.photos.length}px` }}
+					>
+						{currentPost.photos.map(photo => (
+							<img
+								key={photo}
+								style={{
+									maxWidth: `${widthSlider}px`,
+									maxHeight: "100%",
+									transform: `translate(-${count * 100}%)`
+								}}
+								src={photo}
+								alt=""
+							/>
+						))}
+					</ul>
 				</div>
 				<div className={classes.info}>
 					<header className={classes.infoHeader}>
@@ -81,7 +108,9 @@ function OpenPost({ postId }: { postId: string }): JSX.Element {
 							<div className={classes.infoUser}>
 								<div>
 									<span className={classes.infoUserName}>{userPost.userName} &#x2022;</span>
-									<span className={classes.infoUserFollowing}>&nbsp;{isTrue ? "Following" : "Not followed"}</span>
+									<span className={classes.infoUserFollowing}>
+										&nbsp;{isTrue ? "Following" : "Not followed"}
+									</span>
 								</div>
 								<span className={classes.location}>Coupa Cafe - Ramona</span>
 							</div>
