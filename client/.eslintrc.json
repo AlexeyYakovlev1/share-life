@@ -21,12 +21,9 @@
 		"@typescript-eslint"
 	],
 	"rules": {
+		"@typescript-eslint/no-empty-function": "off",
 		"@typescript-eslint/no-empty-interface": "off",
 		"react/react-in-jsx-scope": "off",
-		"indent": [
-			"error",
-			"tab"
-		],
 		"indent": 0,
 		"linebreak-style": "off",
 		"quotes": [
