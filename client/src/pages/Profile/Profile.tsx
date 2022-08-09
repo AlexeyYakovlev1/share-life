@@ -88,7 +88,7 @@ function Profile(): JSX.Element {
 					<div className={classes.info}>
 						<div className={classes.infoTop}>
 							<span className={classes.name}>quod_42</span>
-							{!currentUser ? <Button>Following</Button> : <Button>Settings</Button>}
+							{!currentUser ? <Button>Following</Button> : <Button><Link to="/settings">Settings</Link></Button>}
 						</div>
 						<div className={classes.infoNums}>
 							<ul className={classes.infoNumsList}>

@@ -2,11 +2,13 @@ import { IPost } from "../../models/post.models";
 import classes from "./HomePost.module.sass";
 import { ReactComponent as ThreeDotsIcon } from "../../assets/images/three_dots.svg";
 import { ReactComponent as LikeIcon } from "../../assets/images/heart.svg";
+import { ReactComponent as ArrowLeftIcon } from "../../assets/images/arrow-left.svg";
 import AddComment from "../AddComment/AddComment";
 import { Link } from "react-router-dom";
 import cn from "classnames";
 import React from "react";
 import Button from "../UI/Button/Button";
+import { useSlider } from "../../hooks/useSlider";
 
 function HomePost({ info }: { info: IPost }): JSX.Element {
 	const userPost = {
@@ -48,6 +50,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 			createdAt: "19:39"
 		}
 	]);
+	const { setCount, count, sliderWrapperRef, widthSlider } = useSlider({ list: info.photos });
 
 	return (
 		<li className={classes.post}>
@@ -70,10 +73,36 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 				</button>
 			</header>
 			<div className={classes.body}>
-				<img
-					src={info.photos[0]}
-					alt={info.description}
-				/>
+				<div className={classes.bodyPhotos} ref={sliderWrapperRef}>
+					<button
+						className={cn(classes.bodySwitchBtn, classes.bodySwitchBtnLeft)}
+						onClick={() => setCount(count - 1)}
+					>
+						<ArrowLeftIcon />
+					</button>
+					<button
+						className={cn(classes.bodySwitchBtn, classes.bodySwitchBtnRight)}
+						onClick={() => setCount(count + 1)}
+					>
+						<ArrowLeftIcon />
+					</button>
+					<ul
+						className={classes.bodyList}
+						style={{ width: `${widthSlider * info.photos.length}px` }}
+					>
+						{info.photos.map(photo => (
+							<img
+								key={photo}
+								src={photo}
+								style={{
+									maxWidth: `${widthSlider}px`,
+									height: "530px",
+									transform: `translate(-${count * 100}%)`
+								}}
+							/>
+						))}
+					</ul>
+				</div>
 				<div className={classes.bodyDescription}>
 					<div className={classes.bodyDescriptionBtns}>
 						<button

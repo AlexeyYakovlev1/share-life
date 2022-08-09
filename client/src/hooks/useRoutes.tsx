@@ -4,6 +4,7 @@ import Login from "../pages/Auth/Login";
 import Register from "../pages/Auth/Register";
 import Home from "../pages/Home/Home";
 import Profile from "../pages/Profile/Profile";
+import Settings from "../pages/Settings/Settings";
 
 function useRoutes() {
 	return (
@@ -13,6 +14,7 @@ function useRoutes() {
 			<Route path="/profile/:id" element={<Profile />} />
 			<Route path="/" element={<Home />} />
 			<Route path="/write" element={<AddPost />} />
+			<Route path="/settings" element={<Settings />} />
 		</Routes>
 	);
 }
