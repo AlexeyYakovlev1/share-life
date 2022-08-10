@@ -8,6 +8,8 @@ import Comment from "./Comment";
 import cn from "classnames";
 import AddComment from "../AddComment/AddComment";
 import { useSlider } from "../../hooks/useSlider";
+import React from "react";
+import PostMenu from "../PostMenu/PostMenu";
 
 function OpenPost({ postId }: { postId: string }): JSX.Element {
 	const currentPost = {
@@ -57,6 +59,8 @@ function OpenPost({ postId }: { postId: string }): JSX.Element {
 	const queryWatch = Boolean(query.get("watch"));
 	const navigate = useNavigate();
 	const { setCount, sliderWrapperRef, count, widthSlider } = useSlider({ list: currentPost.photos });
+
+	const [visible, setVisible] = React.useState<boolean>(false);
 
 	function closePost() {
 		const params = new URLSearchParams({ watch: `${!queryWatch}` });
@@ -115,10 +119,20 @@ function OpenPost({ postId }: { postId: string }): JSX.Element {
 								<span className={classes.location}>Coupa Cafe - Ramona</span>
 							</div>
 						</div>
-						<div>
-							<button className={classes.infoBtnSettings}>
+						<div className={classes.infoSettings}>
+							<button
+								onClick={() => setVisible(!visible)}
+								className={classes.infoSettingsBtn}
+							>
 								<ThreeDotsIcon />
 							</button>
+							{visible &&
+								<PostMenu
+									post={currentPost}
+									setVisible={setVisible}
+									visible={visible}
+								/>
+							}
 						</div>
 					</header>
 					<div className={classes.infoBody}>

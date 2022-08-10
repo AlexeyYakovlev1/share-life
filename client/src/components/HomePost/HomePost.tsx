@@ -9,18 +9,12 @@ import cn from "classnames";
 import React from "react";
 import Button from "../UI/Button/Button";
 import { useSlider } from "../../hooks/useSlider";
+import PostMenu from "../PostMenu/PostMenu";
 
 function HomePost({ info }: { info: IPost }): JSX.Element {
-	const userPost = {
-		id: 2,
-		userName: "quod_42",
-		fullName: "Alexey Yakovlev",
-		email: "alex@gmail.com",
-		avatar: "https://image.api.playstation.com/cdn/EP1965/CUSA05528_00/pImhj205rhCZ3oHbfkKZzvvFL2S3IyL7.png?w=960&h=960"
-	};
 	const [dotsToEnd, setDotsToEnd] = React.useState<boolean>(info.description ? info.description.trim().length >= 200 : false);
 	const [viewComments, setViewComments] = React.useState<boolean>(!!info.usersCommentsIds.length);
-	const [comments, setComments] = React.useState([
+	const [comments, setComments] = React.useState<Array<any>>([
 		{
 			id: 1,
 			ownerId: 3,
@@ -50,7 +44,16 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 			createdAt: "19:39"
 		}
 	]);
+	const [visible, setVisible] = React.useState<boolean>(false);
+
 	const { setCount, count, sliderWrapperRef, widthSlider } = useSlider({ list: info.photos });
+	const userPost = {
+		id: 2,
+		userName: "quod_42",
+		fullName: "Alexey Yakovlev",
+		email: "alex@gmail.com",
+		avatar: "https://image.api.playstation.com/cdn/EP1965/CUSA05528_00/pImhj205rhCZ3oHbfkKZzvvFL2S3IyL7.png?w=960&h=960"
+	};
 
 	return (
 		<li className={classes.post}>
@@ -68,9 +71,21 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 						<span className={classes.headerLocation}>{info.location}</span>
 					</div>
 				</div>
-				<button className={classes.headerSettings}>
-					<ThreeDotsIcon />
-				</button>
+				<div className={classes.headerSettings}>
+					<button
+						className={classes.headerSettingsBtn}
+						onClick={() => setVisible(!visible)}
+					>
+						<ThreeDotsIcon />
+					</button>
+					{visible &&
+						<PostMenu
+							post={info}
+							setVisible={setVisible}
+							visible={visible}
+							className={classes.headerSettingsMenu}
+						/>}
+				</div>
 			</header>
 			<div className={classes.body}>
 				<div className={classes.bodyPhotos} ref={sliderWrapperRef}>

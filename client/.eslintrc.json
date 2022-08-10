@@ -24,6 +24,7 @@
 		"@typescript-eslint/no-empty-function": "off",
 		"@typescript-eslint/no-empty-interface": "off",
 		"react/react-in-jsx-scope": "off",
+		"@typescript-eslint/ban-types": "off",
 		"indent": 0,
 		"linebreak-style": "off",
 		"quotes": [

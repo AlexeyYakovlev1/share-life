@@ -1,0 +1,32 @@
+@import "../../styles/_vars"
+
+.wrapper
+	border: 1px solid $grayDark
+	background-color: #fff
+	border-radius: 3px
+	position: absolute
+	bottom: 0
+	right: 0
+	height: 94px
+
+.close
+	cursor: pointer
+	user-select: none
+	position: absolute
+	top: 5px
+	right: 10px
+
+.list
+	padding-top: 35px
+	display: flex
+	flex-direction: column
+
+.item
+	font-size: 15px
+	padding: 5px 10px
+	font-weight: 600
+	cursor: pointer
+	&:hover
+		background-color: $gray
+	&Delete
+		color: red
