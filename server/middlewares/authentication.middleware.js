@@ -12,12 +12,12 @@ module.exports = function (req, res, next) {
 		return res.status(400).json({ success: false, message: "Token from Authorization header failed!" });
 	}
 
-	const decode = verify(AuthToken, `${JWT_KEY}`, (err, result) => {
+	verify(AuthToken, `${JWT_KEY}`, (err, result) => {
 		if (err) {
 			return res.status(400).json({ success: false, message: "Failed decode auth token" });
 		}
 
-		req.user = decode;
+		req.user = result;
 		next();
 	});
 }
