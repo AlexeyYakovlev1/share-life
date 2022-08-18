@@ -1,6 +1,6 @@
 const db = require("../db");
 const { validationResult } = require("express-validator");
-const jwt = require("jsonwebtoken");
+const { sign } = require("jsonwebtoken");
 const { hash, compare } = require("bcrypt");
 
 const { JWT_KEY } = process.env;
@@ -14,7 +14,7 @@ class AuthController {
 		}
 
 		const { email, password } = req.body;
-		const queryForFindPerson = `SELECT id,password FROM person WHERE email = $1`;
+		const queryForFindPerson = `SELECT id,password,roles FROM person WHERE email = $1`;
 
 		new Promise((resolve) => resolve(db.query(queryForFindPerson, [email])))
 			.then((data) => {
@@ -26,7 +26,7 @@ class AuthController {
 				if (!comparePassword) return Promise.reject("Compare password error");
 
 				const payload = person;
-				const token = jwt.sign(payload, `${JWT_KEY}`, { expiresIn: "24h" });
+				const token = sign(payload, `${JWT_KEY}`, { expiresIn: "24h" });
 
 				return res.status(200).json({ success: true, token });
 			})
@@ -51,16 +51,23 @@ class AuthController {
 			})
 			.then((hashPassword) => {
 				if (!hashPassword) return Promise.reject("Password hash error");
+				const queryForFindRole = `SELECT text FROM role WHERE text = $1`;
+				const role = db.query(queryForFindRole, ["USER"]);
 
-				const queryForCreatePerson = `INSERT INTO person(full_name,user_name,email,password) VALUES($1,$2,$3,$4)`;
-				const newPerson = db.query(queryForCreatePerson, [fullName, userName, email, hashPassword]);
+				return Promise.all([role, hashPassword]);
+			})
+			.then(([role, hashPassword]) => {
+				if (!role.rows || !role.rows[0]) return Promise.reject("Role not found");
+
+				const queryForCreatePerson = `INSERT INTO person(full_name,user_name,email,password,roles) VALUES($1,$2,$3,$4,$5)`;
+				const newPerson = db.query(queryForCreatePerson, [fullName, userName, email, hashPassword, [role.rows[0].text]]);
 
 				return Promise.resolve(newPerson);
 			})
-			.then((newPerson) => {
-				return res.status(201).json({ success: true, message: "Success register", person: newPerson.rows[0] });
+			.then((person) => {
+				return res.status(201).json({ success: true, message: "Success register", person: person.rows[0] });
 			})
-			.catch((error) => res.status(400).json({ success: false, message: error }));
+			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}
 
 	checkAuth(req, res) {
@@ -76,8 +83,8 @@ class AuthController {
 				if (!data.rows || !data.rows[0]) return Promise.reject("User is not found");
 
 				const person = data.rows[0];
-				const payload = { id: person.id, password: person.password };
-				const token = jwt.sign(payload, `${JWT_KEY}`, { expiresIn: "24h" });
+				const payload = { id: person.id, password: person.password, roles: person.roles };
+				const token = sign(payload, `${JWT_KEY}`, { expiresIn: "24h" });
 
 				return res.status(200).json({ success: true, token, person });
 			})

@@ -2,7 +2,6 @@ const { verify } = require("jsonwebtoken");
 const { JWT_KEY } = process.env;
 
 module.exports = function (req, res, next) {
-	if (req.method === "OPTIONS") next();
 	if (!req.headers.authorization) {
 		return res.status(400).json({ success: false, message: "Must be Authorization header!" });
 	}
