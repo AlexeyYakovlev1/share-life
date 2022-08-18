@@ -1,5 +1,5 @@
 const db = require("../db");
-const { hash } = require("bcrypt");
+const { hash, compare } = require("bcrypt");
 const { validationResult } = require("express-validator");
 
 class UserController {
@@ -110,7 +110,7 @@ class UserController {
 		}
 
 		const { id } = req.params;
-		const { userName, fullName, email, password, roles } = req.body;
+		const { userName, fullName, email, oldPassword, newPassword, roles } = req.body;
 
 		if (!roles) return res.status(400).json({ success: false, message: "Roles is not found" });
 
@@ -126,7 +126,11 @@ class UserController {
 					if (!role.rows || !role.rows[0]) return Promise.reject(`Some role is not found`);
 				}
 
-				const hashPassword = hash(password, 8);
+				const comparePassword = compare(newPassword, oldPassword);
+
+				if (!comparePassword) return Promise.reject("Compare password failed");
+
+				const hashPassword = hash(newPassword, 8);
 				return Promise.resolve(hashPassword);
 			})
 			.then((hashPassword) => {

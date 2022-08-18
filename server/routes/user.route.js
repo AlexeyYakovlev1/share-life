@@ -21,7 +21,8 @@ router.put(
 	"/update/:id",
 	[
 		body("email").isEmail(),
-		body("password").isLength({ min: 6 }),
+		body("oldPassword").isLength({ min: 6 }),
+		body("newPassword").isLength({ min: 6 }),
 		body("fullName").isLength({ min: 3 }),
 		body("userName").isLength({ min: 3 })
 	],
