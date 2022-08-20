@@ -21,3 +21,12 @@ CREATE TABLE post(
 	description TEXT,
 	location VARCHAR(255)
 );
+
+CREATE TABLE comment(
+	id SERIAL PRIMARY KEY,
+	post_id INTEGER,
+	FOREIGN KEY (post_id) REFERENCES post (id),
+	owner_id INTEGER,
+	FOREIGN KEY (owner_id) REFERENCES person (id),
+	text TEXT NOT NULL
+);

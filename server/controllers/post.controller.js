@@ -88,9 +88,7 @@ class Post {
 	getAll(req, res) {
 		const queryForFindPosts = `SELECT * FROM post`;
 		new Promise((resolve) => resolve(db.query(queryForFindPosts)))
-			.then((posts) => {
-				return res.status(200).json({ success: true, posts: posts.rows })
-			})
+			.then((posts) => res.status(200).json({ success: true, posts: posts.rows }))
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}
 
