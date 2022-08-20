@@ -12,3 +12,12 @@ CREATE TABLE role(
 	id SERIAL PRIMARY KEY,
 	text VARCHAR(255) NOT NULL DEFAULT 'USER' UNIQUE
 );
+
+CREATE TABLE post(
+	id SERIAL PRIMARY KEY,
+	owner_id INTEGER,
+	FOREIGN KEY (owner_id) REFERENCES person (id),
+	photos TEXT ARRAY,
+	description TEXT,
+	location VARCHAR(255)
+);

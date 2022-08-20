@@ -9,6 +9,7 @@ app.use(express.json({ extended: true, limit: "50mb" }));
 
 app.use("/auth", require("./routes/auth.route"));
 app.use("/users", require("./routes/user.route"));
+app.use("/posts", require("./routes/post.route"));
 
 function run() {
 	app.listen(PORT, () => {
