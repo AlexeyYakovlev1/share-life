@@ -110,7 +110,7 @@ class UserController {
 		}
 
 		const { id } = req.params;
-		const { userName, fullName, email, oldPassword, newPassword, roles } = req.body;
+		const { userName, fullName, email, oldPassword, newPassword, roles, avatar } = req.body;
 
 		if (!roles) return res.status(400).json({ success: false, message: "Roles is not found" });
 
@@ -138,8 +138,8 @@ class UserController {
 					return res.status(400).json({ success: false, message: "Hash password failed" });
 				}
 
-				const queryForUpdatePerson = `UPDATE person SET user_name=$1,full_name=$2,email=$3,password=$4,roles=$5 WHERE id = $6  RETURNING *`;
-				const updatePerson = db.query(queryForUpdatePerson, [userName, fullName, email, hashPassword, roles, id]);
+				const queryForUpdatePerson = `UPDATE person SET user_name=$1,full_name=$2,email=$3,password=$4,roles=$5,avatar=$6 WHERE id=$7 RETURNING *`;
+				const updatePerson = db.query(queryForUpdatePerson, [userName, fullName, email, hashPassword, roles, avatar, id]);
 
 				return Promise.resolve(updatePerson);
 			})

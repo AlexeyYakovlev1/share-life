@@ -122,7 +122,7 @@ class Post {
 
 		const { id: idPost } = req.params;
 		const { id: idCurrentUser } = req.user;
-		const { description, location } = req.body;
+		const { description, location, photos } = req.body;
 
 		const queryForFindPerson = `SELECT email FROM person WHERE id = $1`;
 
@@ -139,8 +139,8 @@ class Post {
 				if (!findPost.rows || !findPost.rows[0]) return Promise.reject("Post is not found");
 				if (+idCurrentUser !== findPost.rows[0].owner_id) return Promise.reject("Access closed");
 
-				const queryForUpdatePost = `UPDATE post SET description=$1, location=$2 WHERE id = $3 RETURNING *`;
-				const updatePost = db.query(queryForUpdatePost, [description, location, idPost]);
+				const queryForUpdatePost = `UPDATE post SET description=$1, location=$2, photos=$3 WHERE id=$4 RETURNING *`;
+				const updatePost = db.query(queryForUpdatePost, [description, location, photos, idPost]);
 
 				return Promise.resolve(updatePost);
 			})
