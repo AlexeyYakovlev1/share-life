@@ -1,6 +1,12 @@
 const db = require("../db");
+
 const { hash, compare } = require("bcrypt");
 const { validationResult } = require("express-validator");
+const fs = require("fs");
+const path = require("path");
+const toBase64 = require("../utils/toBase64.util");
+
+const { PROJECT_ROOT } = process.env;
 
 class UserController {
 	constructor() {
@@ -48,9 +54,7 @@ class UserController {
 
 				return Promise.resolve(newPerson);
 			})
-			.then((person) => {
-				return res.status(201).json({ success: true, message: "User has been created", person: person.rows[0] });
-			})
+			.then((person) => res.status(201).json({ success: true, message: "User has been created", person: person.rows[0] }))
 			.catch((error) => res.status(400).json({ succces: false, message: error.message, error }));
 	}
 
@@ -60,26 +64,48 @@ class UserController {
 		}
 
 		const { id } = req.params;
-		const queryForFindPerson = `SELECT email FROM person WHERE id = $1`;
+		const queryForFindPerson = `SELECT avatar FROM person WHERE id = $1`;
 
 		new Promise((resolve) => resolve(db.query(queryForFindPerson, [id])))
 			.then((findPerson) => {
 				if (!findPerson.rows || !findPerson.rows[0]) return Promise.reject("User is not found");
 
-				const queryForRemovePerson = `DELETE FROM person WHERE id = $1`;
-				return Promise.resolve(db.query(queryForRemovePerson, [id]));
+				const userAvatarInFolder = path.relative(PROJECT_ROOT, `./templates/user/${findPerson.rows[0].avatar}`);
+
+				if (fs.existsSync(userAvatarInFolder)) {
+					fs.unlink(userAvatarInFolder, (err) => {
+						if (err) {
+							return res.status(400).json({ succces: false, message: err.message, err });
+						}
+					})
+				}
+
+				const queryForDeletePerson = `DELETE FROM person WHERE id = $1`;
+				return Promise.resolve(db.query(queryForDeletePerson, [id]));
 			})
-			.then(() => {
-				return res.status(200).json({ success: true, message: "User has been removed" });
-			})
+			.then(() => res.status(200).json({ success: true, message: "User has been removed" }))
 			.catch((error) => res.status(400).json({ succces: false, message: error.message, error }));
 	}
 
 	getAll(req, res) {
 		const queryForFindPersons = `SELECT * FROM person`;
+
 		new Promise((resolve) => resolve(db.query(queryForFindPersons)))
 			.then((persons) => {
-				return res.status(200).json({ success: true, persons: persons.rows });
+				const newPersons = [];
+
+				for (let i = 0; i < persons.rows.length; i++) {
+					const person = persons.rows[i];
+					const pathToAvatar = path.relative(PROJECT_ROOT, `./templates/user/${person.avatar}`);
+					const payload = {
+						...person,
+						avatar: toBase64(pathToAvatar)
+					};
+
+					newPersons.push(payload);
+				}
+
+				return res.status(200).json({ success: true, persons: newPersons });
 			})
 			.catch((error) => res.status(400).json({ succces: false, message: error.message, error }));
 	}
@@ -91,9 +117,16 @@ class UserController {
 
 		const { id } = req.params;
 		const queryForFindPerson = `SELECT * FROM person WHERE id = $1`;
+
 		new Promise((resolve) => resolve(db.query(queryForFindPerson, [id])))
 			.then((person) => {
-				return res.status(200).json({ success: true, person: person.rows[0] });
+				const pathToAvatar = path.relative(PROJECT_ROOT, `./templates/user/${person.rows[0].avatar}`);
+				const payload = {
+					...person.rows[0],
+					avatar: toBase64(pathToAvatar)
+				};
+
+				return res.status(200).json({ success: true, person: payload });
 			})
 			.catch((error) => res.status(400).json({ succces: false, message: error.message, error }));
 	}
@@ -138,7 +171,9 @@ class UserController {
 					return res.status(400).json({ success: false, message: "Hash password failed" });
 				}
 
-				const queryForUpdatePerson = `UPDATE person SET user_name=$1,full_name=$2,email=$3,password=$4,roles=$5,avatar=$6 WHERE id=$7 RETURNING *`;
+				const queryForUpdatePerson = `
+					UPDATE person SET user_name = $1, full_name = $2, email = $3, password = $4, roles = $5, avatar = $6 WHERE id = $7 RETURNING *
+				`;
 				const updatePerson = db.query(queryForUpdatePerson, [userName, fullName, email, hashPassword, roles, avatar, id]);
 
 				return Promise.resolve(updatePerson);

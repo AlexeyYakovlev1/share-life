@@ -1,5 +1,7 @@
-const { validationResult } = require("express-validator");
 const db = require("../db");
+
+const { validationResult } = require("express-validator");
+const fs = require("fs");
 
 class Post {
 	create(req, res) {
@@ -12,14 +14,14 @@ class Post {
 		const { id } = req.user;
 
 		const queryForFindPerson = `SELECT email FROM person WHERE id = $1`;
-		const { description, location } = req.body;
+		const { description, location, photos } = req.body;
 
 		new Promise((resolve) => resolve(db.query(queryForFindPerson, [id])))
 			.then((findPerson) => {
 				if (!findPerson.rows || !findPerson.rows[0]) return Promise.reject("Owner is not found");
 
-				const queryForCreatePost = `INSERT INTO post(description,location,owner_id) VALUES($1,$2,$3) RETURNING *`;
-				const newPost = db.query(queryForCreatePost, [description, location, id]);
+				const queryForCreatePost = `INSERT INTO post(description,location,owner_id,photos) VALUES($1,$2,$3,$4) RETURNING *`;
+				const newPost = db.query(queryForCreatePost, [description, location, id, photos]);
 
 				return Promise.resolve(newPost);
 			})
@@ -52,8 +54,23 @@ class Post {
 				if (!findPost.rows || !findPost.rows[0]) return Promise.reject("Post is not found");
 				if (+findPost.rows[0].owner_id !== +idCurrentUser) return Promise.reject("Access closed");
 
-				const queryForDeletePost = `DELETE FROM post WHERE id = $1`;
+				for (let i = 0; i < findPost.rows[0].photos.length; i++) {
+					const photo = findPost.rows[0].photos[i];
 
+					const postPhotoInFolder = path.relative(PROJECT_ROOT, `./templates/post/${photo}`)
+
+					if (fs.existsSync(postPhotoInFolder)) {
+						fs.unlink(postPhotoInFolder, (err) => {
+							if (err) {
+								return res.status(400).json({ succces: false, message: err.message, err });
+							}
+
+							console.log("Post photo has been removed");
+						})
+					}
+				}
+
+				const queryForDeletePost = `DELETE FROM post WHERE id = $1`;
 				return Promise.resolve(db.query(queryForDeletePost, [idPost]));
 			})
 			.then(() => {
