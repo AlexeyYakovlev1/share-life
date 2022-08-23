@@ -1,4 +1,4 @@
 #todo
 --backend:
-1)delete avatar and photos when deleting user and post[x]
-2)give photos from server to client[x]
+1)delete posts and comments when deleting user[x]
+2)delete comments when deleting post[x]

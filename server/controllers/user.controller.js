@@ -1,22 +1,31 @@
+// files
 const db = require("../db");
+const toBase64 = require("../utils/toBase64.util");
 
+// modules
 const { hash, compare } = require("bcrypt");
 const { validationResult } = require("express-validator");
 const fs = require("fs");
 const path = require("path");
-const toBase64 = require("../utils/toBase64.util");
 
+// global vars
 const { PROJECT_ROOT } = process.env;
 
 class UserController {
 	constructor() {
 		this.create = this.create.bind(this);
 		this.update = this.update.bind(this);
+		this.remove = this.remove.bind(this);
 	}
 
 	_existRole(role) {
 		const queryForFindRole = `SELECT text FROM role WHERE text = $1`;
 		return new Promise((resolve) => resolve(db.query(queryForFindRole, [role])));
+	}
+
+	_removeComments(postId) {
+		const queryForDeleteComments = `DELETE FROM comment WHERE post_id = $1`;
+		return new Promise((resolve) => resolve(db.query(queryForDeleteComments, [postId])));
 	}
 
 	create(req, res) {
@@ -38,9 +47,9 @@ class UserController {
 			})
 			.then(async (hashPassword) => {
 				if (!hashPassword) return Promise.reject("Hash password failed");
-
 				if (!roles.includes("USER") || !roles.length) roles.push("USER");
 
+				// check every role
 				for (let i = 0; i < roles.length; i++) {
 					const role = await this._existRole(roles[i]);
 					if (!role.rows || !role.rows[0]) return Promise.reject(`Some role is not found`);
@@ -49,7 +58,9 @@ class UserController {
 				return Promise.resolve(hashPassword);
 			})
 			.then((hashPassword) => {
-				const queryForCreatePerson = `INSERT INTO person(full_name,user_name,email,password,roles) VALUES($1,$2,$3,$4,$5) RETURNING *`;
+				const queryForCreatePerson = `
+					INSERT INTO person(full_name,user_name,email,password,roles) VALUES($1,$2,$3,$4,$5) RETURNING *
+				`;
 				const newPerson = db.query(queryForCreatePerson, [fullName, userName, email, hashPassword, roles]);
 
 				return Promise.resolve(newPerson);
@@ -72,6 +83,7 @@ class UserController {
 
 				const userAvatarInFolder = path.relative(PROJECT_ROOT, `./templates/user/${findPerson.rows[0].avatar}`);
 
+				// remove avatar from user folder
 				if (fs.existsSync(userAvatarInFolder)) {
 					fs.unlink(userAvatarInFolder, (err) => {
 						if (err) {
@@ -80,6 +92,24 @@ class UserController {
 					})
 				}
 
+				// find posts, then find comments and remove they (comments and posts)
+				const queryForFindPosts = `SELECT id FROM post WHERE owner_id = $1`;
+				const findPosts = db.query(queryForFindPosts, [id]);
+
+				return Promise.resolve(findPosts);
+			})
+			.then(async (findPosts) => {
+				if (findPosts.rows && findPosts.rows.length) {
+					for (let i = 0; i < findPosts.rows.length; i++) {
+						const post = findPosts.rows[i];
+						await this._removeComments(post.id);
+					}
+
+					const queryForDeletePost = `DELETE FROM post WHERE owner_id = $1`;
+					return Promise.resolve(db.query(queryForDeletePost, [id]));
+				}
+			})
+			.then(() => {
 				const queryForDeletePerson = `DELETE FROM person WHERE id = $1`;
 				return Promise.resolve(db.query(queryForDeletePerson, [id]));
 			})
@@ -94,6 +124,7 @@ class UserController {
 			.then((persons) => {
 				const newPersons = [];
 
+				// convert every avatar for everyone person to base64
 				for (let i = 0; i < persons.rows.length; i++) {
 					const person = persons.rows[i];
 					const pathToAvatar = path.relative(PROJECT_ROOT, `./templates/user/${person.avatar}`);
@@ -120,6 +151,7 @@ class UserController {
 
 		new Promise((resolve) => resolve(db.query(queryForFindPerson, [id])))
 			.then((person) => {
+				// convert avatar to base64
 				const pathToAvatar = path.relative(PROJECT_ROOT, `./templates/user/${person.rows[0].avatar}`);
 				const payload = {
 					...person.rows[0],
@@ -167,10 +199,6 @@ class UserController {
 				return Promise.resolve(hashPassword);
 			})
 			.then((hashPassword) => {
-				if (!hashPassword) {
-					return res.status(400).json({ success: false, message: "Hash password failed" });
-				}
-
 				const queryForUpdatePerson = `
 					UPDATE person SET user_name = $1, full_name = $2, email = $3, password = $4, roles = $5, avatar = $6 WHERE id = $7 RETURNING *
 				`;

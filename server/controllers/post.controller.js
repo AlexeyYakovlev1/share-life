@@ -25,9 +25,7 @@ class Post {
 
 				return Promise.resolve(newPost);
 			})
-			.then((newPost) => {
-				return res.status(201).json({ success: true, message: "Post has been created", post: newPost.rows[0] });
-			})
+			.then((newPost) => res.status(201).json({ success: true, message: "Post has been created", post: newPost.rows[0] }))
 			.catch((error) => res.status(400).json({ success: false, error, message: error.message }));
 	}
 
@@ -54,28 +52,31 @@ class Post {
 				if (!findPost.rows || !findPost.rows[0]) return Promise.reject("Post is not found");
 				if (+findPost.rows[0].owner_id !== +idCurrentUser) return Promise.reject("Access closed");
 
-				for (let i = 0; i < findPost.rows[0].photos.length; i++) {
-					const photo = findPost.rows[0].photos[i];
+				// remove photos
+				if (findPost.rows[0].photos && findPost.rows[0].photos.length) {
+					for (let i = 0; i < findPost.rows[0].photos.length; i++) {
+						const photo = findPost.rows[0].photos[i];
+						const postPhotoInFolder = path.relative(PROJECT_ROOT, `./templates/post/${photo}`)
 
-					const postPhotoInFolder = path.relative(PROJECT_ROOT, `./templates/post/${photo}`)
-
-					if (fs.existsSync(postPhotoInFolder)) {
-						fs.unlink(postPhotoInFolder, (err) => {
-							if (err) {
-								return res.status(400).json({ succces: false, message: err.message, err });
-							}
-
-							console.log("Post photo has been removed");
-						})
+						if (fs.existsSync(postPhotoInFolder)) {
+							fs.unlink(postPhotoInFolder, (err) => {
+								if (err) {
+									return res.status(400).json({ succces: false, message: err.message, err });
+								}
+							})
+						}
 					}
 				}
 
+				// first delete comments then delete post
+				const queryForDeleteComments = `DELETE FROM comment WHERE post_id = $1`;
+				return Promise.resolve(db.query(queryForDeleteComments, [idPost]));
+			})
+			.then(() => {
 				const queryForDeletePost = `DELETE FROM post WHERE id = $1`;
 				return Promise.resolve(db.query(queryForDeletePost, [idPost]));
 			})
-			.then(() => {
-				return res.status(200).json({ success: true, message: "Post has been removed" });
-			})
+			.then(() => res.status(200).json({ success: true, message: "Post has been removed" }))
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}
 
