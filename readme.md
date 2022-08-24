@@ -1,4 +1,4 @@
 #todo
---backend:
-1)delete posts and comments when deleting user[x]
-2)delete comments when deleting post[x]
+--connect server to client:
+1)Login[x]
+2)Register[x]
