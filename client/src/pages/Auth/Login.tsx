@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../components/Header/Logo";
 import Alert from "../../components/UI/Alert/Alert";
 import Button from "../../components/UI/Button/Button";
@@ -9,10 +9,14 @@ import AlertContext from "../../context/alert.context";
 import LoaderContext from "../../context/loader.context";
 import classes from "./Auth.module.sass";
 import Cookies from "js-cookie";
+import { useDispatch } from "react-redux";
+import { setUser as setUserToReducer } from "../../redux/actions/user.actions";
 
 const { REACT_APP_API_URL } = process.env;
 
 function Login() {
+	const dispatch = useDispatch();
+
 	const [user, setUser] = React.useState({
 		email: "", password: ""
 	});
@@ -20,6 +24,8 @@ function Login() {
 
 	const { text, setText } = React.useContext(AlertContext);
 	const { load, setLoad } = React.useContext(LoaderContext);
+
+	const navigation = useNavigate();
 
 	function logSubmit(event: React.FormEvent<HTMLFormElement>): void {
 		event.preventDefault();
@@ -33,7 +39,7 @@ function Login() {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				const { errors: dataErrors, success, message, error, token } = data;
+				const { errors: dataErrors, success, message, error, token, person }: any = data;
 
 				if (dataErrors && dataErrors.length) {
 					setLoad(false);
@@ -54,6 +60,8 @@ function Login() {
 				}
 
 				Cookies.set("token", token);
+				dispatch(setUserToReducer(person));
+				navigation("/");
 			});
 	}
 

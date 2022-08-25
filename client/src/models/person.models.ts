@@ -1,7 +1,9 @@
 export interface IPerson {
 	id: number;
-	fullName: string;
-	userName: string;
+	full_name: string;
+	user_name: string;
+	email: string;
 	avatar: string;
 	password: string;
+	roles: Array<string>;
 }

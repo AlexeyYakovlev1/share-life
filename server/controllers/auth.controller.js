@@ -14,7 +14,7 @@ class AuthController {
 		}
 
 		const { email, password } = req.body;
-		const queryForFindPerson = `SELECT id,password,roles FROM person WHERE email = $1`;
+		const queryForFindPerson = `SELECT * FROM person WHERE email = $1`;
 
 		new Promise((resolve) => resolve(db.query(queryForFindPerson, [email])))
 			.then((data) => {
@@ -25,10 +25,10 @@ class AuthController {
 			.then(([comparePassword, person]) => {
 				if (!comparePassword) return Promise.reject("Compare password error");
 
-				const payload = person;
+				const payload = { id: person.id, password: person.password, roles: person.roles };
 				const token = sign(payload, `${JWT_KEY}`, { expiresIn: "24h" });
 
-				return res.status(200).json({ success: true, token });
+				return res.status(200).json({ success: true, token, person });
 			})
 			.catch((error) => res.status(500).json({ success: false, message: error.message, error }));
 	}
