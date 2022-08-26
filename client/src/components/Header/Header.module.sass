@@ -46,9 +46,14 @@
 
 .list
 	display: grid
-	grid-template-columns: repeat(3, 25px)
+	grid-template-columns: repeat(3, minmax(25px, 30px))
 	gap: 20px
 
-.item svg, path
-	fill: #fff !important
-	stroke: #000 !important
+.item
+	& svg, path
+		fill: #fff !important
+		stroke: #000 !important
+	&User img
+		border-radius: 50%
+		width: 30px
+		height: 30px

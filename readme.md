@@ -1,6 +1,6 @@
 #todo
 --client
-1)Init redux[x]
-2)Create action for user[x]
-3)Create reducer for user[x]
-4)Check authorization user[x]
+1)View current user avatar in header[x]
+2)User page init[x]
+3)Settings page init[x]
+4)Add button logout to settings page[x]

@@ -6,4 +6,5 @@ export interface IPerson {
 	avatar: string;
 	password: string;
 	roles: Array<string>;
+	description: string;
 }

@@ -2,13 +2,14 @@ import Input from "../UI/Input/Input";
 import classes from "./Header.module.sass";
 import Logo from "./Logo";
 import { ReactComponent as SearchIcon } from "../../assets/images/search.svg";
-import { ReactComponent as UserIcon } from "../../assets/images/user.svg";
 import { ReactComponent as LikeIcon } from "../../assets/images/heart.svg";
 import { ReactComponent as PlusIcon } from "../../assets/images/plus.svg";
 import { Link } from "react-router-dom";
 import { DetailedHTMLProps, FunctionComponent, HTMLAttributes, SVGProps } from "react";
 import cn from "classnames";
 import Button from "../UI/Button/Button";
+import { useSelector } from "react-redux";
+import { IState } from "../../models/redux.models";
 
 interface IHeaderProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> { }
 
@@ -18,8 +19,8 @@ function Header({ className }: IHeaderProps): JSX.Element {
 		url: string;
 		img: FunctionComponent<SVGProps<SVGSVGElement>>;
 	}
+	const { info: { avatar, id, user_name }, isAuth } = useSelector((state: IState) => state.person);
 
-	const isAuth = true;
 	const menu: Array<IMenu> = [
 		{
 			name: "Add post",
@@ -30,11 +31,6 @@ function Header({ className }: IHeaderProps): JSX.Element {
 			name: "Likes",
 			url: "/likes",
 			img: LikeIcon
-		},
-		{
-			name: "Profile",
-			url: "/profile/:id",
-			img: UserIcon
 		}
 	];
 
@@ -60,6 +56,11 @@ function Header({ className }: IHeaderProps): JSX.Element {
 									</Link>
 								</li>
 							))}
+							<li className={cn(classes.item, classes.itemUser)}>
+								<Link title="user" to={`/profile/${id}`}>
+									<img src={avatar} title={`Avatar ${user_name}`} />
+								</Link>
+							</li>
 						</ul>
 					</nav>
 						:
