@@ -3,6 +3,7 @@ const router = require("express").Router();
 const { body } = require("express-validator");
 const UserController = require("../controllers/user.controller");
 const RoleMiddleware = require("../middlewares/role.middleware");
+const AuthMiddleware = require("../middlewares/authentication.middleware");
 
 router.post(
 	"/add",
@@ -20,14 +21,7 @@ router.get("/all", UserController.getAll);
 router.get("/:id", UserController.getOne);
 router.put(
 	"/update/:id",
-	[
-		body("email").isEmail(),
-		body("oldPassword").isLength({ min: 6 }),
-		body("newPassword").isLength({ min: 6 }),
-		body("fullName").isLength({ min: 3 }),
-		body("userName").isLength({ min: 3 })
-	],
-	RoleMiddleware(["ADMIN"]),
+	AuthMiddleware,
 	UserController.update
 );
 

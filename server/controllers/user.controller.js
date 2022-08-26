@@ -175,34 +175,50 @@ class UserController {
 		}
 
 		const { id } = req.params;
-		const { userName, fullName, email, oldPassword, newPassword, roles, avatar } = req.body;
+		const { userName, fullName, email, oldPassword, newPassword, roles, avatar, description } = req.body;
 
-		if (!roles) return res.status(400).json({ success: false, message: "Roles is not found" });
+		// THIS FOR ADMIN
+		// if (!roles) return res.status(400).json({ success: false, message: "Roles is not found" });
 
 		const queryForFindPerson = `SELECT * FROM person WHERE id = $1`;
 
 		new Promise((resolve) => resolve(db.query(queryForFindPerson, [id])))
 			.then(async (findPerson) => {
 				if (!findPerson.rows || !findPerson.rows[0]) return Promise.reject("User is not found");
-				if (!roles.length || !roles.includes("USER")) roles.push("USER");
 
-				for (let i = 0; i < roles.length; i++) {
-					const role = await this._existRole(roles[i]);
-					if (!role.rows || !role.rows[0]) return Promise.reject(`Some role is not found`);
+				// THIS FOR ADMIN
+				// if (!roles.length || !roles.includes("USER")) roles.push("USER");
+
+				// for (let i = 0; i < roles.length; i++) {
+				// 	const role = await this._existRole(roles[i]);
+				// 	if (!role.rows || !role.rows[0]) return Promise.reject(`Some role is not found`);
+				// }
+
+				let password = findPerson.rows[0].password;
+
+				if (newPassword) {
+					const comparePassword = compare(newPassword, oldPassword);
+
+					if (!comparePassword) return Promise.reject("Compare password failed");
+
+					password = hash(newPassword, 8);
 				}
 
-				const comparePassword = compare(newPassword, oldPassword);
-
-				if (!comparePassword) return Promise.reject("Compare password failed");
-
-				const hashPassword = hash(newPassword, 8);
-				return Promise.resolve(hashPassword);
+				return Promise.resolve(password);
 			})
-			.then((hashPassword) => {
+			.then((password) => {
 				const queryForUpdatePerson = `
-					UPDATE person SET user_name = $1, full_name = $2, email = $3, password = $4, roles = $5, avatar = $6 WHERE id = $7 RETURNING *
+					UPDATE person
+					SET user_name=COALESCE($1,person.user_name),
+					full_name=COALESCE($2,person.full_name),
+					email=COALESCE($3,person.email),
+					password=COALESCE($4,person.password),
+					roles=COALESCE($5,person.roles),
+					avatar=COALESCE($6,person.avatar),
+					description=COALESCE($7,person.description)
+					WHERE id = $8 RETURNING *
 				`;
-				const updatePerson = db.query(queryForUpdatePerson, [userName, fullName, email, hashPassword, roles, avatar, id]);
+				const updatePerson = db.query(queryForUpdatePerson, [userName, fullName, email, password, roles, avatar, description, id]);
 
 				return Promise.resolve(updatePerson);
 			})
