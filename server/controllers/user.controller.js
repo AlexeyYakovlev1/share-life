@@ -195,6 +195,12 @@ class UserController {
 				// }
 
 				let password = findPerson.rows[0].password;
+				let findPersonByEmail = null;
+
+				if (email) {
+					const queryForFindPerson = `SELECT id FROM person WHERE email = $1`;
+					findPersonByEmail = db.query(queryForFindPerson, [email]);
+				}
 
 				if (newPassword) {
 					const comparePassword = compare(newPassword, oldPassword);
@@ -204,21 +210,22 @@ class UserController {
 					password = hash(newPassword, 8);
 				}
 
-				return Promise.resolve(password);
+				return Promise.all([password, findPersonByEmail]);
 			})
-			.then((password) => {
+			.then(([password, findPerson]) => {
+				if (findPerson && findPerson.rows[0]) return Promise.reject("User by this email finded");
+
 				const queryForUpdatePerson = `
 					UPDATE person
-					SET user_name=COALESCE($1,person.user_name),
-					full_name=COALESCE($2,person.full_name),
-					email=COALESCE($3,person.email),
-					password=COALESCE($4,person.password),
-					roles=COALESCE($5,person.roles),
-					avatar=COALESCE($6,person.avatar),
-					description=COALESCE($7,person.description)
-					WHERE id = $8 RETURNING *
+					SET user_name=COALESCE(NULLIF(null,''),$1,person.user_name),
+					full_name=COALESCE(NULLIF(null,''),$2,person.full_name),
+					email=COALESCE(NULLIF(null,''),$3,person.email),
+					password=COALESCE(NULLIF(null,''),$4,person.password),
+					avatar=COALESCE(NULLIF(null,''),$5,person.avatar),
+					description=COALESCE(NULLIF(null,''),$6,person.description)
+					WHERE id = $7 RETURNING *
 				`;
-				const updatePerson = db.query(queryForUpdatePerson, [userName, fullName, email, password, roles, avatar, description, id]);
+				const updatePerson = db.query(queryForUpdatePerson, [userName, fullName, email, password, avatar, description, id]);
 
 				return Promise.resolve(updatePerson);
 			})

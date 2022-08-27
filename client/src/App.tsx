@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import AlertContext from "./context/alert.context";
 import LoaderContext from "./context/loader.context";
 import useRoutes from "./hooks/useRoutes";
-import checkAuth from "./http/checkAuth.http";
+import checkAuth from "./http/auth/checkAuth.http";
 import { setUser } from "./redux/actions/user.actions";
 
 function App() {

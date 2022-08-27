@@ -1,9 +1,12 @@
 const db = require("../db");
+const toBase64 = require("../utils/toBase64.util");
+
 const { validationResult } = require("express-validator");
 const { sign } = require("jsonwebtoken");
 const { hash, compare } = require("bcrypt");
+const { relative } = require("path");
 
-const { JWT_KEY } = process.env;
+const { JWT_KEY, PROJECT_ROOT } = process.env;
 
 class AuthController {
 	login(req, res) {
@@ -26,9 +29,14 @@ class AuthController {
 				if (!comparePassword) return Promise.reject("Compare password error");
 
 				const payload = { id: person.id, password: person.password, roles: person.roles };
+
+				const personToClient = {
+					...person,
+					avatar: toBase64(relative(PROJECT_ROOT, `./templates/user/${person.avatar}`))
+				};
 				const token = sign(payload, `${JWT_KEY}`, { expiresIn: "24h" });
 
-				return res.status(200).json({ success: true, token, person });
+				return res.status(200).json({ success: true, token, person: personToClient });
 			})
 			.catch((error) => res.status(500).json({ success: false, message: error.message, error }));
 	}
@@ -82,7 +90,10 @@ class AuthController {
 			.then((data) => {
 				if (!data.rows || !data.rows[0]) return Promise.reject("User is not found");
 
-				const person = data.rows[0];
+				const person = {
+					...data.rows[0],
+					avatar: toBase64(relative(PROJECT_ROOT, `./templates/user/${data.rows[0].avatar}`))
+				};
 				const payload = { id: person.id, password: person.password, roles: person.roles };
 				const token = sign(payload, `${JWT_KEY}`, { expiresIn: "24h" });
 

@@ -8,9 +8,6 @@ const app = express();
 
 app.use(cors());
 app.use(express.json({ extended: true, limit: "50mb" }));
-app.use(express.static("../templates"));
-app.use("/user", express.static("user"));
-app.use("/post", express.static("post"));
 
 app.use("/auth", require("./routes/auth.route"));
 app.use("/users", require("./routes/user.route"));

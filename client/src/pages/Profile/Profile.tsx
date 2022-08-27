@@ -12,8 +12,11 @@ import { useSlider } from "../../hooks/useSlider";
 import LoaderContext from "../../context/loader.context";
 import AlertContext from "../../context/alert.context";
 import { IPerson } from "../../models/person.models";
-import getOneUser from "../../http/getOneUser.http";
-import getPostsByUser from "../../http/getPostsByUser.http";
+import getOneUser from "../../http/user/getOneUser.http";
+import getPostsByUser from "../../http/posts/getPostsByUser.http";
+import useAvatar from "../../hooks/useAvatar";
+import { IState } from "../../models/redux.models";
+import { useSelector } from "react-redux";
 
 function Profile(): JSX.Element {
 	const [posts, setPosts] = React.useState<Array<IPost>>([{
@@ -36,6 +39,8 @@ function Profile(): JSX.Element {
 	});
 	const [currentUser, setCurrentUser] = React.useState<boolean>(false);
 
+	const pageAvatarUser = useAvatar(pageUser.avatar);
+
 	const search = useLocation().search;
 	const query = new URLSearchParams(search);
 	const queryPostOpen = query.get("watch");
@@ -47,9 +52,11 @@ function Profile(): JSX.Element {
 	const { setLoad } = React.useContext(LoaderContext);
 	const { setText } = React.useContext(AlertContext);
 
+	const { id: currentIdUser } = useSelector((state: IState) => state.person.info);
+
 	React.useEffect(() => {
-		if (pageIdUser) {
-			setLoad(true);
+		setLoad(true);
+		if (pageIdUser && currentIdUser > 0) {
 			getOneUser(+pageIdUser)
 				.then((data: any) => {
 					const { success, person, message } = data;
@@ -61,7 +68,7 @@ function Profile(): JSX.Element {
 					}
 
 					setPageUser(person);
-					setCurrentUser(+pageIdUser === +person.id);
+					setCurrentUser(+pageIdUser === +currentIdUser);
 				});
 
 			getPostsByUser(+pageIdUser)
@@ -76,9 +83,9 @@ function Profile(): JSX.Element {
 
 					setPosts(posts);
 				});
-			setLoad(false);
 		}
-	}, [pageIdUser]);
+		setLoad(false);
+	}, [pageIdUser, currentIdUser]);
 
 	React.useEffect(() => {
 		if (posts[count] && queryPostOpen === "true") {
@@ -117,13 +124,20 @@ function Profile(): JSX.Element {
 				<div className={classes.top}>
 					<img
 						className={classes.avatar}
-						src={pageUser.avatar}
+						src={pageAvatarUser}
 						alt="avatar"
 					/>
 					<div className={classes.info}>
 						<div className={classes.infoTop}>
 							<span className={classes.name}>{pageUser.user_name}</span>
-							{!currentUser ? <Button>Following</Button> : <Button><Link to="/settings">Settings</Link></Button>}
+							{!currentUser
+								?
+								<Button className={classes.infoTopButton}>Following</Button>
+								:
+								<Button className={classes.infoTopButton}>
+									<Link to="/settings">Settings</Link>
+								</Button>
+							}
 						</div>
 						<div className={classes.infoNums}>
 							<ul className={classes.infoNumsList}>

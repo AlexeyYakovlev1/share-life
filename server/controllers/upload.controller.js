@@ -1,3 +1,9 @@
+const toBase64 = require("../utils/toBase64.util");
+
+const path = require("path");
+
+const { PROJECT_ROOT } = process.env;
+
 class UploadController {
 	uploadAvatar(req, res) {
 		const { file } = req;
@@ -6,7 +12,13 @@ class UploadController {
 			return res.status(400).json({ success: false, message: "Avatar is not found" });
 		}
 
-		return res.status(200).json({ success: true, message: "Avatar has been uploaded", filename: file.filename });
+		const pathToFile = path.relative(PROJECT_ROOT, `./templates/user/${file.filename}`);
+		const dataFile = {
+			filename: file.filename,
+			inBase64: toBase64(pathToFile)
+		};
+
+		return res.status(200).json({ success: true, message: "Avatar has been uploaded", dataFile });
 	}
 
 	uploadPhotos(req, res) {

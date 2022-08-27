@@ -10,6 +10,7 @@ import cn from "classnames";
 import Button from "../UI/Button/Button";
 import { useSelector } from "react-redux";
 import { IState } from "../../models/redux.models";
+import useAvatar from "../../hooks/useAvatar";
 
 interface IHeaderProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> { }
 
@@ -21,6 +22,7 @@ function Header({ className }: IHeaderProps): JSX.Element {
 	}
 	const { info: { avatar, id, user_name }, isAuth } = useSelector((state: IState) => state.person);
 
+	const currentAvatarUser = useAvatar(avatar);
 	const menu: Array<IMenu> = [
 		{
 			name: "Add post",
@@ -58,7 +60,7 @@ function Header({ className }: IHeaderProps): JSX.Element {
 							))}
 							<li className={cn(classes.item, classes.itemUser)}>
 								<Link title="user" to={`/profile/${id}`}>
-									<img src={avatar} title={`Avatar ${user_name}`} />
+									<img src={currentAvatarUser} title={`Avatar ${user_name}`} />
 								</Link>
 							</li>
 						</ul>

@@ -7,7 +7,7 @@ const initialState = {
 		full_name: "",
 		user_name: "",
 		email: "",
-		avatar: "https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg",
+		avatar: "",
 		password: "",
 		roles: ["USER"]
 	},
