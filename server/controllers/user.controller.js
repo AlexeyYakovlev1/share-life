@@ -217,12 +217,12 @@ class UserController {
 
 				const queryForUpdatePerson = `
 					UPDATE person
-					SET user_name=COALESCE(NULLIF(null,''),$1,person.user_name),
-					full_name=COALESCE(NULLIF(null,''),$2,person.full_name),
-					email=COALESCE(NULLIF(null,''),$3,person.email),
-					password=COALESCE(NULLIF(null,''),$4,person.password),
-					avatar=COALESCE(NULLIF(null,''),$5,person.avatar),
-					description=COALESCE(NULLIF(null,''),$6,person.description)
+					SET user_name=COALESCE($1, person.user_name),
+					full_name=COALESCE($2, person.full_name),
+					email=COALESCE($3, person.email),
+					password=COALESCE($4, person.password),
+					avatar=COALESCE($5, person.avatar),
+					description=COALESCE($6, person.description)
 					WHERE id = $7 RETURNING *
 				`;
 				const updatePerson = db.query(queryForUpdatePerson, [userName, fullName, email, password, avatar, description, id]);

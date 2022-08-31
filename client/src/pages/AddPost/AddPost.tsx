@@ -6,41 +6,58 @@ import cn from "classnames";
 import { ReactComponent as ArrowLeftIcon } from "../../assets/images/arrow-left.svg";
 import { useSlider } from "../../hooks/useSlider";
 import React from "react";
+import { IState } from "../../models/redux.models";
+import { useSelector } from "react-redux";
+import LoaderContext from "../../context/loader.context";
+import AlertContext from "../../context/alert.context";
+import readerImages, { IPhoto } from "../../utils/readerImages.util";
+import uploadImages from "../../utils/uploadImages.util";
+import Cookies from "js-cookie";
+import axios from "axios";
+
+const { REACT_APP_API_URL } = process.env;
 
 function AddPost(): JSX.Element {
-	const user = {
-		id: 2,
-		userName: "quod_42",
-		fullName: "Alexey Yakovlev",
-		email: "alex@gmail.com",
-		avatar: "https://image.api.playstation.com/cdn/EP1965/CUSA05528_00/pImhj205rhCZ3oHbfkKZzvvFL2S3IyL7.png?w=960&h=960"
-	};
-	const photos = [
-		{
-			id: 1,
-			img: "https://images.ctfassets.net/hrltx12pl8hq/4MFiRr9vFnbWzYoNSPiYXy/fca130dd40da59b06e83ee8d5789a23e/file-converter-shutterstock.jpg"
-		},
-		{
-			id: 2,
-			img: "https://cryptocurrency.tech/wp-content/uploads/2022/04/cross-chain-640x336.png"
-		},
-		{
-			id: 3,
-			img: "https://cypruspropertygallery.com/image/cache/catalog/service/ghj-640x336.jpg"
-		}
-	];
+	const { avatar, user_name } = useSelector((state: IState) => state.person.info);
+
+	const [photos, setPhotos] = React.useState<Array<IPhoto>>([]);
+	const [selectedImages, setSelectedImages] = React.useState<any>([]);
+	const [post, setPost] = React.useState({
+		description: "",
+		location: "",
+		photos: [""]
+	});
+
 	const { setCount, sliderWrapperRef, count, widthSlider } = useSlider({ list: photos });
 	const uploadRef = React.useRef<HTMLInputElement | null>(null);
 
-	function uploadHandler(event: any) {
-		if (!event.target?.files.length) return;
-		const formData = new FormData();
+	const { setLoad } = React.useContext(LoaderContext);
+	const { setText } = React.useContext(AlertContext);
 
-		formData.append("photos", event.target.files);
-	}
+	React.useEffect(() => {
+		readerImages(selectedImages, setLoad, setPhotos, setText);
+	}, [selectedImages]);
 
 	function sharePost(event: React.ChangeEvent<HTMLFormElement>) {
 		event.preventDefault();
+
+		if (selectedImages.length) {
+			const formData = new FormData();
+			formData.append("photos", selectedImages);
+
+			// upload photos
+			axios({
+				method: "POST",
+				url: `${REACT_APP_API_URL}/upload/photos`,
+				headers: {
+					Authorization: `Bearer ${Cookies.get("token")}`,
+					"Accept-Type": "application/json"
+				},
+				data: formData
+			})
+				.then((response) => console.log(response))
+				.catch((error) => console.log(error.response.data));
+		}
 	}
 
 	return (
@@ -51,23 +68,30 @@ function AddPost(): JSX.Element {
 				</header>
 				<div className={classes.content}>
 					<div className={classes.slider} ref={sliderWrapperRef}>
-						<button
-							className={cn(classes.sliderBtn, classes.sliderBtnLeft)}
-							onClick={() => setCount(count - 1)}
-						>
-							<ArrowLeftIcon />
-						</button>
-						<button
-							className={cn(classes.sliderBtn, classes.sliderBtnRight)}
-							onClick={() => setCount(count + 1)}
-						>
-							<ArrowLeftIcon />
-						</button>
+						{photos.length ?
+							<React.Fragment>
+								<button
+									className={cn(classes.sliderBtn, classes.sliderBtnLeft)}
+									onClick={() => setCount(count - 1)}
+								>
+									<ArrowLeftIcon />
+								</button>
+								<button
+									className={cn(classes.sliderBtn, classes.sliderBtnRight)}
+									onClick={() => setCount(count + 1)}
+								>
+									<ArrowLeftIcon />
+								</button>
+							</React.Fragment>
+							: false
+						}
 						<ul
-							className={classes.sliderList}
-							style={{ width: `${widthSlider * photos.length}px` }}
+							className={cn(classes.sliderList, {
+								[classes.sliderListEmpty]: !photos.length
+							})}
+							style={{ width: photos.length ? widthSlider * photos.length + "px" : "100%" }}
 						>
-							{photos.map(photo => (
+							{photos.length ? photos.map(photo => (
 								<li
 									key={photo.id}
 									style={{
@@ -77,7 +101,7 @@ function AddPost(): JSX.Element {
 										backgroundImage: `url(${photo.img})`
 									}}
 								></li>
-							))}
+							)) : <span className={classes.sliderNoPhotos}>Add photos in this post</span>}
 						</ul>
 					</div>
 					<div className={classes.right}>
@@ -90,7 +114,7 @@ function AddPost(): JSX.Element {
 									accept="image/*"
 									multiple
 									required
-									onChange={uploadHandler}
+									onChange={(event) => uploadImages(event, setLoad, setSelectedImages, setText)}
 								/>
 								<Button
 									onClick={() => uploadRef.current?.click()}
@@ -102,23 +126,28 @@ function AddPost(): JSX.Element {
 							<div className={classes.rightHeaderUser}>
 								<img
 									className={classes.rightAvatar}
-									src={user.avatar}
-									alt={user.userName}
+									src={avatar}
+									alt={user_name}
 								/>
-								<span className={classes.rightUserName}>{user.userName}</span>
+								<span className={classes.rightUserName}>{user_name}</span>
 							</div>
 						</div>
 						<form
+							encType="multipart/form-data"
 							className={classes.rightDown}
 							onSubmit={sharePost}
 						>
 							<textarea
 								className={classes.rightCaption}
 								placeholder="Write a caption..."
+								value={post.description}
+								onChange={(event) => setPost({ ...post, description: event.target.value })}
 							/>
 							<Input
 								type="text"
 								placeholder="Add location"
+								value={post.location}
+								onChange={(event) => setPost({ ...post, location: event.target.value })}
 							/>
 							<Button>Share</Button>
 						</form>

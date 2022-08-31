@@ -13,7 +13,8 @@ import PostMenu from "../PostMenu/PostMenu";
 
 function HomePost({ info }: { info: IPost }): JSX.Element {
 	const [dotsToEnd, setDotsToEnd] = React.useState<boolean>(info.description ? info.description.trim().length >= 200 : false);
-	const [viewComments, setViewComments] = React.useState<boolean>(!!info.usersCommentsIds.length);
+	// const [viewComments, setViewComments] = React.useState<boolean>(!!info.usersCommentsIds.length);
+	const [viewComments, setViewComments] = React.useState<boolean>(false);
 	const [comments, setComments] = React.useState<Array<any>>([
 		{
 			id: 1,
@@ -129,7 +130,8 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 						</button>
 					</div>
 					<span className={classes.bodyDescriptionLikesNum}>
-						{info.usersLikesIds.length} likes
+						{/* {info.usersLikesIds.length} likes */}
+						{0} likes
 					</span>
 					<div>
 						<p
@@ -152,7 +154,8 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 								className={classes.bodyDescriptionMore}
 								onClick={() => setViewComments(!viewComments)}
 							>
-								View {info.usersCommentsIds.length} comments
+								{/* View {info.usersCommentsIds.length} comments */}
+								View {0} comments
 							</Button>}
 						</div>
 					</div>

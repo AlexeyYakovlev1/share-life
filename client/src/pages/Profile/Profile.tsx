@@ -21,11 +21,9 @@ import { useSelector } from "react-redux";
 function Profile(): JSX.Element {
 	const [posts, setPosts] = React.useState<Array<IPost>>([{
 		id: -1,
-		ownerId: -1,
+		owner_id: -1,
 		photos: [""],
-		description: "",
-		usersLikesIds: [],
-		usersCommentsIds: []
+		description: ""
 	}]);
 	const [pageUser, setPageUser] = React.useState<IPerson>({
 		id: -1,
@@ -172,8 +170,6 @@ function Profile(): JSX.Element {
 								<Post
 									key={post.id}
 									photos={post.photos}
-									comments={post.usersCommentsIds.length}
-									likes={post.usersLikesIds.length}
 									postId={post.id}
 								/>
 							);

@@ -26,7 +26,12 @@
 	&Btn
 		position: absolute
 		border: none
-		background-color: transparent
+		background-color: $pink
+		display: flex
+		align-items: center
+		justify-content: center
+		// border-radius: 50%
+		padding: 2px
 		cursor: pointer
 		top: 50%
 		z-index: 99
@@ -34,10 +39,18 @@
 			right: 5%
 			& svg
 				transform: rotate(180deg)
+		& svg, path
+			fill: #fff !important
+		&:hover
+			background-color: $pinkHover
 		&Left
 			left: 5%
 	&List
 		display: flex
+		&Empty
+			height: 100%
+			align-items: center
+			justify-content: center
 		& li
 			transition: all .5s ease
 			background-size: contain

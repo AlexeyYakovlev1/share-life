@@ -6,12 +6,10 @@ import { Link } from "react-router-dom";
 
 interface IPostProps {
 	photos: Array<string>;
-	comments: number;
-	likes: number;
 	postId: number;
 }
 
-function Post({ photos, comments, likes, postId }: IPostProps): JSX.Element {
+function Post({ photos, postId }: IPostProps): JSX.Element {
 	const [hover, setHover] = React.useState<boolean>(false);
 
 	return (
@@ -23,8 +21,8 @@ function Post({ photos, comments, likes, postId }: IPostProps): JSX.Element {
 		>
 			{hover && <Link to={`/profile/${2}?watch=true&post_id=${postId}`}>
 				<div className={classes.contentItemInfo}>
-					<span><LikeIcon /> {likes}</span>
-					<span><CommentsIcon /> {comments}</span>
+					<span><LikeIcon /> {0}</span>
+					<span><CommentsIcon /> {0}</span>
 				</div>
 			</Link>}
 		</li>
