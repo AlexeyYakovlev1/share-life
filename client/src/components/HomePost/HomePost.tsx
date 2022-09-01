@@ -10,51 +10,48 @@ import React from "react";
 import Button from "../UI/Button/Button";
 import { useSlider } from "../../hooks/useSlider";
 import PostMenu from "../PostMenu/PostMenu";
+import { IPerson } from "../../models/person.models";
+import getOneUser from "../../http/user/getOneUser.http";
+import LoaderContext from "../../context/loader.context";
+import AlertContext from "../../context/alert.context";
 
 function HomePost({ info }: { info: IPost }): JSX.Element {
 	const [dotsToEnd, setDotsToEnd] = React.useState<boolean>(info.description ? info.description.trim().length >= 200 : false);
 	// const [viewComments, setViewComments] = React.useState<boolean>(!!info.usersCommentsIds.length);
 	const [viewComments, setViewComments] = React.useState<boolean>(false);
-	const [comments, setComments] = React.useState<Array<any>>([
-		{
-			id: 1,
-			ownerId: 3,
-			userName: "aalex",
-			text: "So cool",
-			createdAt: "19:36"
-		},
-		{
-			id: 2,
-			ownerId: 4,
-			userName: "otherguy",
-			text: "Neverwinter is cool game",
-			createdAt: "19:03"
-		},
-		{
-			id: 3,
-			ownerId: 53,
-			userName: "quda",
-			text: "Yes",
-			createdAt: "13:36"
-		},
-		{
-			id: 4,
-			ownerId: 43,
-			userName: "qwe]",
-			text: "i write this comment for this post",
-			createdAt: "19:39"
-		}
-	]);
+	const [comments, setComments] = React.useState<Array<any>>([]);
 	const [visible, setVisible] = React.useState<boolean>(false);
+	const [userPost, setUserPost] = React.useState<IPerson>({
+		id: -1,
+		user_name: "",
+		full_name: "",
+		email: "",
+		avatar: "",
+		password: "",
+		description: "",
+		roles: [""]
+	});
 
 	const { setCount, count, sliderWrapperRef, widthSlider } = useSlider({ list: info.photos });
-	const userPost = {
-		id: 2,
-		userName: "quod_42",
-		fullName: "Alexey Yakovlev",
-		email: "alex@gmail.com",
-		avatar: "https://image.api.playstation.com/cdn/EP1965/CUSA05528_00/pImhj205rhCZ3oHbfkKZzvvFL2S3IyL7.png?w=960&h=960"
-	};
+	const { setLoad } = React.useContext(LoaderContext);
+	const { setText } = React.useContext(AlertContext);
+
+	React.useEffect(() => {
+		getOneUser(info.owner_id)
+			.then((data) => {
+				setLoad(true);
+				const { success, message, person } = data;
+
+				if (!success) {
+					setLoad(false);
+					setText(message);
+					return;
+				}
+
+				setUserPost(person);
+				setLoad(false);
+			});
+	}, [info]);
 
 	return (
 		<li className={classes.post}>
@@ -63,11 +60,11 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 					<img
 						className={classes.avatar}
 						src={userPost.avatar}
-						alt={userPost.userName}
+						alt={userPost.user_name}
 					/>
 					<div className={classes.headerInfo}>
 						<span className={classes.headerName}>
-							<Link to={`/profile/${userPost.id}`}>{userPost.userName}</Link>
+							<Link to={`/profile/${userPost.id}`}>{userPost.user_name}</Link>
 						</span>
 						<span className={classes.headerLocation}>{info.location}</span>
 					</div>
@@ -107,15 +104,18 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 						style={{ width: `${widthSlider * info.photos.length}px` }}
 					>
 						{info.photos.map(photo => (
-							<img
+							<li
+								className={classes.bodyListItem}
 								key={photo}
-								src={photo}
 								style={{
-									maxWidth: `${widthSlider}px`,
+									width: `${widthSlider}px`,
 									height: "530px",
-									transform: `translate(-${count * 100}%)`
+									transform: `translate(-${count * widthSlider}px)`,
+									backgroundImage: `url(${photo})`
 								}}
-							/>
+							>
+							</li>
+
 						))}
 					</ul>
 				</div>
@@ -123,7 +123,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 					<div className={classes.bodyDescriptionBtns}>
 						<button
 							className={cn(classes.bodyDescriptionLike, {
-								[classes.bodyDescriptionLikeActive]: true
+								[classes.bodyDescriptionLikeActive]: false
 							})}
 						>
 							<LikeIcon />
@@ -139,7 +139,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 								[classes.bodyDescriptionTextHideSide]: dotsToEnd
 							})}
 						>
-							<span className={classes.headerName}>{userPost.userName}</span>
+							<span className={classes.headerName}>{userPost.user_name}</span>
 							&nbsp;
 							{info.description}
 						</p>
@@ -173,7 +173,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 									className={cn(classes.bodyCommentsItem, classes.bodyDescriptionText)}
 								>
 									<span className={classes.headerName}>
-										<Link to={`/profile/${comment.ownerId}`}>{comment.userName}</Link>
+										<Link to={`/profile/${comment.ownerId}`}>{comment.user_name}</Link>
 									</span>
 									&nbsp;
 									{comment.text}

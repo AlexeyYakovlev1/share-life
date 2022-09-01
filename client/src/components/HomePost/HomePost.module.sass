@@ -68,9 +68,10 @@
 		overflow: hidden
 	&List
 		display: flex
-		& img
+		&Item
 			transition: all .5s ease
-			object-fit: contain
+			background-size: contain
+			background-repeat: no-repeat
 	&Description
 		display: grid
 		grid-template-rows: 1fr
@@ -86,8 +87,11 @@
 				background: transparent
 				border: none
 				cursor: pointer
-		&LikeActive svg, path
-			fill: red !important
+		&Like
+			& svg, path
+				fill: black
+			// &Active svg, path
+			// 	fill: red !important
 		&LikesNum
 			font-weight: 600
 		&Text

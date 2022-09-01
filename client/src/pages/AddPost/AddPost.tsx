@@ -13,7 +13,6 @@ import AlertContext from "../../context/alert.context";
 import readerImages, { IPhoto } from "../../utils/readerImages.util";
 import uploadImages from "../../utils/uploadImages.util";
 import Cookies from "js-cookie";
-import axios from "axios";
 
 const { REACT_APP_API_URL } = process.env;
 
@@ -22,11 +21,12 @@ function AddPost(): JSX.Element {
 
 	const [photos, setPhotos] = React.useState<Array<IPhoto>>([]);
 	const [selectedImages, setSelectedImages] = React.useState<any>([]);
-	const [post, setPost] = React.useState({
+	const [post, setPost] = React.useState<any>({
 		description: "",
 		location: "",
-		photos: [""]
+		photos: []
 	});
+	const [errors, setErrors] = React.useState<boolean>(false);
 
 	const { setCount, sliderWrapperRef, count, widthSlider } = useSlider({ list: photos });
 	const uploadRef = React.useRef<HTMLInputElement | null>(null);
@@ -38,26 +38,71 @@ function AddPost(): JSX.Element {
 		readerImages(selectedImages, setLoad, setPhotos, setText);
 	}, [selectedImages]);
 
+	React.useEffect(() => {
+		if (post.photos.length) {
+			setLoad(true);
+			// send all data (create a new post)
+			fetch(`${REACT_APP_API_URL}/posts/add`, {
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${Cookies.get("token") || ""}`,
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(post)
+			})
+				.then((response) => response.json())
+				.then((data) => {
+					const { success, message, errors } = data;
+
+					if (errors && errors.length) {
+						setLoad(false);
+						setErrors(true);
+						return;
+					}
+
+					if (!success) {
+						setLoad(false);
+						setText(message);
+						return;
+					}
+
+					setText(message);
+				});
+			setLoad(false);
+		}
+	}, [post.photos]);
+
 	function sharePost(event: React.ChangeEvent<HTMLFormElement>) {
 		event.preventDefault();
+		setLoad(true);
 
 		if (selectedImages.length) {
-			const formData = new FormData();
-			formData.append("photos", selectedImages);
-
 			// upload photos
-			axios({
+			const formData = new FormData();
+			selectedImages.map((image: any) => formData.append("photos", image));
+
+			fetch(`${REACT_APP_API_URL}/upload/photos`, {
 				method: "POST",
-				url: `${REACT_APP_API_URL}/upload/photos`,
 				headers: {
-					Authorization: `Bearer ${Cookies.get("token")}`,
-					"Accept-Type": "application/json"
+					"Accept-Type": "application/json",
+					Authorization: `Bearer ${Cookies.get("token") || ""}`,
 				},
-				data: formData
+				body: formData
 			})
-				.then((response) => console.log(response))
-				.catch((error) => console.log(error.response.data));
+				.then((response) => response.json())
+				.then((data) => {
+					const { success, message, fileNames } = data;
+
+					if (!success) {
+						setLoad(false);
+						setText(message);
+						return;
+					}
+
+					setPost({ ...post, photos: fileNames });
+				});
 		}
+		setLoad(false);
 	}
 
 	return (
@@ -65,6 +110,7 @@ function AddPost(): JSX.Element {
 			<div className={classes.wrapper}>
 				<header className={classes.header}>
 					<h3 className={classes.title}>Create new post</h3>
+					{errors && <span className={classes.errors}>Submit failed. Check your data</span>}
 				</header>
 				<div className={classes.content}>
 					<div className={classes.slider} ref={sliderWrapperRef}>

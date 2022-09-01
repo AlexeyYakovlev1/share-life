@@ -1,7 +1,11 @@
 const db = require("../db");
+const toBase64 = require("../utils/toBase64.util");
 
 const { validationResult } = require("express-validator");
 const fs = require("fs");
+const path = require("path");
+
+const { PROJECT_ROOT } = process.env;
 
 class Post {
 	create(req, res) {
@@ -15,6 +19,10 @@ class Post {
 
 		const queryForFindPerson = `SELECT email FROM person WHERE id = $1`;
 		const { description, location, photos } = req.body;
+
+		if (!photos.length) {
+			return res.status(400).json({ success: false, message: "Upload some photos" });
+		}
 
 		new Promise((resolve) => resolve(db.query(queryForFindPerson, [id])))
 			.then((findPerson) => {
@@ -105,8 +113,27 @@ class Post {
 
 	getAll(req, res) {
 		const queryForFindPosts = `SELECT * FROM post`;
+
 		new Promise((resolve) => resolve(db.query(queryForFindPosts)))
-			.then((posts) => res.status(200).json({ success: true, posts: posts.rows }))
+			.then((posts) => {
+				let newPosts = [];
+				// convert photos to base64
+				for (let i = 0; i < posts.rows.length; i++) {
+					const post = posts.rows[i];
+					let newPhotos = [];
+
+					for (let j = 0; j < post.photos.length; j++) {
+						const photo = post.photos[j];
+						const filePath = path.relative(PROJECT_ROOT, `./templates/post/${photo}`);
+
+						newPhotos.push(toBase64(filePath));
+					}
+
+					newPosts.push({ ...post, photos: newPhotos });
+				}
+
+				return res.status(200).json({ success: true, posts: newPosts });
+			})
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}
 

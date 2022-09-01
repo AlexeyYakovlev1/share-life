@@ -30,7 +30,7 @@ class UploadController {
 
 		const fileNames = files.map(file => file.filename);
 
-		return res.status(200).json({ success: true, message: "Avatar has been uploaded", filenames: fileNames });
+		return res.status(200).json({ success: true, message: "Photos has been uploaded", fileNames });
 	}
 }
 
