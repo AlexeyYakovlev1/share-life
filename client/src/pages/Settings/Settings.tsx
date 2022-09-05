@@ -9,37 +9,107 @@ import LoaderContext from "../../context/loader.context";
 import { IState } from "../../models/redux.models";
 import classes from "./Settings.module.sass";
 import { setUser as setUserToReducer } from "../../redux/actions/user.actions";
-import useAvatar from "../../hooks/useAvatar";
 import updateUser from "../../http/user/updateUser.http";
 import uploadAvatar from "../../http/files/uploadAvatar.http";
+import useAvatar from "../../hooks/useAvatar";
 
 function Settings(): JSX.Element {
 	const avatarRef = React.useRef<HTMLInputElement | null>(null);
 	const navigate = useNavigate();
 
-	const { id, full_name, user_name, email, description, avatar: oldAvatar } = useSelector((state: IState) => state.person.info);
+	const { id, full_name, user_name, email, description, avatar: oldAvatar, roles, password } = useSelector((state: IState) => state.person.info);
 	const dispatch = useDispatch();
 
+	const [selectImage, setSelectImage] = React.useState(null);
+	const [update, setUpdate] = React.useState<boolean>(false);
+	const [avatar, setAvatar] = React.useState<any>({
+		base64: useAvatar(oldAvatar),
+		filename: ""
+	});
 	const [user, setUser] = React.useState({
-		id: -1,
-		user_name: "",
-		full_name: "",
-		email: "",
-		avatar: "",
-		description: "",
-		password: "",
+		id,
+		user_name,
+		full_name,
+		email,
+		avatar,
+		description,
+		password,
 		oldPassword: "",
 		newPassword: "",
-		roles: [""]
-	});
-	const [avatar, setAvatar] = React.useState({
-		filename: "", file: ""
+		roles
 	});
 
 	const { setLoad } = React.useContext(LoaderContext);
 	const { setText } = React.useContext(AlertContext);
 
-	let currentAvatarUser = useAvatar(oldAvatar);
+	React.useEffect(() => {
+		if (id > 0) {
+			setUser({
+				id,
+				user_name,
+				full_name,
+				email,
+				avatar: useAvatar(oldAvatar),
+				description,
+				oldPassword: "",
+				password,
+				newPassword: "",
+				roles
+			});
+		}
+	}, [id]);
+
+	React.useEffect(() => {
+		if (update && selectImage) {
+			setLoad(true);
+
+			const formData = new FormData();
+			formData.append("avatar", selectImage);
+
+			uploadAvatar(formData)
+				.then((data: any) => {
+					const { success, message, dataFile } = data;
+					if (!dataFile.filename) return;
+
+					setText(message);
+
+					if (!success) {
+						setLoad(false);
+						setUpdate(false);
+						return;
+					}
+
+					setAvatar({ ...avatar, filename: dataFile.filename });
+					dispatch(setUserToReducer({ ...user, avatar: dataFile.inBase64 }));
+					setUpdate(false);
+				});
+
+			setLoad(false);
+		}
+	}, [update]);
+
+	function uploadHandler(event: any) {
+		if (!event.target?.files.length) return;
+		setLoad(true);
+
+		const file = event.target?.files[0];
+		setSelectImage(file);
+
+		const reader: any = new FileReader();
+		reader.readAsDataURL(file);
+
+		reader.onload = () => {
+			const result = reader.result;
+			setAvatar((_: any) => ({ base64: result, filename: file.name }));
+		};
+
+		reader.onerror = () => {
+			setLoad(false);
+			setText(reader.error.message);
+			return;
+		};
+		setLoad(false);
+	}
 
 	function submitUpdate(event: React.FormEvent<HTMLFormElement>): void {
 		event.preventDefault();
@@ -47,52 +117,29 @@ function Settings(): JSX.Element {
 		setLoad(true);
 
 		if (id > 0) {
-			const payload = { ...user, avatar: avatar.filename };
-
-			updateUser(id, payload)
+			setUpdate(true);
+			updateUser(id, user)
 				.then((data) => {
-					const { success, message } = data;
+					const { success, message, error } = data;
+
+					setText(message || error);
 
 					if (!success) {
 						setLoad(false);
-						setText(message);
+						setUpdate(false);
 						return;
 					}
 
 					setLoad(false);
-					setText(message);
+					setUpdate(true);
 				});
 		}
 
 		setLoad(false);
 	}
 
-	function uploadHandler(event: any) {
-		if (!event.target.files.length) return;
-
-		setLoad(true);
-		const formData = new FormData();
-		formData.append("avatar", event.target.files[0]);
-
-		uploadAvatar(formData)
-			.then((response) => {
-				const { success, dataFile, message } = response.data;
-
-				if (!success) {
-					setLoad(false);
-					setText(message);
-					return;
-				}
-
-				setAvatar({ filename: dataFile.filename, file: dataFile.inBase64 });
-				currentAvatarUser = useAvatar(dataFile.filename);
-				setLoad(false);
-			});
-		setLoad(false);
-	}
-
 	function logout() {
-		dispatch(setUserToReducer(user, true));
+		dispatch(setUserToReducer({ ...user }, true));
 		navigate("/auth/login");
 	}
 
@@ -101,7 +148,7 @@ function Settings(): JSX.Element {
 			<div className={classes.wrapper}>
 				<div className={classes.user}>
 					<img
-						src={currentAvatarUser}
+						src={user.avatar || avatar.base64}
 						alt={user.user_name}
 					/>
 					<div className={classes.userInfo}>

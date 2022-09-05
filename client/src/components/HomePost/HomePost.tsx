@@ -14,6 +14,7 @@ import { IPerson } from "../../models/person.models";
 import getOneUser from "../../http/user/getOneUser.http";
 import LoaderContext from "../../context/loader.context";
 import AlertContext from "../../context/alert.context";
+import useAvatar from "../../hooks/useAvatar";
 
 function HomePost({ info }: { info: IPost }): JSX.Element {
 	const [dotsToEnd, setDotsToEnd] = React.useState<boolean>(info.description ? info.description.trim().length >= 200 : false);
@@ -59,7 +60,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 				<div className={classes.headerLeft}>
 					<img
 						className={classes.avatar}
-						src={userPost.avatar}
+						src={useAvatar(userPost.avatar)}
 						alt={userPost.user_name}
 					/>
 					<div className={classes.headerInfo}>

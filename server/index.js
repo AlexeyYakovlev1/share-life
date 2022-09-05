@@ -14,6 +14,7 @@ app.use("/users", require("./routes/user.route"));
 app.use("/posts", require("./routes/post.route"));
 app.use("/comments", require("./routes/comment.route"));
 app.use("/upload", require("./routes/upload.route"));
+app.use("/files", require("./routes/files.route"));
 
 function run() {
 	app.listen(PORT, () => {

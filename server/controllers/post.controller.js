@@ -7,7 +7,7 @@ const path = require("path");
 
 const { PROJECT_ROOT } = process.env;
 
-class Post {
+class PostController {
 	create(req, res) {
 		const errors = validationResult(req);
 
@@ -105,8 +105,26 @@ class Post {
 				return Promise.resolve(posts);
 			})
 			.then((posts) => {
-				if (!posts.rows) return Promise.reject("Posts not found");
-				return res.status(200).json({ success: true, posts: posts.rows });
+				// convert photos posts to base64
+				const newPosts = [];
+
+				for (let i = 0; i < posts.rows.length; i++) {
+					const post = posts.rows[i];
+					const newPhotos = [];
+
+					for (let j = 0; j < post.photos.length; j++) {
+						const photo = post.photos[j];
+						const filePath = path.relative(PROJECT_ROOT, `./templates/post/${photo}`);
+						const newPhoto = toBase64(filePath, true);
+
+						if (newPhoto) newPhotos.push(newPhoto);
+					}
+
+					const obj = { ...post, photos: newPhotos };
+					newPosts.push(obj);
+				}
+
+				return res.status(200).json({ success: true, posts: newPosts });
 			})
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}
@@ -125,8 +143,11 @@ class Post {
 					for (let j = 0; j < post.photos.length; j++) {
 						const photo = post.photos[j];
 						const filePath = path.relative(PROJECT_ROOT, `./templates/post/${photo}`);
+						const photoInBase64 = toBase64(filePath, true);
 
-						newPhotos.push(toBase64(filePath));
+						if (photoInBase64) {
+							newPhotos.push(photoInBase64);
+						}
 					}
 
 					newPosts.push({ ...post, photos: newPhotos });
@@ -149,7 +170,19 @@ class Post {
 			.then((findPost) => {
 				if (!findPost.rows || !findPost.rows[0]) return Promise.reject("Post is not found");
 
-				return res.status(200).json({ success: true, post: findPost.rows[0] });
+				const newPhotos = [];
+
+				for (let i = 0; i < findPost.rows[0].photos.length; i++) {
+					const photo = findPost.rows[0].photos[i];
+					const filePath = path.relative(PROJECT_ROOT, `./templates/post/${photo}`);
+					const newPhoto = toBase64(filePath, true);
+
+					if (newPhoto) newPhotos.push(newPhoto);
+				}
+
+				const newPost = { ...findPost.rows[0], photos: newPhotos };
+
+				return res.status(200).json({ success: true, post: newPost });
 			})
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}
@@ -196,4 +229,4 @@ class Post {
 	}
 }
 
-module.exports = new Post();
+module.exports = new PostController();

@@ -12,7 +12,7 @@ function uploadAvatar(formData: any) {
 		},
 		data: formData
 	})
-		.then((response) => response);
+		.then((response) => response.data);
 }
 
 export default uploadAvatar;

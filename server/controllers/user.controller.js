@@ -175,7 +175,7 @@ class UserController {
 		}
 
 		const { id } = req.params;
-		const { userName, fullName, email, oldPassword, newPassword, roles, avatar, description } = req.body;
+		const { userName, fullName, email, oldPassword, newPassword, avatar, description } = req.body;
 
 		// THIS FOR ADMIN
 		// if (!roles) return res.status(400).json({ success: false, message: "Roles is not found" });
@@ -197,16 +197,14 @@ class UserController {
 				let password = findPerson.rows[0].password;
 				let findPersonByEmail = null;
 
-				if (email) {
+				if (email !== findPerson.rows[0].email) {
 					const queryForFindPerson = `SELECT id FROM person WHERE email = $1`;
 					findPersonByEmail = db.query(queryForFindPerson, [email]);
 				}
 
 				if (newPassword) {
 					const comparePassword = compare(newPassword, oldPassword);
-
 					if (!comparePassword) return Promise.reject("Compare password failed");
-
 					password = hash(newPassword, 8);
 				}
 

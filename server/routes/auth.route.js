@@ -3,7 +3,7 @@ const AuthController = require("../controllers/auth.controller");
 const { body } = require("express-validator");
 const AuthMiddleware = require("../middlewares/authentication.middleware");
 
-// login
+// for example: /auth/login
 router.post(
 	"/login",
 	[
@@ -13,7 +13,7 @@ router.post(
 	AuthController.login
 );
 
-// registration
+// for example: /auth/register
 router.post(
 	"/register",
 	[
@@ -25,7 +25,7 @@ router.post(
 	AuthController.register
 );
 
-// check authentication
+// for example: /auth/check
 router.get(
 	"/check",
 	AuthMiddleware,

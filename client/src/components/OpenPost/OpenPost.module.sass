@@ -30,10 +30,16 @@
 	&Btn
 		position: absolute
 		border: none
-		background-color: transparent
+		background-color: $pink
 		cursor: pointer
 		top: 60%
 		z-index: 99
+		display: flex
+		align-items: center
+		justify-content: center
+		padding: 2px
+		& svg path
+			fill: #fff !important
 		&Right
 			right: 3%
 			& svg
@@ -43,9 +49,10 @@
 	&List
 		display: flex
 		height: 65vh
-		& img
+		&Item
 			transition: all .5s ease
-			object-fit: contain
+			background-size: contain
+			background-repeat: no-repeat
 
 .info
 	display: grid

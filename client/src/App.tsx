@@ -9,7 +9,6 @@ import { setUser } from "./redux/actions/user.actions";
 
 function App() {
 	const dispatch = useDispatch();
-
 	const routes = useRoutes();
 
 	const [load, setLoad] = React.useState<boolean>(false);

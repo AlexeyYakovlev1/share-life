@@ -12,12 +12,13 @@ import LoaderContext from "../../context/loader.context";
 import AlertContext from "../../context/alert.context";
 import readerImages, { IPhoto } from "../../utils/readerImages.util";
 import uploadImages from "../../utils/uploadImages.util";
-import Cookies from "js-cookie";
-
-const { REACT_APP_API_URL } = process.env;
+import useAvatar from "../../hooks/useAvatar";
+import createPost from "../../http/posts/createPost.http";
+import uploadPhotos from "../../http/files/uploadPhotos.http";
 
 function AddPost(): JSX.Element {
-	const { avatar, user_name } = useSelector((state: IState) => state.person.info);
+	const { avatar: avatarRedux, user_name } = useSelector((state: IState) => state.person.info);
+	const avatar = useAvatar(avatarRedux);
 
 	const [photos, setPhotos] = React.useState<Array<IPhoto>>([]);
 	const [selectedImages, setSelectedImages] = React.useState<any>([]);
@@ -38,19 +39,12 @@ function AddPost(): JSX.Element {
 		readerImages(selectedImages, setLoad, setPhotos, setText);
 	}, [selectedImages]);
 
+	// send all data for new post
 	React.useEffect(() => {
 		if (post.photos.length) {
 			setLoad(true);
 			// send all data (create a new post)
-			fetch(`${REACT_APP_API_URL}/posts/add`, {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ${Cookies.get("token") || ""}`,
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify(post)
-			})
-				.then((response) => response.json())
+			createPost(post)
 				.then((data) => {
 					const { success, message, errors } = data;
 
@@ -72,24 +66,16 @@ function AddPost(): JSX.Element {
 		}
 	}, [post.photos]);
 
-	function sharePost(event: React.ChangeEvent<HTMLFormElement>) {
+	// upload photos
+	function submitPost(event: React.ChangeEvent<HTMLFormElement>) {
 		event.preventDefault();
 		setLoad(true);
 
 		if (selectedImages.length) {
-			// upload photos
 			const formData = new FormData();
 			selectedImages.map((image: any) => formData.append("photos", image));
 
-			fetch(`${REACT_APP_API_URL}/upload/photos`, {
-				method: "POST",
-				headers: {
-					"Accept-Type": "application/json",
-					Authorization: `Bearer ${Cookies.get("token") || ""}`,
-				},
-				body: formData
-			})
-				.then((response) => response.json())
+			uploadPhotos(formData)
 				.then((data) => {
 					const { success, message, fileNames } = data;
 
@@ -181,7 +167,7 @@ function AddPost(): JSX.Element {
 						<form
 							encType="multipart/form-data"
 							className={classes.rightDown}
-							onSubmit={sharePost}
+							onSubmit={submitPost}
 						>
 							<textarea
 								className={classes.rightCaption}

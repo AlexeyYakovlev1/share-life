@@ -1,8 +1,10 @@
 const { readFileSync, existsSync } = require("fs");
 const { extname } = require("path");
 
-function toBase64(filePath) {
-	if (!existsSync(filePath)) {
+function toBase64(filePath, notSendIfEmpty = false) {
+	if (!existsSync(filePath) && notSendIfEmpty) {
+		return "";
+	} else if (!existsSync(filePath)) {
 		return filePath.replace("..\\templates\\user\\", ""); // fix this later :)
 	}
 

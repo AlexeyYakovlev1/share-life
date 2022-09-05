@@ -50,10 +50,16 @@
 	&SwitchBtn
 		position: absolute
 		border: none
-		background-color: transparent
 		cursor: pointer
 		top: 50%
 		z-index: 9
+		background-color: $pink
+		display: flex
+		align-items: center
+		justify-content: center
+		padding: 2px
+		& svg path
+			fill: #fff !important
 		&Right
 			right: 3%
 			& svg

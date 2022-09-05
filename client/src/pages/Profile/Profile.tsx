@@ -33,16 +33,14 @@ function Profile(): JSX.Element {
 		avatar: "",
 		password: "",
 		description: "",
-		roles: ["USER"]
+		roles: [""]
 	});
 	const [currentUser, setCurrentUser] = React.useState<boolean>(false);
 
 	const pageAvatarUser = useAvatar(pageUser.avatar);
 
-	const search = useLocation().search;
-	const query = new URLSearchParams(search);
-	const queryPostOpen = query.get("watch");
 	const [searchParams, setSearchParams] = useSearchParams();
+	const queryPostOpen = searchParams.get("watch") === "true";
 	const queryPostId = searchParams.get("post_id");
 	const { setCount, count } = useSlider({ list: posts });
 	const { id: pageIdUser } = useParams();
@@ -54,7 +52,7 @@ function Profile(): JSX.Element {
 
 	React.useEffect(() => {
 		setLoad(true);
-		if (pageIdUser && currentIdUser > 0) {
+		if (pageIdUser) {
 			getOneUser(+pageIdUser)
 				.then((data: any) => {
 					const { success, person, message } = data;
@@ -86,8 +84,8 @@ function Profile(): JSX.Element {
 	}, [pageIdUser, currentIdUser]);
 
 	React.useEffect(() => {
-		if (posts[count] && queryPostOpen === "true") {
-			setSearchParams({ watch: `${!!queryPostOpen}`, post_id: `${posts[count].id}` });
+		if (posts[count] && queryPostOpen) {
+			setSearchParams({ watch: `${queryPostOpen}`, post_id: `${posts[count].id}` });
 		}
 	}, [count]);
 
@@ -100,7 +98,7 @@ function Profile(): JSX.Element {
 	return (
 		<MainLayout>
 			<div className={classes.wrapper}>
-				{(queryPostOpen && queryPostId) &&
+				{(queryPostOpen) &&
 					<React.Fragment>
 						<div className={classes.switchPost}>
 							<button
@@ -116,7 +114,7 @@ function Profile(): JSX.Element {
 								<ArrowLeftIcon />
 							</button>
 						</div>
-						<OpenPost postId={queryPostId} />
+						<OpenPost ownerId={pageUser.id} />
 					</React.Fragment>
 				}
 				<div className={classes.top}>
@@ -171,6 +169,7 @@ function Profile(): JSX.Element {
 									key={post.id}
 									photos={post.photos}
 									postId={post.id}
+									ownerId={post.owner_id}
 								/>
 							);
 						}) : <span>No posts...</span>}

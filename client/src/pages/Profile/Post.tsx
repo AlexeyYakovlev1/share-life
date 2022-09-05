@@ -7,9 +7,10 @@ import { Link } from "react-router-dom";
 interface IPostProps {
 	photos: Array<string>;
 	postId: number;
+	ownerId: number;
 }
 
-function Post({ photos, postId }: IPostProps): JSX.Element {
+function Post({ photos, postId, ownerId }: IPostProps): JSX.Element {
 	const [hover, setHover] = React.useState<boolean>(false);
 
 	return (
@@ -19,7 +20,7 @@ function Post({ photos, postId }: IPostProps): JSX.Element {
 			style={{ backgroundImage: `url(${photos[0]})` }}
 			className={classes.contentItem}
 		>
-			{hover && <Link to={`/profile/${2}?watch=true&post_id=${postId}`}>
+			{hover && <Link to={`/profile/${ownerId}?watch=true&post_id=${postId}`}>
 				<div className={classes.contentItemInfo}>
 					<span><LikeIcon /> {0}</span>
 					<span><CommentsIcon /> {0}</span>
