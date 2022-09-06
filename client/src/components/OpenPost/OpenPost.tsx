@@ -29,7 +29,10 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 		user_name: "",
 		full_name: "",
 		email: "",
-		avatar: "",
+		avatar: {
+			base64: "",
+			filename: ""
+		},
 		password: "",
 		roles: [""],
 		description: ""
@@ -138,7 +141,7 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 						<div className={classes.infoHeaderDescription}>
 							<img
 								className={classes.avatar}
-								src={userPost.avatar}
+								src={userPost.avatar.base64}
 								alt={userPost.user_name}
 							/>
 							<div className={classes.infoUser}>

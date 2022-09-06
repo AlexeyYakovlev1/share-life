@@ -18,7 +18,7 @@ import uploadPhotos from "../../http/files/uploadPhotos.http";
 
 function AddPost(): JSX.Element {
 	const { avatar: avatarRedux, user_name } = useSelector((state: IState) => state.person.info);
-	const avatar = useAvatar(avatarRedux);
+	const avatar = useAvatar(avatarRedux.base64);
 
 	const [photos, setPhotos] = React.useState<Array<IPhoto>>([]);
 	const [selectedImages, setSelectedImages] = React.useState<any>([]);

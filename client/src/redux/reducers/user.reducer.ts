@@ -7,9 +7,13 @@ const initialState = {
 		full_name: "",
 		user_name: "",
 		email: "",
-		avatar: "",
+		avatar: {
+			base64: "",
+			filename: ""
+		},
 		password: "",
-		roles: ["USER"]
+		description: "",
+		roles: [""]
 	},
 	isAuth: false
 };

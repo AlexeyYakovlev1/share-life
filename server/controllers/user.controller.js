@@ -130,7 +130,10 @@ class UserController {
 					const pathToAvatar = path.relative(PROJECT_ROOT, `./templates/user/${person.avatar}`);
 					const payload = {
 						...person,
-						avatar: toBase64(pathToAvatar)
+						avatar: {
+							base64: toBase64(pathToAvatar),
+							filename: person.avatar
+						}
 					};
 
 					newPersons.push(payload);
@@ -155,7 +158,10 @@ class UserController {
 				const pathToAvatar = path.relative(PROJECT_ROOT, `./templates/user/${person.rows[0].avatar}`);
 				const payload = {
 					...person.rows[0],
-					avatar: toBase64(pathToAvatar)
+					avatar: {
+						base64: toBase64(pathToAvatar),
+						filename: person.rows[0].avatar
+					}
 				};
 
 				return res.status(200).json({ success: true, person: payload });
@@ -175,7 +181,7 @@ class UserController {
 		}
 
 		const { id } = req.params;
-		const { userName, fullName, email, oldPassword, newPassword, avatar, description } = req.body;
+		const { user_name, full_name, email, oldPassword, newPassword, description } = req.body;
 
 		// THIS FOR ADMIN
 		// if (!roles) return res.status(400).json({ success: false, message: "Roles is not found" });
@@ -215,20 +221,28 @@ class UserController {
 
 				const queryForUpdatePerson = `
 					UPDATE person
-					SET user_name=COALESCE($1, person.user_name),
-					full_name=COALESCE($2, person.full_name),
-					email=COALESCE($3, person.email),
-					password=COALESCE($4, person.password),
-					avatar=COALESCE($5, person.avatar),
-					description=COALESCE($6, person.description)
-					WHERE id = $7 RETURNING *
+					SET user_name=COALESCE(NULLIF($1,''), person.user_name),
+					full_name=COALESCE(NULLIF($2, ''), person.full_name),
+					email=COALESCE(NULLIF($3, ''), person.email),
+					password=COALESCE(NULLIF($4, ''), person.password),
+					description=COALESCE(NULLIF($5, ''), person.description)
+					WHERE id = $6 RETURNING *
 				`;
-				const updatePerson = db.query(queryForUpdatePerson, [userName, fullName, email, password, avatar, description, id]);
+				const updatePerson = db.query(queryForUpdatePerson, [user_name, full_name, email, password, description, id]);
 
 				return Promise.resolve(updatePerson);
 			})
 			.then((updatePerson) => {
-				return res.status(200).json({ success: true, message: "User has been updated", person: updatePerson.rows[0] });
+				const pathToAvatar = path.relative(PROJECT_ROOT, `./templates/user/${updatePerson.rows[0].avatar}`);
+				const newPerson = {
+					...updatePerson.rows[0],
+					avatar: {
+						base64: toBase64(pathToAvatar),
+						filename: updatePerson.rows[0].avatar
+					}
+				};
+
+				return res.status(200).json({ success: true, message: "User has been updated", person: newPerson });
 			})
 			.catch((error) => res.status(400).json({ succces: false, message: error.message, error }));
 	}

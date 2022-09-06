@@ -12,95 +12,64 @@ import { setUser as setUserToReducer } from "../../redux/actions/user.actions";
 import updateUser from "../../http/user/updateUser.http";
 import uploadAvatar from "../../http/files/uploadAvatar.http";
 import useAvatar from "../../hooks/useAvatar";
+import { IPerson } from "../../models/person.models";
+
+interface IPersonForSettings extends IPerson {
+	oldPassword?: string;
+	newPassword?: string;
+}
 
 function Settings(): JSX.Element {
 	const avatarRef = React.useRef<HTMLInputElement | null>(null);
 	const navigate = useNavigate();
 
-	const { id, full_name, user_name, email, description, avatar: oldAvatar, roles, password } = useSelector((state: IState) => state.person.info);
+	const info = useSelector((state: IState) => state.person.info);
 	const dispatch = useDispatch();
 
-	const [selectImage, setSelectImage] = React.useState(null);
-	const [update, setUpdate] = React.useState<boolean>(false);
-	const [avatar, setAvatar] = React.useState<any>({
-		base64: useAvatar(oldAvatar),
-		filename: ""
+	const [avatar, setAvatar] = React.useState({
+		base64: info.avatar.base64,
+		file: ""
 	});
-	const [user, setUser] = React.useState({
-		id,
-		user_name,
-		full_name,
-		email,
-		avatar,
-		description,
-		password,
-		oldPassword: "",
-		newPassword: "",
-		roles
-	});
+	const [user, setUser] = React.useState<IPersonForSettings>({ ...info });
 
 	const { setLoad } = React.useContext(LoaderContext);
 	const { setText } = React.useContext(AlertContext);
 
 	React.useEffect(() => {
-		if (id > 0) {
-			setUser({
-				id,
-				user_name,
-				full_name,
-				email,
-				avatar: useAvatar(oldAvatar),
-				description,
-				oldPassword: "",
-				password,
-				newPassword: "",
-				roles
-			});
-		}
-	}, [id]);
+		if (info.id < 0) return;
+		setUser({ ...info });
+	}, [info]);
 
-	React.useEffect(() => {
-		if (update && selectImage) {
-			setLoad(true);
-
-			const formData = new FormData();
-			formData.append("avatar", selectImage);
-
-			uploadAvatar(formData)
-				.then((data: any) => {
-					const { success, message, dataFile } = data;
-					if (!dataFile.filename) return;
-
-					setText(message);
-
-					if (!success) {
-						setLoad(false);
-						setUpdate(false);
-						return;
-					}
-
-					setAvatar({ ...avatar, filename: dataFile.filename });
-					dispatch(setUserToReducer({ ...user, avatar: dataFile.inBase64 }));
-					setUpdate(false);
-				});
-
-			setLoad(false);
-		}
-	}, [update]);
-
+	// update avatar
 	function uploadHandler(event: any) {
 		if (!event.target?.files.length) return;
 		setLoad(true);
 
 		const file = event.target?.files[0];
-		setSelectImage(file);
+		const formData = new FormData();
+		formData.append("avatar", file);
 
 		const reader: any = new FileReader();
 		reader.readAsDataURL(file);
 
 		reader.onload = () => {
 			const result = reader.result;
-			setAvatar((_: any) => ({ base64: result, filename: file.name }));
+			setAvatar({ ...avatar, base64: result });
+
+			uploadAvatar(formData, true)
+				.then((data) => {
+					const { success, message, error, dataFile: { inBase64, filename } } = data;
+
+					setText(message || error);
+
+					if (!success) {
+						setLoad(false);
+						return;
+					}
+
+					dispatch(setUserToReducer({ ...info, avatar: { base64: inBase64, filename } }));
+					setLoad(false);
+				});
 		};
 
 		reader.onerror = () => {
@@ -111,33 +80,28 @@ function Settings(): JSX.Element {
 		setLoad(false);
 	}
 
+	// update user
 	function submitUpdate(event: React.FormEvent<HTMLFormElement>): void {
 		event.preventDefault();
-
 		setLoad(true);
 
-		if (id > 0) {
-			setUpdate(true);
-			updateUser(id, user)
-				.then((data) => {
-					const { success, message, error } = data;
+		updateUser(info.id, user)
+			.then((data) => {
+				const { success, message, error, person } = data;
 
-					setText(message || error);
+				setText(message || error);
 
-					if (!success) {
-						setLoad(false);
-						setUpdate(false);
-						return;
-					}
-
+				if (!success) {
 					setLoad(false);
-					setUpdate(true);
-				});
-		}
+					return;
+				}
 
+				dispatch(setUserToReducer(person));
+			});
 		setLoad(false);
 	}
 
+	// logout
 	function logout() {
 		dispatch(setUserToReducer({ ...user }, true));
 		navigate("/auth/login");
@@ -148,12 +112,12 @@ function Settings(): JSX.Element {
 			<div className={classes.wrapper}>
 				<div className={classes.user}>
 					<img
-						src={user.avatar || avatar.base64}
+						src={useAvatar(info.avatar.base64)}
 						alt={user.user_name}
 					/>
 					<div className={classes.userInfo}>
 						<span className={classes.userInfoName}>
-							<Link to={`/profile/${id}`}>{user_name}</Link>
+							<Link to={`/profile/${info.id}`}>{info.user_name}</Link>
 						</span>
 						<input
 							type="file"
@@ -177,7 +141,7 @@ function Settings(): JSX.Element {
 							onChange={event => setUser({ ...user, full_name: event.target.value })}
 							id="fullName"
 							type="text"
-							defaultValue={full_name}
+							defaultValue={info.full_name}
 						/>
 					</div>
 					<div className={classes.formInputBlock}>
@@ -186,7 +150,7 @@ function Settings(): JSX.Element {
 							onChange={event => setUser({ ...user, user_name: event.target.value })}
 							id="userName"
 							type="text"
-							defaultValue={user_name}
+							defaultValue={info.user_name}
 						/>
 					</div>
 					<div className={classes.formInputBlock}>
@@ -194,7 +158,7 @@ function Settings(): JSX.Element {
 						<textarea
 							onChange={event => setUser({ ...user, description: event.target.value })}
 							id="description"
-							defaultValue={description}
+							defaultValue={info.description}
 						/>
 					</div>
 					<div className={classes.formInputBlock}>
@@ -203,7 +167,7 @@ function Settings(): JSX.Element {
 							onChange={event => setUser({ ...user, email: event.target.value })}
 							id="email"
 							type="text"
-							defaultValue={email}
+							defaultValue={info.email}
 						/>
 					</div>
 					<div className={classes.formInputBlock}>

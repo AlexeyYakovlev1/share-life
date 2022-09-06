@@ -1,4 +1,5 @@
 const toBase64 = require("../utils/toBase64.util");
+const db = require("../db");
 
 const path = require("path");
 
@@ -18,7 +19,24 @@ class UploadController {
 			inBase64: toBase64(pathToFile)
 		};
 
-		return res.status(200).json({ success: true, message: "Avatar has been uploaded", dataFile });
+		const updateUser = req.query["update-user"] === "true";
+
+		// update user avatar if query update-user exist
+		if (req.query && updateUser) {
+			const queryForUpdateUser = `UPDATE person SET avatar = $1 WHERE id = $2`;
+
+			new Promise((resolve) => resolve(db.query(queryForUpdateUser, [file.filename, req.user.id])))
+				.then(() => {
+					return res.status(200).json({ success: true, message: "Avatar has been uploaded", dataFile });
+				})
+				.catch((error) => {
+					return res.status(400).json({ success: false, message: error.message, error })
+				});
+
+			return;
+		}
+
+		return res.status(200).json({ success: true, message: "File has been uploaded", dataFile });
 	}
 
 	uploadPhotos(req, res) {

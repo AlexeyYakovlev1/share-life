@@ -27,7 +27,10 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 		user_name: "",
 		full_name: "",
 		email: "",
-		avatar: "",
+		avatar: {
+			base64: "",
+			filename: ""
+		},
 		password: "",
 		description: "",
 		roles: [""]
@@ -60,7 +63,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 				<div className={classes.headerLeft}>
 					<img
 						className={classes.avatar}
-						src={useAvatar(userPost.avatar)}
+						src={useAvatar(userPost.avatar.base64)}
 						alt={userPost.user_name}
 					/>
 					<div className={classes.headerInfo}>

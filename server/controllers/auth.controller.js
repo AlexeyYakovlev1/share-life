@@ -29,10 +29,14 @@ class AuthController {
 				if (!comparePassword) return Promise.reject("Compare password error");
 
 				const payload = { id: person.id, password: person.password, roles: person.roles };
+				const avatarInBase64 = toBase64(relative(PROJECT_ROOT, `./templates/user/${person.avatar}`));
 
 				const personToClient = {
 					...person,
-					avatar: toBase64(relative(PROJECT_ROOT, `./templates/user/${person.avatar}`))
+					avatar: {
+						base64: avatarInBase64,
+						filename: person.avatar
+					}
 				};
 				const token = sign(payload, `${JWT_KEY}`, { expiresIn: "24h" });
 
@@ -89,10 +93,14 @@ class AuthController {
 		new Promise((resolve) => resolve(db.query(queryForFindPerson, [id])))
 			.then((data) => {
 				if (!data.rows || !data.rows[0]) return Promise.reject("User is not found");
+				const avatarInBase64 = toBase64(relative(PROJECT_ROOT, `./templates/user/${data.rows[0].avatar}`));
 
 				const person = {
 					...data.rows[0],
-					avatar: toBase64(relative(PROJECT_ROOT, `./templates/user/${data.rows[0].avatar}`))
+					avatar: {
+						base64: avatarInBase64,
+						filename: data.rows[0].avatar
+					}
 				};
 				const payload = { id: person.id, password: person.password, roles: person.roles };
 				const token = sign(payload, `${JWT_KEY}`, { expiresIn: "24h" });

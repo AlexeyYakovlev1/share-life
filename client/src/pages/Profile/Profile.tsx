@@ -1,4 +1,4 @@
-import { Link, useLocation, useParams, useSearchParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import MainLayout from "../../components/Layouts/MainLayout/MainLayout";
 import OpenPost from "../../components/OpenPost/OpenPost";
 import Post from "./Post";
@@ -30,14 +30,17 @@ function Profile(): JSX.Element {
 		full_name: "",
 		user_name: "",
 		email: "",
-		avatar: "",
+		avatar: {
+			base64: "",
+			filename: ""
+		},
 		password: "",
 		description: "",
 		roles: [""]
 	});
 	const [currentUser, setCurrentUser] = React.useState<boolean>(false);
 
-	const pageAvatarUser = useAvatar(pageUser.avatar);
+	const pageAvatarUser = useAvatar(pageUser.avatar.base64);
 
 	const [searchParams, setSearchParams] = useSearchParams();
 	const queryPostOpen = searchParams.get("watch") === "true";
@@ -98,9 +101,9 @@ function Profile(): JSX.Element {
 	return (
 		<MainLayout>
 			<div className={classes.wrapper}>
-				{(queryPostOpen) &&
+				{queryPostOpen &&
 					<React.Fragment>
-						<div className={classes.switchPost}>
+						{posts.length > 1 && <div className={classes.switchPost}>
 							<button
 								className={cn(classes.switchBtn, classes.switchLeft)}
 								onClick={() => setCount(count - 1)}
@@ -113,7 +116,7 @@ function Profile(): JSX.Element {
 							>
 								<ArrowLeftIcon />
 							</button>
-						</div>
+						</div>}
 						<OpenPost ownerId={pageUser.id} />
 					</React.Fragment>
 				}

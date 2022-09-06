@@ -22,7 +22,7 @@ function Header({ className }: IHeaderProps): JSX.Element {
 	}
 	const { info: { avatar, id, user_name }, isAuth } = useSelector((state: IState) => state.person);
 
-	const currentAvatarUser = useAvatar(avatar);
+	const currentAvatarUser = useAvatar(avatar.base64);
 	const menu: Array<IMenu> = [
 		{
 			name: "Add post",

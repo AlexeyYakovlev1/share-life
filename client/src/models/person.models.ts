@@ -3,7 +3,10 @@ export interface IPerson {
 	full_name: string;
 	user_name: string;
 	email: string;
-	avatar: string;
+	avatar: {
+		base64: string;
+		filename: string;
+	};
 	password: string;
 	roles: Array<string>;
 	description: string;
