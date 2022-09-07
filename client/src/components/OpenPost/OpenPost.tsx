@@ -106,18 +106,22 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 		<div className={classes.wrapper} onClick={closePost}>
 			<div className={classes.content} onClick={event => event.stopPropagation()}>
 				<div className={classes.left} ref={sliderWrapperRef}>
-					<button
-						className={cn(classes.leftBtn, classes.leftBtnLeft)}
-						onClick={() => setCount(count - 1)}
-					>
-						<ArrowLeftIcon />
-					</button>
-					<button
-						className={cn(classes.leftBtn, classes.leftBtnRight)}
-						onClick={() => setCount(count + 1)}
-					>
-						<ArrowLeftIcon />
-					</button>
+					{currentPost.photos.length > 1 &&
+						<React.Fragment>
+							<button
+								className={cn(classes.leftBtn, classes.leftBtnLeft)}
+								onClick={() => setCount(count - 1)}
+							>
+								<ArrowLeftIcon />
+							</button>
+							<button
+								className={cn(classes.leftBtn, classes.leftBtnRight)}
+								onClick={() => setCount(count + 1)}
+							>
+								<ArrowLeftIcon />
+							</button>
+						</React.Fragment>
+					}
 					<ul
 						className={classes.leftList}
 						style={{ width: `${widthSlider * currentPost.photos.length}px` }}

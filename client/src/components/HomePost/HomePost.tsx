@@ -91,18 +91,22 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 			</header>
 			<div className={classes.body}>
 				<div className={classes.bodyPhotos} ref={sliderWrapperRef}>
-					<button
-						className={cn(classes.bodySwitchBtn, classes.bodySwitchBtnLeft)}
-						onClick={() => setCount(count - 1)}
-					>
-						<ArrowLeftIcon />
-					</button>
-					<button
-						className={cn(classes.bodySwitchBtn, classes.bodySwitchBtnRight)}
-						onClick={() => setCount(count + 1)}
-					>
-						<ArrowLeftIcon />
-					</button>
+					{info.photos.length > 1 &&
+						<React.Fragment>
+							<button
+								className={cn(classes.bodySwitchBtn, classes.bodySwitchBtnLeft)}
+								onClick={() => setCount(count - 1)}
+							>
+								<ArrowLeftIcon />
+							</button>
+							<button
+								className={cn(classes.bodySwitchBtn, classes.bodySwitchBtnRight)}
+								onClick={() => setCount(count + 1)}
+							>
+								<ArrowLeftIcon />
+							</button>
+						</React.Fragment>
+					}
 					<ul
 						className={classes.bodyList}
 						style={{ width: `${widthSlider * info.photos.length}px` }}

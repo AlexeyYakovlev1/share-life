@@ -1,8 +1,11 @@
-import { DetailedHTMLProps, HTMLAttributes } from "react";
+import React, { DetailedHTMLProps, HTMLAttributes } from "react";
 import { Link } from "react-router-dom";
 import { IPost } from "../../models/post.models";
 import classes from "./PostMenu.module.sass";
 import cn from "classnames";
+import Cookies from "js-cookie";
+import LoaderContext from "../../context/loader.context";
+import AlertContext from "../../context/alert.context";
 
 interface IPostMenuProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
 	post: IPost;
@@ -10,9 +13,26 @@ interface IPostMenuProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement
 	visible: boolean;
 }
 
+const { REACT_APP_API_URL } = process.env;
+
 function PostMenu({ post, setVisible, visible, className = "", ...props }: IPostMenuProps): JSX.Element {
+	const { setLoad } = React.useContext(LoaderContext);
+	const { setText } = React.useContext(AlertContext);
+
 	function deletePost() {
-		console.log(`Here we delete post by id ${post.id}`);
+		setLoad(true);
+		fetch(`${REACT_APP_API_URL}/posts/remove/${post.id}`, {
+			method: "DELETE",
+			headers: {
+				Authorization: `Bearer ${Cookies.get("token")}`
+			}
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				const { message, error } = data;
+				setText(message || error);
+				setLoad(false);
+			});
 	}
 
 	return (

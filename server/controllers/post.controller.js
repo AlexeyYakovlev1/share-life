@@ -51,7 +51,7 @@ class PostController {
 			.then((findPerson) => {
 				if (!findPerson.rows || !findPerson.rows[0]) return Promise.reject("Owner is not found");
 
-				const queryForFindPost = `SELECT owner_id FROM post WHERE id = $1`;
+				const queryForFindPost = `SELECT owner_id, photos FROM post WHERE id = $1`;
 				const findPost = db.query(queryForFindPost, [idPost]);
 
 				return Promise.resolve(findPost);

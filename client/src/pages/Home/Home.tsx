@@ -14,9 +14,9 @@ function Home(): JSX.Element {
 	const { setText } = React.useContext(AlertContext);
 
 	React.useEffect(() => {
-		setLoad(true);
 		getAllPosts()
 			.then((data) => {
+				setLoad(true);
 				const { success, message, posts } = data;
 
 				if (!success) {
@@ -26,8 +26,8 @@ function Home(): JSX.Element {
 				}
 
 				setPosts(posts);
+				setLoad(false);
 			});
-		setLoad(false);
 	}, []);
 
 	return (
