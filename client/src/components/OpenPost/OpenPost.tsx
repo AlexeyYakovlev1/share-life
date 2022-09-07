@@ -143,11 +143,10 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 				<div className={classes.info}>
 					<header className={classes.infoHeader}>
 						<div className={classes.infoHeaderDescription}>
-							<img
+							<div
 								className={classes.avatar}
-								src={userPost.avatar.base64}
-								alt={userPost.user_name}
-							/>
+								style={{ backgroundImage: `url(${userPost.avatar.base64})` }}
+							></div>
 							<div className={classes.infoUser}>
 								<div>
 									<span className={classes.infoUserName}>{userPost.user_name} &#x2022;</span>
