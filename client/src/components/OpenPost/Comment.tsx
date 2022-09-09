@@ -1,32 +1,65 @@
 import { Link } from "react-router-dom";
 import { IComment } from "../../models/post.models";
 import classes from "./OpenPost.module.sass";
+import React from "react";
+import getOneUser from "../../http/user/getOneUser.http";
+import LoaderContext from "../../context/loader.context";
+import AlertContext from "../../context/alert.context";
+import { IPerson } from "../../models/person.models";
+import useAvatar from "../../hooks/useAvatar";
 
 function Comment({ info }: { info: IComment }): JSX.Element {
-	const userComment = {
+	const { setLoad } = React.useContext(LoaderContext);
+	const { setText } = React.useContext(AlertContext);
+
+	const [userComment, setUserComment] = React.useState<IPerson>({
 		id: 1,
-		userName: "alexey",
-		fullName: "Petr Maksimov",
-		email: "petr@gmail.com",
-		avatar: "https://64.media.tumblr.com/ed2ab2416407afc0d3fbb262bbb3f60b/1b0bdac815cbd792-48/s250x400/621b6be33a6f52d663517b229fdc49ed0166d2f5.png"
-	};
+		user_name: "",
+		full_name: "",
+		email: "",
+		avatar: {
+			base64: "",
+			filename: ""
+		},
+		password: "",
+		description: "",
+		roles: [""]
+	});
+
+	React.useEffect(() => {
+		if (info.owner_id === -1) return;
+
+		setLoad(true);
+		getOneUser(info.owner_id)
+			.then((data) => {
+				const { success, person, error } = data;
+
+				if (!success) {
+					setLoad(false);
+					setText(error);
+					return;
+				}
+
+				setUserComment(person);
+			});
+		setLoad(false);
+	}, [info]);
 
 	return (
 		<li className={classes.comment}>
-			<img
+			<div
+				style={{ backgroundImage: `url(${useAvatar(userComment.avatar.base64)})` }}
 				className={classes.commentAvatar}
-				src={userComment.avatar}
-				alt={userComment.userName}
-			/>
+			></div>
 			<div className={classes.commentInfo}>
 				<p className={classes.commentText}>
 					<span className={classes.commentName}>
 						<Link to={`/profile/${userComment.id}`}>
-							{userComment.userName}
+							{userComment.user_name}
 						</Link>
 					</span> {info.text}
 				</p>
-				<span className={classes.commentCreatedAt}>{info.createdAt.toString()}</span>
+				<span className={classes.commentCreatedAt}>{"09.09.2022"}</span>
 			</div>
 		</li>
 	);

@@ -16,6 +16,7 @@ import AlertContext from "../../context/alert.context";
 import LoaderContext from "../../context/loader.context";
 import getOnePost from "../../http/posts/getOnePost.http";
 import useAvatar from "../../hooks/useAvatar";
+import getAllCommentsByPost from "../../http/comments/getAllCommentsByPost.http";
 
 function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 	const [currentPost, setCurrentPost] = React.useState<IPost>({
@@ -52,6 +53,24 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 
 	const { setText } = React.useContext(AlertContext);
 	const { setLoad } = React.useContext(LoaderContext);
+
+	// comments
+	React.useEffect(() => {
+		if (currentPost.id === -1) return;
+
+		getAllCommentsByPost(currentPost.id)
+			.then((data) => {
+				const { comments, success, error } = data;
+
+				if (!success) {
+					setText(error);
+					setLoad(false);
+					return;
+				}
+
+				setCommentsPost(comments);
+			});
+	}, [currentPost]);
 
 	// post
 	React.useEffect(() => {
@@ -178,7 +197,7 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 							<ul className={classes.infoCommentsList}>
 								{commentsPost.length ? commentsPost.map((comment: IComment) => (
 									<Comment key={comment.id} info={comment} />
-								)) : <span>No comments...</span>}
+								)) : <span>No comments</span>}
 							</ul>
 						</div>
 						<div className={classes.infoActions}>
@@ -195,7 +214,7 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 								<span className={classes.infoActionsLikesNum}>1,085 likes</span>
 								<span className={classes.infoActionsCreatedAt}>March 26</span>
 							</div>
-							<AddComment />
+							<AddComment postId={currentPost.id} />
 						</div>
 					</div>
 				</div>

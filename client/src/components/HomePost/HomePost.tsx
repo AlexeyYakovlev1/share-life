@@ -15,12 +15,13 @@ import getOneUser from "../../http/user/getOneUser.http";
 import LoaderContext from "../../context/loader.context";
 import AlertContext from "../../context/alert.context";
 import useAvatar from "../../hooks/useAvatar";
+import getAllCommentsByPost from "../../http/comments/getAllCommentsByPost.http";
+import Comment from "../OpenPost/Comment";
 
 function HomePost({ info }: { info: IPost }): JSX.Element {
 	const [dotsToEnd, setDotsToEnd] = React.useState<boolean>(info.description ? info.description.trim().length >= 200 : false);
-	// const [viewComments, setViewComments] = React.useState<boolean>(!!info.usersCommentsIds.length);
-	const [viewComments, setViewComments] = React.useState<boolean>(false);
 	const [comments, setComments] = React.useState<Array<any>>([]);
+	const [viewComments, setViewComments] = React.useState<boolean>(!!comments.length);
 	const [visible, setVisible] = React.useState<boolean>(false);
 	const [userPost, setUserPost] = React.useState<IPerson>({
 		id: -1,
@@ -40,6 +41,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 	const { setLoad } = React.useContext(LoaderContext);
 	const { setText } = React.useContext(AlertContext);
 
+	// user
 	React.useEffect(() => {
 		getOneUser(info.owner_id)
 			.then((data) => {
@@ -54,6 +56,23 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 
 				setUserPost(person);
 				setLoad(false);
+			});
+	}, [info]);
+
+	// comments
+	React.useEffect(() => {
+		getAllCommentsByPost(info.id)
+			.then((data) => {
+				const { success, error, comments } = data;
+
+				if (!success) {
+					setText(error);
+					setLoad(false);
+					return;
+				}
+
+				setComments(comments);
+				setViewComments(!!comments.length);
 			});
 	}, [info]);
 
@@ -162,8 +181,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 								className={classes.bodyDescriptionMore}
 								onClick={() => setViewComments(!viewComments)}
 							>
-								{/* View {info.usersCommentsIds.length} comments */}
-								View {0} comments
+								View all {comments.length} comments
 							</Button>}
 						</div>
 					</div>
@@ -176,21 +194,12 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 							const comment = comments[index];
 
 							return (
-								<li
-									key={comment.id}
-									className={cn(classes.bodyCommentsItem, classes.bodyDescriptionText)}
-								>
-									<span className={classes.headerName}>
-										<Link to={`/profile/${comment.ownerId}`}>{comment.user_name}</Link>
-									</span>
-									&nbsp;
-									{comment.text}
-								</li>
+								<Comment key={comment.id} info={comment} />
 							);
 						})}
 					</ul>
 				</div>
-				<AddComment className={classes.formComment} />
+				<AddComment postId={info.id} className={classes.formComment} />
 			</div>
 		</li>
 	);

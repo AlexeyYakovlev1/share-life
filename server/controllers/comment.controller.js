@@ -81,29 +81,12 @@ class CommentController {
 			return res.status(400).json({ success: false, message: "Params must exist" });
 		}
 
-		const { id: idCurrentUser } = req.user;
 		const { id: idPost } = req.params;
 
-		const queryForFindPerson = `SELECT email FROM person WHERE id = $1`;
+		const queryForGetComments = `SELECT * FROM comment WHERE post_id = $1`;
+		const findComments = db.query(queryForGetComments, [idPost]);
 
-		new Promise((resolve) => resolve(db.query(queryForFindPerson, [idCurrentUser])))
-			.then((findPerson) => {
-				if (!findPerson.rows || !findPerson.rows[0]) return Promise.reject("User is not found");
-
-				const queryForFindPost = `SELECT owner_id FROM post WHERE id = $1`;
-				const findPost = db.query(queryForFindPost, [idPost]);
-
-				return Promise.resolve(findPost);
-			})
-			.then((findPost) => {
-				if (!findPost.rows || !findPost.rows[0]) return Promise.reject("Post is not found");
-				if (+idCurrentUser !== +findPost.rows[0].owner_id) return Promise.reject("Access closed");
-
-				const queryForGetComments = `SELECT * FROM comment WHERE post_id = $1`;
-				const findComments = db.query(queryForGetComments, [idPost]);
-
-				return Promise.resolve(findComments);
-			})
+		new Promise((resolve) => resolve(findComments))
 			.then((findComments) => res.status(200).json({ success: true, comments: findComments.rows }))
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}
