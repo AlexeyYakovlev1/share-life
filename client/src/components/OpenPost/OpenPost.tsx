@@ -17,6 +17,8 @@ import getOnePost from "../../http/posts/getOnePost.http";
 import useAvatar from "../../hooks/useAvatar";
 import getAllCommentsByPost from "../../http/comments/getAllCommentsByPost.http";
 import { trackPromise } from "react-promise-tracker";
+import { IState } from "../../models/redux.models";
+import { useSelector } from "react-redux";
 
 function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 	const [currentPost, setCurrentPost] = React.useState<IPost>({
@@ -52,6 +54,7 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 	const { setCount, sliderWrapperRef, count, widthSlider } = useSlider({ list: currentPost.photos });
 
 	const { setText } = React.useContext(AlertContext);
+	const currentUser = useSelector((state: IState) => state.person.info);
 
 	// comments
 	React.useEffect(() => {
@@ -160,7 +163,7 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 								<span className={classes.location}>{currentPost.location}</span>
 							</div>
 						</div>
-						<div className={classes.infoSettings}>
+						{+currentUser.id === +userPost.id && <div className={classes.infoSettings}>
 							<button
 								onClick={() => setVisible(!visible)}
 								className={classes.infoSettingsBtn}
@@ -174,7 +177,7 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 									visible={visible}
 								/>
 							}
-						</div>
+						</div>}
 					</header>
 					<div className={classes.infoBody}>
 						<div className={classes.infoComments}>

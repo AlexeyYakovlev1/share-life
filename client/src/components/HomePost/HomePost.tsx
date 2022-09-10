@@ -17,6 +17,8 @@ import useAvatar from "../../hooks/useAvatar";
 import getAllCommentsByPost from "../../http/comments/getAllCommentsByPost.http";
 import Comment from "../OpenPost/Comment";
 import { trackPromise } from "react-promise-tracker";
+import { useSelector } from "react-redux";
+import { IState } from "../../models/redux.models";
 
 function HomePost({ info }: { info: IPost }): JSX.Element {
 	const [dotsToEnd, setDotsToEnd] = React.useState<boolean>(info.description ? info.description.trim().length >= 200 : false);
@@ -37,6 +39,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 		roles: [""]
 	});
 
+	const currentUser = useSelector((state: IState) => state.person.info);
 	const { setCount, count, sliderWrapperRef, widthSlider } = useSlider({ list: info.photos });
 	const { setText } = React.useContext(AlertContext);
 
@@ -87,7 +90,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 						<span className={classes.headerLocation}>{info.location}</span>
 					</div>
 				</div>
-				<div className={classes.headerSettings}>
+				{+currentUser.id === +userPost.id && <div className={classes.headerSettings}>
 					<button
 						className={classes.headerSettingsBtn}
 						onClick={() => setVisible(!visible)}
@@ -101,7 +104,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 							visible={visible}
 							className={classes.headerSettingsMenu}
 						/>}
-				</div>
+				</div>}
 			</header>
 			<div className={classes.body}>
 				<div className={classes.bodyPhotos} ref={sliderWrapperRef}>
