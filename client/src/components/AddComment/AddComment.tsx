@@ -4,8 +4,8 @@ import Input from "../UI/Input/Input";
 import classes from "./AddComment.module.sass";
 import cn from "classnames";
 import AlertContext from "../../context/alert.context";
-import LoaderContext from "../../context/loader.context";
 import addComment from "../../http/comments/addComment.http";
+import { trackPromise } from "react-promise-tracker";
 
 interface IAddCommentProps extends DetailedHTMLProps<FormHTMLAttributes<HTMLFormElement>, HTMLFormElement> {
 	postId: number;
@@ -15,25 +15,21 @@ function AddComment({ className, postId, ...props }: IAddCommentProps): JSX.Elem
 	const [message, setMessage] = React.useState<string>("");
 
 	const { setText } = React.useContext(AlertContext);
-	const { setLoad } = React.useContext(LoaderContext);
 
 	function submitAddComment(event: any) {
 		event.preventDefault();
 
-		setLoad(true);
-		addComment(postId, { text: message })
+		trackPromise(addComment(postId, { text: message })
 			.then((data) => {
-				const { success, error } = data;
+				const { success, error, message } = data;
 
 				if (!success) {
-					setText(error);
-					setLoad(false);
+					setText(error || message);
 					return;
 				}
 
 				// next is update info for post in reducer...
-			});
-		setLoad(false);
+			}));
 	}
 
 	return (

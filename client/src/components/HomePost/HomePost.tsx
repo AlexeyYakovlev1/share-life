@@ -12,16 +12,16 @@ import { useSlider } from "../../hooks/useSlider";
 import PostMenu from "../PostMenu/PostMenu";
 import { IPerson } from "../../models/person.models";
 import getOneUser from "../../http/user/getOneUser.http";
-import LoaderContext from "../../context/loader.context";
 import AlertContext from "../../context/alert.context";
 import useAvatar from "../../hooks/useAvatar";
 import getAllCommentsByPost from "../../http/comments/getAllCommentsByPost.http";
 import Comment from "../OpenPost/Comment";
+import { trackPromise } from "react-promise-tracker";
 
 function HomePost({ info }: { info: IPost }): JSX.Element {
 	const [dotsToEnd, setDotsToEnd] = React.useState<boolean>(info.description ? info.description.trim().length >= 200 : false);
 	const [comments, setComments] = React.useState<Array<any>>([]);
-	const [viewComments, setViewComments] = React.useState<boolean>(!!comments.length);
+	const [viewComments, setViewComments] = React.useState<boolean>(comments.length >= 3);
 	const [visible, setVisible] = React.useState<boolean>(false);
 	const [userPost, setUserPost] = React.useState<IPerson>({
 		id: -1,
@@ -38,42 +38,37 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 	});
 
 	const { setCount, count, sliderWrapperRef, widthSlider } = useSlider({ list: info.photos });
-	const { setLoad } = React.useContext(LoaderContext);
 	const { setText } = React.useContext(AlertContext);
 
 	// user
 	React.useEffect(() => {
-		getOneUser(info.owner_id)
+		trackPromise(getOneUser(info.owner_id)
 			.then((data) => {
-				setLoad(true);
 				const { success, message, person } = data;
 
 				if (!success) {
-					setLoad(false);
 					setText(message);
 					return;
 				}
 
 				setUserPost(person);
-				setLoad(false);
-			});
+			}));
 	}, [info]);
 
 	// comments
 	React.useEffect(() => {
-		getAllCommentsByPost(info.id)
+		trackPromise(getAllCommentsByPost(info.id)
 			.then((data) => {
 				const { success, error, comments } = data;
 
 				if (!success) {
 					setText(error);
-					setLoad(false);
 					return;
 				}
 
 				setComments(comments);
-				setViewComments(!!comments.length);
-			});
+				setViewComments(comments.length >= 3);
+			}));
 	}, [info]);
 
 	return (

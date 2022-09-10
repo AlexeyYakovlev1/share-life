@@ -13,10 +13,10 @@ import PostMenu from "../PostMenu/PostMenu";
 import { IPerson } from "../../models/person.models";
 import getOneUser from "../../http/user/getOneUser.http";
 import AlertContext from "../../context/alert.context";
-import LoaderContext from "../../context/loader.context";
 import getOnePost from "../../http/posts/getOnePost.http";
 import useAvatar from "../../hooks/useAvatar";
 import getAllCommentsByPost from "../../http/comments/getAllCommentsByPost.http";
+import { trackPromise } from "react-promise-tracker";
 
 function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 	const [currentPost, setCurrentPost] = React.useState<IPost>({
@@ -52,67 +52,51 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 	const { setCount, sliderWrapperRef, count, widthSlider } = useSlider({ list: currentPost.photos });
 
 	const { setText } = React.useContext(AlertContext);
-	const { setLoad } = React.useContext(LoaderContext);
 
 	// comments
 	React.useEffect(() => {
 		if (currentPost.id === -1) return;
 
-		getAllCommentsByPost(currentPost.id)
+		trackPromise(getAllCommentsByPost(currentPost.id)
 			.then((data) => {
 				const { comments, success, error } = data;
 
 				if (!success) {
 					setText(error);
-					setLoad(false);
 					return;
 				}
 
 				setCommentsPost(comments);
-			});
+			}));
 	}, [currentPost]);
 
 	// post
 	React.useEffect(() => {
-		if (queryPostId) {
-			if (+queryPostId > 0) {
-				setLoad(true);
-				getOnePost(+queryPostId)
-					.then((data) => {
-						const { success, message, post, error } = data;
+		if (queryPostId && +queryPostId > 0) {
+			trackPromise(getOnePost(+queryPostId)
+				.then((data) => {
+					const { success, message, post, error } = data;
 
-						setText(message || error);
+					setText(message || error);
 
-						if (!success) {
-							setLoad(false);
-							return;
-						}
+					if (!success) return;
 
-						setCurrentPost(post);
-					});
-				setLoad(false);
-			}
+					setCurrentPost(post);
+				}));
 		}
 	}, [queryPostId]);
 
 	// user
 	React.useEffect(() => {
 		if (ownerId > 0) {
-			setLoad(true);
-			getOneUser(ownerId)
+			trackPromise(getOneUser(ownerId)
 				.then((data) => {
 					const { success, person, message, error } = data;
-
 					setText(message || error);
 
-					if (!success) {
-						setLoad(false);
-						return;
-					}
-
+					if (!success) return;
 					setUserPost({ ...person, avatar: useAvatar(person.avatar) });
-				});
-			setLoad(false);
+				}));
 		}
 	}, [ownerId]);
 

@@ -3,6 +3,9 @@ import { ReactComponent as LikeIcon } from "../../assets/images/heart.svg";
 import { ReactComponent as CommentsIcon } from "../../assets/images/comments.svg";
 import React from "react";
 import { Link } from "react-router-dom";
+import getAllCommentsByPost from "../../http/comments/getAllCommentsByPost.http";
+import AlertContext from "../../context/alert.context";
+import { trackPromise } from "react-promise-tracker";
 
 interface IPostProps {
 	photos: Array<string>;
@@ -12,6 +15,24 @@ interface IPostProps {
 
 function Post({ photos, postId, ownerId }: IPostProps): JSX.Element {
 	const [hover, setHover] = React.useState<boolean>(false);
+	const [commentsLength, setCommentsLength] = React.useState<number>(0);
+
+	const { setText } = React.useContext(AlertContext);
+
+	// get comments length
+	React.useEffect(() => {
+		trackPromise(getAllCommentsByPost(postId)
+			.then((data) => {
+				const { success, error, comments } = data;
+
+				if (!success) {
+					setText(error);
+					return;
+				}
+
+				setCommentsLength(comments.length);
+			}));
+	}, [postId]);
 
 	return (
 		<li
@@ -23,7 +44,7 @@ function Post({ photos, postId, ownerId }: IPostProps): JSX.Element {
 			{hover && <Link to={`/profile/${ownerId}?watch=true&post_id=${postId}`}>
 				<div className={classes.contentItemInfo}>
 					<span><LikeIcon /> {0}</span>
-					<span><CommentsIcon /> {0}</span>
+					<span><CommentsIcon /> {commentsLength}</span>
 				</div>
 			</Link>}
 		</li>

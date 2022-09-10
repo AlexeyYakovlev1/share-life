@@ -3,13 +3,12 @@ import { IComment } from "../../models/post.models";
 import classes from "./OpenPost.module.sass";
 import React from "react";
 import getOneUser from "../../http/user/getOneUser.http";
-import LoaderContext from "../../context/loader.context";
 import AlertContext from "../../context/alert.context";
 import { IPerson } from "../../models/person.models";
 import useAvatar from "../../hooks/useAvatar";
+import { trackPromise } from "react-promise-tracker";
 
 function Comment({ info }: { info: IComment }): JSX.Element {
-	const { setLoad } = React.useContext(LoaderContext);
 	const { setText } = React.useContext(AlertContext);
 
 	const [userComment, setUserComment] = React.useState<IPerson>({
@@ -29,20 +28,17 @@ function Comment({ info }: { info: IComment }): JSX.Element {
 	React.useEffect(() => {
 		if (info.owner_id === -1) return;
 
-		setLoad(true);
-		getOneUser(info.owner_id)
+		trackPromise(getOneUser(info.owner_id)
 			.then((data) => {
 				const { success, person, error } = data;
 
 				if (!success) {
-					setLoad(false);
 					setText(error);
 					return;
 				}
 
 				setUserComment(person);
-			});
-		setLoad(false);
+			}));
 	}, [info]);
 
 	return (

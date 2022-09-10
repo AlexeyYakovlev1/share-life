@@ -13,7 +13,7 @@ module.exports = function (req, res, next) {
 
 	verify(AuthToken, `${JWT_KEY}`, (err, result) => {
 		if (err) {
-			return res.status(400).json({ success: false, message: "Failed decode auth token" });
+			return res.status(400).json({ success: false, message: "Access closed" });
 		}
 
 		req.user = result;

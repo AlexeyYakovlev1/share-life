@@ -9,7 +9,7 @@ import React from "react";
 import { ReactComponent as ArrowLeftIcon } from "../../assets/images/arrow-left.svg";
 import cn from "classnames";
 import { useSlider } from "../../hooks/useSlider";
-import LoaderContext from "../../context/loader.context";
+import { trackPromise } from "react-promise-tracker";
 import AlertContext from "../../context/alert.context";
 import { IPerson } from "../../models/person.models";
 import getOneUser from "../../http/user/getOneUser.http";
@@ -48,42 +48,37 @@ function Profile(): JSX.Element {
 	const { setCount, count } = useSlider({ list: posts });
 	const { id: pageIdUser } = useParams();
 
-	const { setLoad } = React.useContext(LoaderContext);
 	const { setText } = React.useContext(AlertContext);
 
 	const { id: currentIdUser } = useSelector((state: IState) => state.person.info);
 
 	React.useEffect(() => {
-		setLoad(true);
 		if (pageIdUser) {
-			getOneUser(+pageIdUser)
+			trackPromise(getOneUser(+pageIdUser)
 				.then((data: any) => {
 					const { success, person, message } = data;
 
 					if (!success) {
-						setLoad(false);
 						setText(message);
 						return;
 					}
 
 					setPageUser(person);
 					setCurrentUser(+pageIdUser === +currentIdUser);
-				});
+				}));
 
-			getPostsByUser(+pageIdUser)
+			trackPromise(getPostsByUser(+pageIdUser)
 				.then((data) => {
 					const { success, posts, message } = data;
 
 					if (!success) {
-						setLoad(false);
 						setText(message);
 						return;
 					}
 
 					setPosts(posts);
-				});
+				}));
 		}
-		setLoad(false);
 	}, [pageIdUser, currentIdUser]);
 
 	React.useEffect(() => {
@@ -121,11 +116,10 @@ function Profile(): JSX.Element {
 					</React.Fragment>
 				}
 				<div className={classes.top}>
-					<img
+					<div
 						className={classes.avatar}
-						src={pageAvatarUser}
-						alt="avatar"
-					/>
+						style={{ backgroundImage: `url(${pageAvatarUser})` }}
+					></div>
 					<div className={classes.info}>
 						<div className={classes.infoTop}>
 							<span className={classes.name}>{pageUser.user_name}</span>

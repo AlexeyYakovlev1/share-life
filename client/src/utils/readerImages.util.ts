@@ -5,7 +5,6 @@ export interface IPhoto {
 
 function readerImages(
 	selectedImages: any, // React.Dispatch<React.SetStateAction<any[]>> but this not work for "forEach"
-	setLoad: React.Dispatch<React.SetStateAction<boolean>>,
 	setPhotos: React.Dispatch<React.SetStateAction<any[]>>,
 	setText: React.Dispatch<React.SetStateAction<string>>
 ) {
@@ -14,7 +13,6 @@ function readerImages(
 	let isCancel = false;
 
 	if (selectedImages.length) {
-		setLoad(true);
 		selectedImages.forEach((file: any, index: number) => {
 			const reader: any = new FileReader();
 
@@ -35,13 +33,10 @@ function readerImages(
 			};
 
 			reader.onerror = () => {
-				setLoad(false);
 				setText(reader.error.message);
 			};
 		});
 	}
-
-	setLoad(false);
 
 	return () => {
 		isCancel = true;

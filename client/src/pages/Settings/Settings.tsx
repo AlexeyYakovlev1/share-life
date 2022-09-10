@@ -5,7 +5,7 @@ import MainLayout from "../../components/Layouts/MainLayout/MainLayout";
 import Button from "../../components/UI/Button/Button";
 import Input from "../../components/UI/Input/Input";
 import AlertContext from "../../context/alert.context";
-import LoaderContext from "../../context/loader.context";
+import { trackPromise } from "react-promise-tracker";
 import { IState } from "../../models/redux.models";
 import classes from "./Settings.module.sass";
 import { setUser as setUserToReducer } from "../../redux/actions/user.actions";
@@ -32,7 +32,6 @@ function Settings(): JSX.Element {
 	});
 	const [user, setUser] = React.useState<IPersonForSettings>({ ...info });
 
-	const { setLoad } = React.useContext(LoaderContext);
 	const { setText } = React.useContext(AlertContext);
 
 	React.useEffect(() => {
@@ -43,7 +42,6 @@ function Settings(): JSX.Element {
 	// update avatar
 	function uploadHandler(event: any) {
 		if (!event.target?.files.length) return;
-		setLoad(true);
 
 		const file = event.target?.files[0];
 		const formData = new FormData();
@@ -62,43 +60,34 @@ function Settings(): JSX.Element {
 
 					setText(message || error);
 
-					if (!success) {
-						setLoad(false);
-						return;
-					}
+					if (!success) return;
 
 					dispatch(setUserToReducer({ ...info, avatar: { base64: inBase64, filename } }));
-					setLoad(false);
 				});
 		};
 
 		reader.onerror = () => {
-			setLoad(false);
 			setText(reader.error.message);
 			return;
 		};
-		setLoad(false);
 	}
 
 	// update user
 	function submitUpdate(event: React.FormEvent<HTMLFormElement>): void {
 		event.preventDefault();
-		setLoad(true);
 
-		updateUser(info.id, user)
+		trackPromise(updateUser(info.id, user)
 			.then((data) => {
 				const { success, message, error, person } = data;
 
 				setText(message || error);
 
 				if (!success) {
-					setLoad(false);
 					return;
 				}
 
 				dispatch(setUserToReducer(person));
-			});
-		setLoad(false);
+			}));
 	}
 
 	// logout

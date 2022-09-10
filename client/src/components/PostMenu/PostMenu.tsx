@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import { IPost } from "../../models/post.models";
 import classes from "./PostMenu.module.sass";
 import cn from "classnames";
-import Cookies from "js-cookie";
-import LoaderContext from "../../context/loader.context";
 import AlertContext from "../../context/alert.context";
+import removePost from "../../http/posts/removePost.http";
+import { trackPromise } from "react-promise-tracker";
+import { useDispatch } from "react-redux";
+import { removePost as removePostInRedux } from "../../redux/actions/posts.actions";
 
 interface IPostMenuProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
 	post: IPost;
@@ -13,26 +15,17 @@ interface IPostMenuProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement
 	visible: boolean;
 }
 
-const { REACT_APP_API_URL } = process.env;
-
 function PostMenu({ post, setVisible, visible, className = "", ...props }: IPostMenuProps): JSX.Element {
-	const { setLoad } = React.useContext(LoaderContext);
 	const { setText } = React.useContext(AlertContext);
+	const dispatch = useDispatch();
 
 	function deletePost() {
-		setLoad(true);
-		fetch(`${REACT_APP_API_URL}/posts/remove/${post.id}`, {
-			method: "DELETE",
-			headers: {
-				Authorization: `Bearer ${Cookies.get("token")}`
-			}
-		})
-			.then((response) => response.json())
+		trackPromise(removePost(post.id)
 			.then((data) => {
 				const { message, error } = data;
 				setText(message || error);
-				setLoad(false);
-			});
+				dispatch(removePostInRedux(post.id));
+			}));
 	}
 
 	return (

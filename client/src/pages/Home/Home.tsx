@@ -1,34 +1,12 @@
-import React from "react";
+import { useSelector } from "react-redux";
 import HomePost from "../../components/HomePost/HomePost";
 import MainLayout from "../../components/Layouts/MainLayout/MainLayout";
-import AlertContext from "../../context/alert.context";
-import LoaderContext from "../../context/loader.context";
-import getAllPosts from "../../http/posts/getAllPosts.http";
 import { IPost } from "../../models/post.models";
+import { IState } from "../../models/redux.models";
 import classes from "./Home.module.sass";
 
 function Home(): JSX.Element {
-	const [posts, setPosts] = React.useState<Array<IPost>>([]);
-
-	const { setLoad } = React.useContext(LoaderContext);
-	const { setText } = React.useContext(AlertContext);
-
-	React.useEffect(() => {
-		getAllPosts()
-			.then((data) => {
-				setLoad(true);
-				const { success, message, posts } = data;
-
-				if (!success) {
-					setLoad(false);
-					setText(message);
-					return;
-				}
-
-				setPosts(posts);
-				setLoad(false);
-			});
-	}, []);
+	const posts = useSelector((state: IState) => state.posts);
 
 	return (
 		<MainLayout>
@@ -36,7 +14,7 @@ function Home(): JSX.Element {
 				<ul className={classes.list}>
 					{(posts && posts.length) ? posts.map((post: IPost) => (
 						<HomePost key={post.id} info={post} />
-					)) : <span>No posts...</span>}
+					)) : <span>No posts</span>}
 				</ul>
 			</div>
 		</MainLayout>

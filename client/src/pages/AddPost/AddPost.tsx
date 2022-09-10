@@ -8,7 +8,7 @@ import { useSlider } from "../../hooks/useSlider";
 import React from "react";
 import { IState } from "../../models/redux.models";
 import { useSelector } from "react-redux";
-import LoaderContext from "../../context/loader.context";
+import { trackPromise } from "react-promise-tracker";
 import AlertContext from "../../context/alert.context";
 import readerImages, { IPhoto } from "../../utils/readerImages.util";
 import uploadImages from "../../utils/uploadImages.util";
@@ -32,63 +32,55 @@ function AddPost(): JSX.Element {
 	const { setCount, sliderWrapperRef, count, widthSlider } = useSlider({ list: photos });
 	const uploadRef = React.useRef<HTMLInputElement | null>(null);
 
-	const { setLoad } = React.useContext(LoaderContext);
 	const { setText } = React.useContext(AlertContext);
 
 	React.useEffect(() => {
-		readerImages(selectedImages, setLoad, setPhotos, setText);
+		readerImages(selectedImages, setPhotos, setText);
 	}, [selectedImages]);
 
 	// send all data for new post
 	React.useEffect(() => {
 		if (post.photos.length) {
-			setLoad(true);
 			// send all data (create a new post)
-			createPost(post)
+			trackPromise(createPost(post)
 				.then((data) => {
 					const { success, message, errors } = data;
 
 					if (errors && errors.length) {
-						setLoad(false);
 						setErrors(true);
 						return;
 					}
 
 					if (!success) {
-						setLoad(false);
 						setText(message);
 						return;
 					}
 
 					setText(message);
-				});
-			setLoad(false);
+				}));
 		}
 	}, [post.photos]);
 
 	// upload photos
 	function submitPost(event: React.ChangeEvent<HTMLFormElement>) {
 		event.preventDefault();
-		setLoad(true);
 
 		if (selectedImages.length) {
 			const formData = new FormData();
 			selectedImages.map((image: any) => formData.append("photos", image));
 
-			uploadPhotos(formData)
+			trackPromise(uploadPhotos(formData)
 				.then((data) => {
 					const { success, message, fileNames } = data;
 
 					if (!success) {
-						setLoad(false);
 						setText(message);
 						return;
 					}
 
 					setPost({ ...post, photos: fileNames });
-				});
+				}));
 		}
-		setLoad(false);
 	}
 
 	return (
@@ -100,7 +92,7 @@ function AddPost(): JSX.Element {
 				</header>
 				<div className={classes.content}>
 					<div className={classes.slider} ref={sliderWrapperRef}>
-						{photos.length ?
+						{photos.length > 1 ?
 							<React.Fragment>
 								<button
 									className={cn(classes.sliderBtn, classes.sliderBtnLeft)}
@@ -146,7 +138,7 @@ function AddPost(): JSX.Element {
 									accept="image/*"
 									multiple
 									required
-									onChange={(event) => uploadImages(event, setLoad, setSelectedImages, setText)}
+									onChange={(event) => uploadImages(event, setSelectedImages, setText)}
 								/>
 								<Button
 									onClick={() => uploadRef.current?.click()}
