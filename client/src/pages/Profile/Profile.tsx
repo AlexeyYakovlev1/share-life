@@ -13,18 +13,11 @@ import { trackPromise } from "react-promise-tracker";
 import AlertContext from "../../context/alert.context";
 import { IPerson } from "../../models/person.models";
 import getOneUser from "../../http/user/getOneUser.http";
-import getPostsByUser from "../../http/posts/getPostsByUser.http";
 import useAvatar from "../../hooks/useAvatar";
 import { IState } from "../../models/redux.models";
 import { useSelector } from "react-redux";
 
 function Profile(): JSX.Element {
-	const [posts, setPosts] = React.useState<Array<IPost>>([{
-		id: -1,
-		owner_id: -1,
-		photos: [""],
-		description: ""
-	}]);
 	const [pageUser, setPageUser] = React.useState<IPerson>({
 		id: -1,
 		full_name: "",
@@ -40,17 +33,17 @@ function Profile(): JSX.Element {
 	});
 	const [currentUser, setCurrentUser] = React.useState<boolean>(false);
 
-	const pageAvatarUser = useAvatar(pageUser.avatar.base64);
+	const { id: currentIdUser } = useSelector((state: IState) => state.person.info);
+	const posts = useSelector((state: IState) => state.posts);
+	const userPosts = posts.filter((post: IPost) => +post.owner_id === +pageUser.id);
 
+	const pageAvatarUser = useAvatar(pageUser.avatar.base64);
 	const [searchParams, setSearchParams] = useSearchParams();
 	const queryPostOpen = searchParams.get("watch") === "true";
 	const queryPostId = searchParams.get("post_id");
 	const { setCount, count } = useSlider({ list: posts });
 	const { id: pageIdUser } = useParams();
-
 	const { setText } = React.useContext(AlertContext);
-
-	const { id: currentIdUser } = useSelector((state: IState) => state.person.info);
 
 	React.useEffect(() => {
 		if (pageIdUser) {
@@ -65,18 +58,6 @@ function Profile(): JSX.Element {
 
 					setPageUser(person);
 					setCurrentUser(+pageIdUser === +currentIdUser);
-				}));
-
-			trackPromise(getPostsByUser(+pageIdUser)
-				.then((data) => {
-					const { success, posts, message } = data;
-
-					if (!success) {
-						setText(message);
-						return;
-					}
-
-					setPosts(posts);
 				}));
 		}
 	}, [pageIdUser, currentIdUser]);
@@ -159,18 +140,24 @@ function Profile(): JSX.Element {
 					</div>
 				</div>
 				<div className={classes.content}>
-					<ul className={classes.contentList}>
-						{posts.length ? posts.map((post: IPost) => {
-							return (
-								<Post
-									key={post.id}
-									photos={post.photos}
-									postId={post.id}
-									ownerId={post.owner_id}
-								/>
-							);
-						}) : <span>No posts...</span>}
-					</ul>
+					{
+						userPosts.length ?
+							<ul className={classes.contentList}>
+								{posts.map((post: IPost) => {
+									return (
+										<Post
+											key={post.id}
+											photos={post.photos}
+											postId={post.id}
+											ownerId={post.owner_id}
+										/>
+									);
+								})}
+							</ul> :
+							<div className={classes.contentNoPosts}>
+								<p>This user hasn`t uploaded any posts yet</p>
+							</div>
+					}
 				</div>
 			</div>
 		</MainLayout>
