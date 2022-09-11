@@ -1,14 +1,14 @@
+import { IPost } from "../../models/post.models";
 import { IPostAction, IPostRemoveAction } from "../../models/redux.models";
-import { IFullPost } from "../reducers/posts.reducer";
 
-export function setPosts(posts: Array<IFullPost>): IPostAction {
+export function setPosts(posts: Array<IPost>): IPostAction {
 	return {
 		type: "SET_POSTS",
 		payload: posts
 	};
 }
 
-export function addPost(post: IFullPost): IPostAction {
+export function addPost(post: IPost): IPostAction {
 	return {
 		type: "ADD_POST",
 		payload: post

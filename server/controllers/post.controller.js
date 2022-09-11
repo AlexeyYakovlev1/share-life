@@ -33,7 +33,18 @@ class PostController {
 
 				return Promise.resolve(newPost);
 			})
-			.then((newPost) => res.status(201).json({ success: true, message: "Post has been created", post: newPost.rows[0] }))
+			.then((post) => {
+				// convert photos to base64
+				const photos = [];
+
+				for (let i = 0; i < post.rows[0].photos.length; i++) {
+					const photo = post.rows[0].photos[i];
+					const filePath = path.relative(PROJECT_ROOT, `./templates/post/${photo}`);
+					photos.push(toBase64(filePath, true));
+				}
+
+				res.status(201).json({ success: true, message: "Post has been created", post: { ...post.rows[0], photos } });
+			})
 			.catch((error) => res.status(400).json({ success: false, error, message: error.message }));
 	}
 

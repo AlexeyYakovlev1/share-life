@@ -90,6 +90,15 @@ class CommentController {
 			.then((findComments) => res.status(200).json({ success: true, comments: findComments.rows }))
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}
+
+	getAll(req, res) {
+		const queryForFindComments = `SELECT * FROM comment`;
+		const comments = db.query(queryForFindComments);
+
+		new Promise((resolve) => resolve(comments))
+			.then((comments) => res.status(200).json({ success: true, comments: comments.rows }))
+			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
+	}
 }
 
 module.exports = new CommentController();

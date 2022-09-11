@@ -7,18 +7,19 @@ import { ReactComponent as ArrowLeftIcon } from "../../assets/images/arrow-left.
 import { useSlider } from "../../hooks/useSlider";
 import React from "react";
 import { IState } from "../../models/redux.models";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { trackPromise } from "react-promise-tracker";
 import AlertContext from "../../context/alert.context";
 import readerImages, { IPhoto } from "../../utils/readerImages.util";
 import uploadImages from "../../utils/uploadImages.util";
 import useAvatar from "../../hooks/useAvatar";
-import createPost from "../../http/posts/createPost.http";
 import uploadPhotos from "../../http/files/uploadPhotos.http";
+import addPostAsyncAction from "../../redux/actions/async/posts/addPost";
+import { useNavigate } from "react-router-dom";
 
 function AddPost(): JSX.Element {
 	const { avatar: avatarRedux, user_name } = useSelector((state: IState) => state.person.info);
-	const avatar = useAvatar(avatarRedux.base64);
+	const dispatch: any = useDispatch();
 
 	const [photos, setPhotos] = React.useState<Array<IPhoto>>([]);
 	const [selectedImages, setSelectedImages] = React.useState<any>([]);
@@ -31,6 +32,8 @@ function AddPost(): JSX.Element {
 
 	const { setCount, sliderWrapperRef, count, widthSlider } = useSlider({ list: photos });
 	const uploadRef = React.useRef<HTMLInputElement | null>(null);
+	const avatar = useAvatar(avatarRedux.base64);
+	const navigate = useNavigate();
 
 	const { setText } = React.useContext(AlertContext);
 
@@ -40,25 +43,9 @@ function AddPost(): JSX.Element {
 
 	// send all data for new post
 	React.useEffect(() => {
-		if (post.photos.length) {
-			// send all data (create a new post)
-			trackPromise(createPost(post)
-				.then((data) => {
-					const { success, message, errors } = data;
-
-					if (errors && errors.length) {
-						setErrors(true);
-						return;
-					}
-
-					if (!success) {
-						setText(message);
-						return;
-					}
-
-					setText(message);
-				}));
-		}
+		if (!post.photos.length) return;
+		dispatch(addPostAsyncAction(post, setErrors, setText));
+		navigate("/");
 	}, [post.photos]);
 
 	// upload photos

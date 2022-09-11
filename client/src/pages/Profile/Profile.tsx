@@ -106,7 +106,7 @@ function Profile(): JSX.Element {
 							<span className={classes.name}>{pageUser.user_name}</span>
 							{!currentUser
 								?
-								<Button className={classes.infoTopButton}>Following</Button>
+								<Button className={classes.infoTopButton}>Follow</Button>
 								:
 								<Button className={classes.infoTopButton}>
 									<Link to="/settings">Settings</Link>

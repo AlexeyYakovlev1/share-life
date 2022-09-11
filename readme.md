@@ -1,9 +1,10 @@
 #todo
 --client
-1)Add comments[x]
-2)Render comments[x]
-3)Posts in redux
--Create actions for posts[x]
--Create reducer for posts[x]
--Render posts from redux[x]
-4)Update loader with react-promise-tracker[x]
+1)Comments in redux
+-Create actions for comments[x]
+-Create reducer for comments[x]
+-Render comments for post[]
+2)Refactoring for redux (async actions)[x]
+
+--server
+Update create router for post[x]

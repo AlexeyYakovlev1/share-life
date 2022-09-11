@@ -4,10 +4,8 @@ import { IPost } from "../../models/post.models";
 import classes from "./PostMenu.module.sass";
 import cn from "classnames";
 import AlertContext from "../../context/alert.context";
-import removePost from "../../http/posts/removePost.http";
-import { trackPromise } from "react-promise-tracker";
 import { useDispatch } from "react-redux";
-import { removePost as removePostInRedux } from "../../redux/actions/posts.actions";
+import removePostAsyncAction from "../../redux/actions/async/posts/removePost";
 
 interface IPostMenuProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
 	post: IPost;
@@ -17,16 +15,7 @@ interface IPostMenuProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement
 
 function PostMenu({ post, setVisible, visible, className = "", ...props }: IPostMenuProps): JSX.Element {
 	const { setText } = React.useContext(AlertContext);
-	const dispatch = useDispatch();
-
-	function deletePost() {
-		trackPromise(removePost(post.id)
-			.then((data) => {
-				const { message, error } = data;
-				setText(message || error);
-				dispatch(removePostInRedux(post.id));
-			}));
-	}
+	const dispatch: any = useDispatch();
 
 	return (
 		<div
@@ -44,7 +33,7 @@ function PostMenu({ post, setVisible, visible, className = "", ...props }: IPost
 					<Link to="/settings?change=true">Change</Link>
 				</li>
 				<li
-					onClick={deletePost}
+					onClick={() => dispatch(removePostAsyncAction(post.id, setText))}
 					className={cn(classes.item, classes.itemDelete)}
 				>
 					Delete

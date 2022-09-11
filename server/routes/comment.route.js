@@ -8,5 +8,7 @@ router.post("/add/:id", AuthMiddleware, CommentController.create);
 router.delete("/remove/:id", AuthMiddleware, CommentController.remove);
 // for example: /comments/all-by-post/2
 router.get("/all-by-post/:id", CommentController.getAllByPostId);
+// for example: /comments/all
+router.get("/all", CommentController.getAll);
 
 module.exports = router;
