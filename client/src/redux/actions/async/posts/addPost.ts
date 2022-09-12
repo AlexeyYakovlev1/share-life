@@ -1,4 +1,3 @@
-import { trackPromise } from "react-promise-tracker";
 import createPost from "../../../../http/posts/createPost.http";
 import { IPost } from "../../../../models/post.models";
 import { addPost } from "../../posts.actions";
@@ -9,7 +8,7 @@ function addPostAsyncAction(
 	setText: React.Dispatch<React.SetStateAction<string>>
 ) {
 	return (dispatch: React.Dispatch<any>) => {
-		trackPromise(createPost(post)
+		createPost(post)
 			.then((data) => {
 				const { success, message, errors, post: postFromServer } = data;
 
@@ -25,7 +24,7 @@ function addPostAsyncAction(
 
 				setText(message);
 				dispatch(addPost(postFromServer));
-			}));
+			});
 	};
 }
 

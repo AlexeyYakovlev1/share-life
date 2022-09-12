@@ -16,7 +16,6 @@ import AlertContext from "../../context/alert.context";
 import useAvatar from "../../hooks/useAvatar";
 import getAllCommentsByPost from "../../http/comments/getAllCommentsByPost.http";
 import Comment from "../OpenPost/Comment";
-import { trackPromise } from "react-promise-tracker";
 import { useSelector } from "react-redux";
 import { IState } from "../../models/redux.models";
 
@@ -45,7 +44,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 
 	// user
 	React.useEffect(() => {
-		trackPromise(getOneUser(info.owner_id)
+		getOneUser(info.owner_id)
 			.then((data) => {
 				const { success, message, person } = data;
 
@@ -55,12 +54,12 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 				}
 
 				setUserPost(person);
-			}));
+			});
 	}, [info]);
 
 	// comments
 	React.useEffect(() => {
-		trackPromise(getAllCommentsByPost(info.id)
+		getAllCommentsByPost(info.id)
 			.then((data) => {
 				const { success, error, comments } = data;
 
@@ -71,7 +70,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 
 				setComments(comments);
 				setViewComments(comments.length >= 3);
-			}));
+			});
 	}, [info]);
 
 	return (
@@ -184,7 +183,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 						</div>
 					</div>
 				</div>
-				<div className={classes.bodyComments}>
+				<div className={classes.bodyComments} style={{ marginTop: `${comments.length ? "20px" : "0"}` }}>
 					<ul className={classes.bodyCommentsList}>
 						{comments.map((_, index: number) => {
 							if (viewComments && index >= 2) return;

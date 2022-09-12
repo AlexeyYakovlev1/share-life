@@ -6,7 +6,6 @@ import getOneUser from "../../http/user/getOneUser.http";
 import AlertContext from "../../context/alert.context";
 import { IPerson } from "../../models/person.models";
 import useAvatar from "../../hooks/useAvatar";
-import { trackPromise } from "react-promise-tracker";
 
 function Comment({ info }: { info: IComment }): JSX.Element {
 	const { setText } = React.useContext(AlertContext);
@@ -28,7 +27,7 @@ function Comment({ info }: { info: IComment }): JSX.Element {
 	React.useEffect(() => {
 		if (info.owner_id === -1) return;
 
-		trackPromise(getOneUser(info.owner_id)
+		getOneUser(info.owner_id)
 			.then((data) => {
 				const { success, person, error } = data;
 
@@ -38,7 +37,7 @@ function Comment({ info }: { info: IComment }): JSX.Element {
 				}
 
 				setUserComment(person);
-			}));
+			});
 	}, [info]);
 
 	return (

@@ -5,7 +5,6 @@ import MainLayout from "../../components/Layouts/MainLayout/MainLayout";
 import Button from "../../components/UI/Button/Button";
 import Input from "../../components/UI/Input/Input";
 import AlertContext from "../../context/alert.context";
-import { trackPromise } from "react-promise-tracker";
 import { IState } from "../../models/redux.models";
 import classes from "./Settings.module.sass";
 import { setUser as setUserToReducer } from "../../redux/actions/user.actions";
@@ -76,7 +75,7 @@ function Settings(): JSX.Element {
 	function submitUpdate(event: React.FormEvent<HTMLFormElement>): void {
 		event.preventDefault();
 
-		trackPromise(updateUser(info.id, user)
+		updateUser(info.id, user)
 			.then((data) => {
 				const { success, message, error, person } = data;
 
@@ -87,7 +86,7 @@ function Settings(): JSX.Element {
 				}
 
 				dispatch(setUserToReducer(person));
-			}));
+			});
 	}
 
 	// logout

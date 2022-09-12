@@ -7,7 +7,6 @@ import AlertContext from "../../context/alert.context";
 import classes from "./Auth.module.sass";
 import Alert from "../../components/UI/Alert/Alert";
 import Loader from "../../components/UI/Loader/Loader";
-import { trackPromise } from "react-promise-tracker";
 import { usePromiseTracker } from "react-promise-tracker";
 import register from "../../http/auth/register.http";
 
@@ -21,7 +20,7 @@ function Register() {
 	function regisSubmit(event: React.FormEvent<HTMLFormElement>): void {
 		event.preventDefault();
 
-		trackPromise(register(user)
+		register(user)
 			.then((data) => {
 				const { errors: dataErrors, success, message, error } = data;
 
@@ -41,7 +40,7 @@ function Register() {
 				}
 
 				navigate("/auth/login");
-			}));
+			});
 	}
 
 	return (

@@ -1,11 +1,10 @@
-import { trackPromise } from "react-promise-tracker";
 import { setUser } from "../../user.actions";
 import Cookies from "js-cookie";
 import checkAuth from "../../../../http/auth/checkAuth.http";
 
 function checkAuthAsyncAction() {
 	return (dispatch: React.Dispatch<any>) => {
-		trackPromise(checkAuth()
+		checkAuth()
 			.then((data) => {
 				const { token, person, success } = data;
 
@@ -13,7 +12,7 @@ function checkAuthAsyncAction() {
 
 				Cookies.set("token", token);
 				dispatch(setUser(person));
-			}));
+			});
 	};
 }
 

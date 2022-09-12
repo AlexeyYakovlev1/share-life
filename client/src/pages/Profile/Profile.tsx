@@ -9,7 +9,6 @@ import React from "react";
 import { ReactComponent as ArrowLeftIcon } from "../../assets/images/arrow-left.svg";
 import cn from "classnames";
 import { useSlider } from "../../hooks/useSlider";
-import { trackPromise } from "react-promise-tracker";
 import AlertContext from "../../context/alert.context";
 import { IPerson } from "../../models/person.models";
 import getOneUser from "../../http/user/getOneUser.http";
@@ -47,7 +46,7 @@ function Profile(): JSX.Element {
 
 	React.useEffect(() => {
 		if (pageIdUser) {
-			trackPromise(getOneUser(+pageIdUser)
+			getOneUser(+pageIdUser)
 				.then((data: any) => {
 					const { success, person, message } = data;
 
@@ -58,7 +57,7 @@ function Profile(): JSX.Element {
 
 					setPageUser(person);
 					setCurrentUser(+pageIdUser === +currentIdUser);
-				}));
+				});
 		}
 	}, [pageIdUser, currentIdUser]);
 

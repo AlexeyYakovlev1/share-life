@@ -1,17 +1,15 @@
 import Cookies from "js-cookie";
+import { trackPromise } from "react-promise-tracker";
 
 const { REACT_APP_API_URL } = process.env;
 
 function updateUser(userId: number, body: any) {
 	for (const key in body) {
 		const value = body[key];
-
-		if (typeof value === "string" && !value.length) {
-			body[key] = null;
-		}
+		(typeof value === "string" && !value.length) ? body[key] = null : false;
 	}
 
-	return fetch(`${REACT_APP_API_URL}/users/update/${userId}`, {
+	return trackPromise(fetch(`${REACT_APP_API_URL}/users/update/${userId}`, {
 		method: "PUT",
 		headers: {
 			"Content-Type": "application/json",
@@ -20,7 +18,7 @@ function updateUser(userId: number, body: any) {
 		body: JSON.stringify(body)
 	})
 		.then((response) => response.json())
-		.then((data) => data);
+		.then((data) => data));
 }
 
 export default updateUser;

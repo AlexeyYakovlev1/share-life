@@ -8,7 +8,6 @@ import { useSlider } from "../../hooks/useSlider";
 import React from "react";
 import { IState } from "../../models/redux.models";
 import { useDispatch, useSelector } from "react-redux";
-import { trackPromise } from "react-promise-tracker";
 import AlertContext from "../../context/alert.context";
 import readerImages, { IPhoto } from "../../utils/readerImages.util";
 import uploadImages from "../../utils/uploadImages.util";
@@ -56,7 +55,7 @@ function AddPost(): JSX.Element {
 			const formData = new FormData();
 			selectedImages.map((image: any) => formData.append("photos", image));
 
-			trackPromise(uploadPhotos(formData)
+			uploadPhotos(formData)
 				.then((data) => {
 					const { success, message, fileNames } = data;
 
@@ -66,7 +65,7 @@ function AddPost(): JSX.Element {
 					}
 
 					setPost({ ...post, photos: fileNames });
-				}));
+				});
 		}
 	}
 

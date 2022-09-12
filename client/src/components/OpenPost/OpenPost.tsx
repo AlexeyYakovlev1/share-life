@@ -16,7 +16,6 @@ import AlertContext from "../../context/alert.context";
 import getOnePost from "../../http/posts/getOnePost.http";
 import useAvatar from "../../hooks/useAvatar";
 import getAllCommentsByPost from "../../http/comments/getAllCommentsByPost.http";
-import { trackPromise } from "react-promise-tracker";
 import { IState } from "../../models/redux.models";
 import { useSelector } from "react-redux";
 
@@ -60,7 +59,7 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 	React.useEffect(() => {
 		if (currentPost.id === -1) return;
 
-		trackPromise(getAllCommentsByPost(currentPost.id)
+		getAllCommentsByPost(currentPost.id)
 			.then((data) => {
 				const { comments, success, error } = data;
 
@@ -70,13 +69,13 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 				}
 
 				setCommentsPost(comments);
-			}));
+			});
 	}, [currentPost]);
 
 	// post
 	React.useEffect(() => {
 		if (queryPostId && +queryPostId > 0) {
-			trackPromise(getOnePost(+queryPostId)
+			getOnePost(+queryPostId)
 				.then((data) => {
 					const { success, message, post, error } = data;
 
@@ -85,21 +84,21 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 					if (!success) return;
 
 					setCurrentPost(post);
-				}));
+				});
 		}
 	}, [queryPostId]);
 
 	// user
 	React.useEffect(() => {
 		if (ownerId > 0) {
-			trackPromise(getOneUser(ownerId)
+			getOneUser(ownerId)
 				.then((data) => {
 					const { success, person, message, error } = data;
 					setText(message || error);
 
 					if (!success) return;
 					setUserPost({ ...person, avatar: useAvatar(person.avatar) });
-				}));
+				});
 		}
 	}, [ownerId]);
 

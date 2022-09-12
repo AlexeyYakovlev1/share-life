@@ -5,14 +5,20 @@ import { ReactComponent as SearchIcon } from "../../assets/images/search.svg";
 import { ReactComponent as LikeIcon } from "../../assets/images/heart.svg";
 import { ReactComponent as PlusIcon } from "../../assets/images/plus.svg";
 import { Link } from "react-router-dom";
-import { DetailedHTMLProps, FunctionComponent, HTMLAttributes, SVGProps } from "react";
+import React, { DetailedHTMLProps, FunctionComponent, HTMLAttributes, SVGProps } from "react";
 import cn from "classnames";
 import Button from "../UI/Button/Button";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IState } from "../../models/redux.models";
 import useAvatar from "../../hooks/useAvatar";
+import AlertContext from "../../context/alert.context";
+import getAllPosts from "../../http/posts/getAllPosts.http";
+import { setPosts } from "../../redux/actions/posts.actions";
+import searchPostsByKeyWords from "../../http/posts/search.http";
 
 interface IHeaderProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> { }
+
+const { REACT_APP_API_URL } = process.env;
 
 function Header({ className }: IHeaderProps): JSX.Element {
 	interface IMenu {
@@ -21,6 +27,9 @@ function Header({ className }: IHeaderProps): JSX.Element {
 		img: FunctionComponent<SVGProps<SVGSVGElement>>;
 	}
 	const { info: { avatar, id, user_name }, isAuth } = useSelector((state: IState) => state.person);
+	const [searchVal, setSearchVal] = React.useState<string>("");
+	const dispatch = useDispatch();
+	const { setText } = React.useContext(AlertContext);
 
 	const currentAvatarUser = useAvatar(avatar.base64);
 	const menu: Array<IMenu> = [
@@ -36,6 +45,36 @@ function Header({ className }: IHeaderProps): JSX.Element {
 		}
 	];
 
+	// search
+	function searchHandler(event: any) {
+		const key = event.key;
+
+		if (key !== "Enter") return;
+		if (!searchVal.length) {
+			getAllPosts()
+				.then((data) => {
+					const { success, message, error, posts } = data;
+
+					if (!success) {
+						setText(message || error);
+						return;
+					}
+
+					dispatch(setPosts(posts));
+				});
+		}
+
+		searchPostsByKeyWords(searchVal)
+			.then((data) => {
+				const { success, message, error, posts } = data;
+
+				setText(message || error);
+
+				if (!success) return;
+				dispatch(setPosts(posts));
+			});
+	}
+
 	return (
 		<header className={cn(classes.header, className)}>
 			<div className={classes.container}>
@@ -45,7 +84,10 @@ function Header({ className }: IHeaderProps): JSX.Element {
 						<SearchIcon />
 					</span>
 					<Input
+						value={searchVal}
+						onChange={(event) => setSearchVal(event.target.value)}
 						placeholder="Search"
+						onKeyPress={searchHandler}
 					/>
 				</div>
 				<div className={classes.user}>

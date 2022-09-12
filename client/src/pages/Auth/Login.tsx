@@ -6,7 +6,6 @@ import Button from "../../components/UI/Button/Button";
 import Input from "../../components/UI/Input/Input";
 import Loader from "../../components/UI/Loader/Loader";
 import AlertContext from "../../context/alert.context";
-import { trackPromise } from "react-promise-tracker";
 import classes from "./Auth.module.sass";
 import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
@@ -25,7 +24,7 @@ function Login() {
 	function logSubmit(event: React.FormEvent<HTMLFormElement>): void {
 		event.preventDefault();
 
-		trackPromise(login(user)
+		login(user)
 			.then((data) => {
 				const { errors: dataErrors, success, message, error, token, person }: any = data;
 
@@ -47,7 +46,7 @@ function Login() {
 				Cookies.set("token", token);
 				dispatch(setUserToReducer(person));
 				navigation("/");
-			}));
+			});
 	}
 
 	return (

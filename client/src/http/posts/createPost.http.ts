@@ -1,9 +1,10 @@
 import Cookies from "js-cookie";
+import { trackPromise } from "react-promise-tracker";
 
 const { REACT_APP_API_URL } = process.env;
 
 function createPost(post: any) {
-	return fetch(`${REACT_APP_API_URL}/posts/add`, {
+	return trackPromise(fetch(`${REACT_APP_API_URL}/posts/add`, {
 		method: "POST",
 		headers: {
 			Authorization: `Bearer ${Cookies.get("token") || ""}`,
@@ -12,7 +13,7 @@ function createPost(post: any) {
 		body: JSON.stringify(post)
 	})
 		.then((response) => response.json())
-		.then((data) => data);
+		.then((data) => data));
 }
 
 export default createPost;

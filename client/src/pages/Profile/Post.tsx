@@ -21,7 +21,7 @@ function Post({ photos, postId, ownerId }: IPostProps): JSX.Element {
 
 	// get comments length
 	React.useEffect(() => {
-		trackPromise(getAllCommentsByPost(postId)
+		getAllCommentsByPost(postId)
 			.then((data) => {
 				const { success, error, comments } = data;
 
@@ -31,7 +31,7 @@ function Post({ photos, postId, ownerId }: IPostProps): JSX.Element {
 				}
 
 				setCommentsLength(comments.length);
-			}));
+			});
 	}, [postId]);
 
 	return (

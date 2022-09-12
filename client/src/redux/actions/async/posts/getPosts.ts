@@ -1,4 +1,3 @@
-import { trackPromise } from "react-promise-tracker";
 import getAllPosts from "../../../../http/posts/getAllPosts.http";
 import { setPosts } from "../../posts.actions";
 
@@ -6,7 +5,7 @@ function getPostsAsyncAction(
 	setText: React.Dispatch<React.SetStateAction<string>>
 ) {
 	return (dispatch: React.Dispatch<any>) => {
-		trackPromise(getAllPosts()
+		getAllPosts()
 			.then((data) => {
 				const { success, message, posts } = data;
 
@@ -16,7 +15,7 @@ function getPostsAsyncAction(
 				}
 
 				dispatch(setPosts(posts));
-			}));
+			});
 	};
 }
 

@@ -5,7 +5,6 @@ import classes from "./AddComment.module.sass";
 import cn from "classnames";
 import AlertContext from "../../context/alert.context";
 import addComment from "../../http/comments/addComment.http";
-import { trackPromise } from "react-promise-tracker";
 
 interface IAddCommentProps extends DetailedHTMLProps<FormHTMLAttributes<HTMLFormElement>, HTMLFormElement> {
 	postId: number;
@@ -19,7 +18,7 @@ function AddComment({ className, postId, ...props }: IAddCommentProps): JSX.Elem
 	function submitAddComment(event: any) {
 		event.preventDefault();
 
-		trackPromise(addComment(postId, { text: message })
+		addComment(postId, { text: message })
 			.then((data) => {
 				const { success, error, message } = data;
 
@@ -28,8 +27,8 @@ function AddComment({ className, postId, ...props }: IAddCommentProps): JSX.Elem
 					return;
 				}
 
-				// next is update info for post in reducer...
-			}));
+				setMessage("");
+			});
 	}
 
 	return (
