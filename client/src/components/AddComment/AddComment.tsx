@@ -12,11 +12,13 @@ interface IAddCommentProps extends DetailedHTMLProps<FormHTMLAttributes<HTMLForm
 
 function AddComment({ className, postId, ...props }: IAddCommentProps): JSX.Element {
 	const [message, setMessage] = React.useState<string>("");
-
 	const { setText } = React.useContext(AlertContext);
+	const disabled = (message.length < 6) || (message.length >= 100);
 
 	function submitAddComment(event: any) {
 		event.preventDefault();
+
+		if (!message.trim().length) return;
 
 		addComment(postId, { text: message })
 			.then((data) => {
@@ -42,7 +44,7 @@ function AddComment({ className, postId, ...props }: IAddCommentProps): JSX.Elem
 				value={message}
 				onChange={(event) => setMessage(event.target.value)}
 			/>
-			<Button>Post</Button>
+			<Button disabled={disabled}>Post</Button>
 		</form>
 	);
 }
