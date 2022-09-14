@@ -23,7 +23,7 @@ function AddComment({ className, postId, ...props }: IAddCommentProps): JSX.Elem
 				const { success, error, message } = data;
 
 				if (!success) {
-					setText(error || message);
+					setText(message || error);
 					return;
 				}
 

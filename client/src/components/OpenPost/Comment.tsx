@@ -40,6 +40,8 @@ function Comment({ info }: { info: IComment }): JSX.Element {
 			});
 	}, [info]);
 
+	const createdAt = new Date(info.date).toLocaleDateString();
+
 	return (
 		<li className={classes.comment}>
 			<div
@@ -54,7 +56,7 @@ function Comment({ info }: { info: IComment }): JSX.Element {
 						</Link>
 					</span> {info.text}
 				</p>
-				<span className={classes.commentCreatedAt}>{"09.09.2022"}</span>
+				<span className={classes.commentCreatedAt}>{createdAt}</span>
 			</div>
 		</li>
 	);

@@ -18,13 +18,15 @@ import useAvatar from "../../hooks/useAvatar";
 import getAllCommentsByPost from "../../http/comments/getAllCommentsByPost.http";
 import { IState } from "../../models/redux.models";
 import { useSelector } from "react-redux";
+import getDatePost from "../../utils/getDatePost.util";
 
 function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 	const [currentPost, setCurrentPost] = React.useState<IPost>({
 		id: -1,
 		owner_id: -1,
 		photos: [""],
-		description: ""
+		description: "",
+		date: ""
 	});
 	const [userPost, setUserPost] = React.useState<IPerson>({
 		id: -1,
@@ -106,6 +108,8 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 		const params = new URLSearchParams({ watch: `${!queryWatch}` });
 		navigate({ pathname: location.pathname, search: params.toString() });
 	}
+
+	const createdAt = getDatePost(currentPost.date);
 
 	return (
 		<div className={classes.wrapper} onClick={closePost}>
@@ -198,7 +202,7 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 									</button>
 								</div>
 								<span className={classes.infoActionsLikesNum}>1,085 likes</span>
-								<span className={classes.infoActionsCreatedAt}>March 26</span>
+								<span className={classes.infoActionsCreatedAt}>{createdAt}</span>
 							</div>
 							<AddComment postId={currentPost.id} />
 						</div>

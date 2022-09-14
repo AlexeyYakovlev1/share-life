@@ -20,7 +20,8 @@ CREATE TABLE post(
 	FOREIGN KEY (owner_id) REFERENCES person (id),
 	photos TEXT ARRAY,
 	description TEXT,
-	location VARCHAR(255)
+	location VARCHAR(255),
+	date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE comment(
@@ -29,5 +30,6 @@ CREATE TABLE comment(
 	FOREIGN KEY (post_id) REFERENCES post (id),
 	owner_id INTEGER,
 	FOREIGN KEY (owner_id) REFERENCES person (id),
-	text TEXT NOT NULL
+	text TEXT NOT NULL,
+	date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

@@ -4,6 +4,7 @@ export interface IPost {
 	photos: Array<string>;
 	description?: string;
 	location?: string;
+	date: Date | string;
 }
 
 export interface IComment {
@@ -11,5 +12,5 @@ export interface IComment {
 	owner_id: number;
 	post_id: number;
 	text: string;
-	createdAt: Date | string;
+	date: Date | string;
 }

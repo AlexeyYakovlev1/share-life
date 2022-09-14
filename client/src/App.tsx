@@ -4,24 +4,23 @@ import AlertContext from "./context/alert.context";
 import useRoutes from "./hooks/useRoutes";
 import checkAuthAsyncAction from "./redux/actions/async/auth/checkAuth";
 import getPostsAsyncAction from "./redux/actions/async/posts/getPosts";
-import getCommentsAsyncAction from "./redux/actions/async/comments/getComments";
 
 function App() {
 	const dispatch: any = useDispatch();
-	const routes = useRoutes();
-
-	const [text, setText] = React.useState<string>("");
 
 	React.useEffect(() => {
 		dispatch(checkAuthAsyncAction());
+	}, []);
+
+	const routes = useRoutes();
+	const [text, setText] = React.useState<string>("");
+
+	React.useEffect(() => {
 		dispatch(getPostsAsyncAction(setText));
-		dispatch(getCommentsAsyncAction(setText));
 	}, []);
 
 	return (
-		<AlertContext.Provider value={{ text, setText }}>
-			{routes}
-		</AlertContext.Provider>
+		<AlertContext.Provider value={{ text, setText }}>{routes}</AlertContext.Provider>
 	);
 }
 
