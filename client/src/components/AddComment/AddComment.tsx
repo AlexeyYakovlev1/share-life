@@ -25,7 +25,10 @@ function AddComment({ className, postId, setComments, comments, ...props }: IAdd
 	function submitAddComment(event: any) {
 		event.preventDefault();
 
-		if (!message.text.trim().length) return;
+		if (!message.text.trim().length) {
+			setMessage({ text: "", submit: false });
+			return;
+		}
 
 		addComment(postId, { text: message.text })
 			.then((data) => {

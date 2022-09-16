@@ -33,6 +33,7 @@ function AddPost(): JSX.Element {
 	const uploadRef = React.useRef<HTMLInputElement | null>(null);
 	const avatar = useAvatar(avatarRedux.base64);
 	const navigate = useNavigate();
+	const disabled = (post.description.length >= 2200) || ((post.location.length < 3) || (post.location.length >= 20)) || !photos.length;
 
 	const { setText } = React.useContext(AlertContext);
 
@@ -159,7 +160,7 @@ function AddPost(): JSX.Element {
 								value={post.location}
 								onChange={(event) => setPost({ ...post, location: event.target.value })}
 							/>
-							<Button>Share</Button>
+							<Button disabled={disabled}>Share</Button>
 						</form>
 					</div>
 				</div>
