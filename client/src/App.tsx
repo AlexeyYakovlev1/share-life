@@ -7,15 +7,11 @@ import getPostsAsyncAction from "./redux/actions/async/posts/getPosts";
 
 function App() {
 	const dispatch: any = useDispatch();
-
-	React.useEffect(() => {
-		dispatch(checkAuthAsyncAction());
-	}, []);
-
 	const routes = useRoutes();
 	const [text, setText] = React.useState<string>("");
 
 	React.useEffect(() => {
+		dispatch(checkAuthAsyncAction());
 		dispatch(getPostsAsyncAction(setText));
 	}, []);
 

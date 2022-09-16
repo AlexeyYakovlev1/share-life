@@ -5,6 +5,14 @@ const cors = require("cors");
 
 const PORT = process.env.PORT || 5000;
 const app = express();
+const http = require("http").Server(app);
+const io = require("socket.io")(http, {
+	cors: {
+		origin: "http://localhost:3000"
+	}
+})
+
+app.set("socketio", io);
 
 app.use(cors());
 app.use(express.json({ extended: true, limit: "50mb" }));
@@ -18,7 +26,7 @@ app.use("/upload", require("./routes/upload.route"));
 app.use("/files", require("./routes/files.route"));
 
 function run() {
-	app.listen(PORT, () => {
+	http.listen(PORT, () => {
 		console.log(`Server has been started on port ${PORT}`);
 	});
 }

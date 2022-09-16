@@ -5,22 +5,29 @@ import classes from "./AddComment.module.sass";
 import cn from "classnames";
 import AlertContext from "../../context/alert.context";
 import addComment from "../../http/comments/addComment.http";
+import socket from "socket.io-client";
+import { IComment } from "../../models/post.models";
 
 interface IAddCommentProps extends DetailedHTMLProps<FormHTMLAttributes<HTMLFormElement>, HTMLFormElement> {
 	postId: number;
+	setComments: React.Dispatch<React.SetStateAction<Array<IComment>>>;
+	comments: Array<IComment>;
 }
 
-function AddComment({ className, postId, ...props }: IAddCommentProps): JSX.Element {
-	const [message, setMessage] = React.useState<string>("");
-	const { setText } = React.useContext(AlertContext);
-	const disabled = (message.length < 6) || (message.length >= 100);
+const { REACT_APP_API_URL } = process.env;
 
+function AddComment({ className, postId, setComments, comments, ...props }: IAddCommentProps): JSX.Element {
+	const [message, setMessage] = React.useState<{ text: string, submit: boolean }>({ text: "", submit: false });
+	const { setText } = React.useContext(AlertContext);
+	const disabled = (message.text.length < 6) || (message.text.length >= 100);
+
+	// give comment data
 	function submitAddComment(event: any) {
 		event.preventDefault();
 
-		if (!message.trim().length) return;
+		if (!message.text.trim().length) return;
 
-		addComment(postId, { text: message })
+		addComment(postId, { text: message.text })
 			.then((data) => {
 				const { success, error, message } = data;
 
@@ -29,9 +36,21 @@ function AddComment({ className, postId, ...props }: IAddCommentProps): JSX.Elem
 					return;
 				}
 
-				setMessage("");
+				setMessage({ text: "", submit: true });
 			});
 	}
+
+	// get comment
+	React.useEffect(() => {
+		if (!message.submit) return;
+
+		const io: any = socket;
+		const socketConnect = io.connect(REACT_APP_API_URL);
+
+		socketConnect.on("comment", (data: any) => {
+			setComments([...comments, data]);
+		});
+	}, [message]);
 
 	return (
 		<form
@@ -41,8 +60,8 @@ function AddComment({ className, postId, ...props }: IAddCommentProps): JSX.Elem
 		>
 			<Input
 				placeholder="Add a comment..."
-				value={message}
-				onChange={(event) => setMessage(event.target.value)}
+				value={message.text}
+				onChange={(event) => setMessage({ ...message, text: event.target.value })}
 			/>
 			<Button disabled={disabled}>Post</Button>
 		</form>

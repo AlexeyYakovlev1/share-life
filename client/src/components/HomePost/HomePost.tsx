@@ -196,7 +196,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 						})}
 					</ul>
 				</div>
-				<AddComment postId={info.id} className={classes.formComment} />
+				<AddComment postId={info.id} className={classes.formComment} comments={comments} setComments={setComments} />
 			</div>
 		</li>
 	);

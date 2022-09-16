@@ -5,7 +5,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import getAllCommentsByPost from "../../http/comments/getAllCommentsByPost.http";
 import AlertContext from "../../context/alert.context";
-import { trackPromise } from "react-promise-tracker";
+// import socket from "socket.io-client";
 
 interface IPostProps {
 	photos: Array<string>;
@@ -16,6 +16,8 @@ interface IPostProps {
 function Post({ photos, postId, ownerId }: IPostProps): JSX.Element {
 	const [hover, setHover] = React.useState<boolean>(false);
 	const [commentsLength, setCommentsLength] = React.useState<number>(0);
+	// const io: any = socket;
+	// const socketConnect = io.connect("http://localhost:5000");
 
 	const { setText } = React.useContext(AlertContext);
 

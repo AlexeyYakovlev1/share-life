@@ -41,6 +41,13 @@ class CommentController {
 				return Promise.resolve(newComment);
 			})
 			.then((newComment) => {
+				// send comment to client
+				const io = req.app.get("socketio");
+
+				io.on("connection", (socket) => {
+					io.emit("comment", newComment.rows[0]);
+				});
+
 				return res.status(201).json({ success: true, message: "Comment has been created", comment: newComment.rows[0] });
 			})
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));

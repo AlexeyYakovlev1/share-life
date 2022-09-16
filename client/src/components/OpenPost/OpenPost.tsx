@@ -204,7 +204,7 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 								<span className={classes.infoActionsLikesNum}>1,085 likes</span>
 								<span className={classes.infoActionsCreatedAt}>{createdAt}</span>
 							</div>
-							<AddComment postId={currentPost.id} />
+							<AddComment postId={currentPost.id} comments={commentsPost} setComments={setCommentsPost} />
 						</div>
 					</div>
 				</div>

@@ -18,7 +18,7 @@ function postsReducer(state = initialState, action: IPostAction) {
 		case REMOVE_POST:
 			return state.filter((post: IPost) => +post.id !== +action.payload);
 		default:
-			return initialState;
+			return state;
 	}
 }
 
