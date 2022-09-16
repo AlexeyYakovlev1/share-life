@@ -158,7 +158,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 						{0} likes
 					</span>
 					<div>
-						<p
+						{info.description && <p
 							className={cn(classes.bodyDescriptionText, {
 								[classes.bodyDescriptionTextHideSide]: dotsToEnd
 							})}
@@ -166,7 +166,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 							<span className={classes.headerName}>{userPost.user_name}</span>
 							&nbsp;
 							{info.description}
-						</p>
+						</p>}
 						<div className={classes.bodyDescriptionActions}>
 							{dotsToEnd && <Button
 								className={classes.bodyDescriptionMore}
