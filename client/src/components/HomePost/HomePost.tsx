@@ -127,10 +127,10 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 						className={classes.bodyList}
 						style={{ width: `${widthSlider * info.photos.length}px` }}
 					>
-						{info.photos.map(photo => (
+						{info.photos.map((photo, index) => (
 							<li
 								className={classes.bodyListItem}
-								key={photo}
+								key={`${photo[photo.length - 1]}${index}`}
 								style={{
 									width: `${widthSlider}px`,
 									height: "530px",

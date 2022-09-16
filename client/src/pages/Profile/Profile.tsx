@@ -116,17 +116,17 @@ function Profile(): JSX.Element {
 							<ul className={classes.infoNumsList}>
 								<li className={classes.infoNumsItem}>
 									<span>
-										<Link to="/"><strong>12</strong> post</Link>
+										<Link to="/"><strong>{userPosts.length}</strong> post</Link>
 									</span>
 								</li>
 								<li className={classes.infoNumsItem}>
 									<span>
-										<Link to="/"><strong>577</strong> followers</Link>
+										<Link to="/"><strong>0</strong> followers</Link>
 									</span>
 								</li>
 								<li className={classes.infoNumsItem}>
 									<span>
-										<Link to="/"><strong>65</strong> following</Link>
+										<Link to="/"><strong>0</strong> following</Link>
 									</span>
 								</li>
 							</ul>
