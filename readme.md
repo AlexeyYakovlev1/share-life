@@ -35,6 +35,15 @@ This application is social network were you can posting your interests or your l
 -   Bcrypt
 -   SQL
 
+## In future
+
+-   Following users
+-   Page for view followers
+-   Remove comments (by owners)
+-   Likes for posts
+-   Update post
+-   Page for notifications (also maybe send to email)
+
 ## Conclusion
 
 I hope you don't forget to rate this project. Good luck!
