@@ -200,8 +200,8 @@ class UserController {
 				// 	if (!role.rows || !role.rows[0]) return Promise.reject(`Some role is not found`);
 				// }
 
-				let password = findPerson.rows[0].password;
 				let findPersonByEmail = null;
+				let comparePassword = null;
 
 				if (email !== findPerson.rows[0].email) {
 					const queryForFindPerson = `SELECT id FROM person WHERE email = $1`;
@@ -209,22 +209,32 @@ class UserController {
 				}
 
 				if (newPassword) {
-					const comparePassword = compare(newPassword, oldPassword);
-					if (!comparePassword) return Promise.reject("Compare password failed");
-					password = hash(newPassword, 8);
+					if (newPassword.lenght < 6) {
+						return Promise.reject("Length new password must be minimum 6 symbols");
+					}
+
+					comparePassword = compare(oldPassword, findPerson.rows[0].password);
 				}
 
-				return Promise.all([password, findPersonByEmail]);
+				return Promise.all([comparePassword, findPersonByEmail, findPerson.rows[0]]);
 			})
-			.then(([password, findPerson]) => {
+			.then(([comparePassword, findPerson, currentPerson]) => {
 				if (findPerson && findPerson.rows[0]) return Promise.reject("User by this email finded");
 
+				let password = currentPerson.password;
+
+				if (comparePassword === false) return Promise.reject("Compare password failed");
+				else if (comparePassword === true) password = hash(newPassword, 8);
+
+				return Promise.resolve(password);
+			})
+			.then((password) => {
 				const queryForUpdatePerson = `
 					UPDATE person
 					SET user_name=COALESCE(NULLIF($1,''), person.user_name),
 					full_name=COALESCE(NULLIF($2, ''), person.full_name),
 					email=COALESCE(NULLIF($3, ''), person.email),
-					password=COALESCE(NULLIF($4, ''), person.password),
+					password=$4,
 					description=COALESCE(NULLIF($5, ''), person.description)
 					WHERE id = $6 RETURNING *
 				`;

@@ -53,6 +53,7 @@ function AddComment({ className, postId, setComments, comments, ...props }: IAdd
 		socketConnect.on("comment", (data: any) => {
 			setComments([...comments, data]);
 		});
+
 		setMessage({ text: "", submit: false });
 	}, [message]);
 

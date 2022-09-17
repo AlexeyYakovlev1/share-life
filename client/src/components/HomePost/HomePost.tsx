@@ -190,9 +190,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 
 							const comment = comments[index];
 
-							return (
-								<Comment key={comment.id} info={comment} />
-							);
+							return <Comment key={`${comment.id}_${index}`} info={comment} />;
 						})}
 					</ul>
 				</div>

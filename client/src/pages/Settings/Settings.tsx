@@ -29,7 +29,7 @@ function Settings(): JSX.Element {
 		base64: info.avatar.base64,
 		file: ""
 	});
-	const [user, setUser] = React.useState<IPersonForSettings>({ ...info });
+	const [user, setUser] = React.useState<IPersonForSettings>({ ...info, newPassword: undefined, oldPassword: undefined });
 
 	const { setText } = React.useContext(AlertContext);
 
@@ -87,6 +87,8 @@ function Settings(): JSX.Element {
 
 				dispatch(setUserToReducer(person));
 			});
+
+		setUser({ ...info, newPassword: "", oldPassword: "" });
 	}
 
 	// logout
@@ -161,6 +163,7 @@ function Settings(): JSX.Element {
 					<div className={classes.formInputBlock}>
 						<label htmlFor="oldPassword">Old password</label>
 						<Input
+							value={user.oldPassword || ""}
 							onChange={event => setUser({ ...user, oldPassword: event.target.value })}
 							id="oldPassword"
 							type="password"
@@ -169,6 +172,7 @@ function Settings(): JSX.Element {
 					<div className={classes.formInputBlock}>
 						<label htmlFor="newPassword">New password</label>
 						<Input
+							value={user.newPassword || ""}
 							onChange={event => setUser({ ...user, newPassword: event.target.value })}
 							id="newPassword"
 							type="password"

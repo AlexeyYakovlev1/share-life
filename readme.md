@@ -43,6 +43,9 @@ This application is social network were you can posting your interests or your l
 -   Likes for posts
 -   Update post
 -   Page for notifications (also maybe send to email)
+-   Dark theme
+-   Tests (Jest)
+-   Docket
 
 ## Conclusion
 
