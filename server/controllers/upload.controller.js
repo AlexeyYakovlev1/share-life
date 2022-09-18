@@ -27,7 +27,7 @@ class UploadController {
 		if (req.query && updateUser) {
 			const queryForFindOldAvatar = `SELECT avatar FROM person WHERE id = $1`;
 
-			new Promise((resolve) => resolve(db.query(queryForFindOldAvatar, [currentIdUser])))
+			return new Promise((resolve) => resolve(db.query(queryForFindOldAvatar, [currentIdUser])))
 				.then((person) => {
 					if (person.rows[0].avatar) {
 						const filePath = path.relative(PROJECT_ROOT, `./templates/user/${person.rows[0].avatar}`);
@@ -42,9 +42,7 @@ class UploadController {
 					return Promise.resolve(db.query(queryForUpdateUser, [file.filename, currentIdUser]));
 				})
 				.then(() => res.status(200).json({ success: true, message: "Avatar has been uploaded", dataFile }))
-				.catch((error) => res.status(400).json({ success: false, message: error.message, error }));;
-
-			return;
+				.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 		}
 
 		return res.status(200).json({ success: true, message: "File has been uploaded", dataFile });
