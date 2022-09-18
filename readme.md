@@ -2,7 +2,7 @@
 
 ## Description
 
-This application is social network were you can posting your interests or your life and get feed back.
+This application is social network were you can posting your interests or your life and get feedback.
 
 ## What you can do?
 
