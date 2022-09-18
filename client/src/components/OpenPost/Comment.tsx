@@ -6,12 +6,9 @@ import getOneUser from "../../http/user/getOneUser.http";
 import AlertContext from "../../context/alert.context";
 import { IPerson } from "../../models/person.models";
 import useAvatar from "../../hooks/useAvatar";
-import Cookies from "js-cookie";
-import { trackPromise } from "react-promise-tracker";
 import { IState } from "../../models/redux.models";
 import { useSelector } from "react-redux";
-
-const { REACT_APP_API_URL } = process.env;
+import removeComment from "../../http/comments/removeComment.http";
 
 function Comment({ info }: { info: IComment }): JSX.Element {
 	const { setText } = React.useContext(AlertContext);
@@ -50,19 +47,13 @@ function Comment({ info }: { info: IComment }): JSX.Element {
 	const createdAt = new Date(info.date).toLocaleDateString();
 	const checkOwner = +currentPersonId === +commentOwnerId;
 
-	function removeComment() {
-		trackPromise(fetch(`${REACT_APP_API_URL}/comments/remove/${info.id}`, {
-			method: "DELETE",
-			headers: {
-				Authorization: `Bearer ${Cookies.get("token")}`
-			}
-		})
-			.then((response) => response.json())
+	function removeCommentClick() {
+		removeComment(info)
 			.then((data) => {
 				const { message, error } = data;
 
 				setText(message || error);
-			}));
+			});
 	}
 
 	return (
@@ -83,8 +74,9 @@ function Comment({ info }: { info: IComment }): JSX.Element {
 						{info.text}
 					</p>
 					{checkOwner && <span
+						title="Remove comment"
 						className={classes.commentRemove}
-						onClick={removeComment}
+						onClick={removeCommentClick}
 					>
 						&#9587;
 					</span>}
