@@ -6,10 +6,15 @@ import getOneUser from "../../http/user/getOneUser.http";
 import AlertContext from "../../context/alert.context";
 import { IPerson } from "../../models/person.models";
 import useAvatar from "../../hooks/useAvatar";
+import Cookies from "js-cookie";
+import { trackPromise } from "react-promise-tracker";
+import { IState } from "../../models/redux.models";
+import { useSelector } from "react-redux";
+
+const { REACT_APP_API_URL } = process.env;
 
 function Comment({ info }: { info: IComment }): JSX.Element {
 	const { setText } = React.useContext(AlertContext);
-
 	const [userComment, setUserComment] = React.useState<IPerson>({
 		id: 1,
 		user_name: "",
@@ -23,6 +28,8 @@ function Comment({ info }: { info: IComment }): JSX.Element {
 		description: "",
 		roles: [""]
 	});
+	const { id: currentPersonId } = useSelector((state: IState) => state.person.info);
+	const commentOwnerId = info.owner_id;
 
 	React.useEffect(() => {
 		if (info.owner_id === -1) return;
@@ -41,6 +48,22 @@ function Comment({ info }: { info: IComment }): JSX.Element {
 	}, [info]);
 
 	const createdAt = new Date(info.date).toLocaleDateString();
+	const checkOwner = +currentPersonId === +commentOwnerId;
+
+	function removeComment() {
+		trackPromise(fetch(`${REACT_APP_API_URL}/comments/remove/${info.id}`, {
+			method: "DELETE",
+			headers: {
+				Authorization: `Bearer ${Cookies.get("token")}`
+			}
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				const { message, error } = data;
+
+				setText(message || error);
+			}));
+	}
 
 	return (
 		<li className={classes.comment}>
@@ -49,13 +72,23 @@ function Comment({ info }: { info: IComment }): JSX.Element {
 				className={classes.commentAvatar}
 			></div>
 			<div className={classes.commentInfo}>
-				<p className={classes.commentText}>
-					<span className={classes.commentName}>
-						<Link to={`/profile/${userComment.id}`}>
-							{userComment.user_name}
-						</Link>
-					</span> {info.text}
-				</p>
+				<div className={classes.commentInfoWrapper}>
+					<p className={classes.commentText}>
+						<span className={classes.commentName}>
+							<Link to={`/profile/${userComment.id}`}>
+								{userComment.user_name}
+							</Link>
+						</span>
+						&nbsp;
+						{info.text}
+					</p>
+					{checkOwner && <span
+						className={classes.commentRemove}
+						onClick={removeComment}
+					>
+						&#9587;
+					</span>}
+				</div>
 				<span className={classes.commentCreatedAt}>{createdAt}</span>
 			</div>
 		</li>

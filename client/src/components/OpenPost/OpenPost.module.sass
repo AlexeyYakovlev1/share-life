@@ -115,8 +115,10 @@
 				align-items: center
 				justify-content: center
 		&Like
+			& svg, path
+				fill: black
 			&Active svg, path
-				fill: red !important
+				fill: red
 		&LikesNum
 			font-size: 14px
 			font-weight: 600
@@ -154,6 +156,14 @@
 		display: flex
 		flex-direction: column
 		gap: 15px
+		&Wrapper
+			display: grid
+			grid-template-columns: 1fr 11px
+			align-items: flex-top
+			gap: 20px
+	&Remove
+		cursor: pointer
+		font-size: 11px
 	&:not(:first-child)
 		margin-top: 20px
 	&Name

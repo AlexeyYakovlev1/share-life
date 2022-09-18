@@ -19,7 +19,7 @@ const { REACT_APP_API_URL } = process.env;
 function AddComment({ className, postId, setComments, comments, ...props }: IAddCommentProps): JSX.Element {
 	const [message, setMessage] = React.useState<{ text: string, submit: boolean }>({ text: "", submit: false });
 	const { setText } = React.useContext(AlertContext);
-	const disabled = (message.text.length < 6) || (message.text.length >= 100);
+	const disabled = (message.text.length < 6) || (message.text.length >= 400);
 
 	// give comment data
 	function submitAddComment(event: any) {

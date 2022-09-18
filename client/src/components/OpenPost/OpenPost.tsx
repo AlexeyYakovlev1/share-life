@@ -195,13 +195,13 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 								<div className={classes.infoActionsBtns}>
 									<button
 										className={cn(classes.infoActionsLike, {
-											[classes.infoActionsLikeActive]: isTrue
+											[classes.infoActionsLikeActive]: false
 										})}
 									>
 										<LikeIcon />
 									</button>
 								</div>
-								<span className={classes.infoActionsLikesNum}>1,085 likes</span>
+								<span className={classes.infoActionsLikesNum}>0 likes</span>
 								<span className={classes.infoActionsCreatedAt}>{createdAt}</span>
 							</div>
 							<AddComment postId={currentPost.id} comments={commentsPost} setComments={setCommentsPost} />
