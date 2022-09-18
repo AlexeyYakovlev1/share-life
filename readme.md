@@ -46,6 +46,7 @@ This application is social network were you can posting your interests or your l
 -   Dark theme
 -   Tests (Jest)
 -   Docker
+-   Admin page
 
 ## Conclusion
 
