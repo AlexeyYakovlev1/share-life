@@ -8,7 +8,7 @@ This application is social network were you can posting your interests or your l
 
 -   Registration/Login
 -   Create/Remove/Search posts
--   Write comments to posts
+-   Create/Remove comments
 -   Update information for user
 -   View posts in home and user page
 
