@@ -10,4 +10,6 @@ export interface IPerson {
 	password: string;
 	roles: Array<string>;
 	description: string;
+	followers: Array<number>;
+	following: Array<number>;
 }

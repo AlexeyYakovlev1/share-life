@@ -39,7 +39,9 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 		},
 		password: "",
 		roles: [""],
-		description: ""
+		description: "",
+		followers: [],
+		following: []
 	});
 	const [visible, setVisible] = React.useState<boolean>(false);
 	const [commentsPost, setCommentsPost] = React.useState<Array<IComment>>([]);

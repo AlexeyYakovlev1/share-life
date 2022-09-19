@@ -17,6 +17,8 @@ router.post(
 	RoleMiddleware(["ADMIN"]),
 	UserController.create
 );
+// for example: /users/follow
+router.get("/follow/:id", AuthMiddleware, UserController.follow);
 // for example: /users/remove/2
 router.delete("/remove/:id", RoleMiddleware(["ADMIN"]), UserController.remove);
 // for example: /users/all

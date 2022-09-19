@@ -35,7 +35,9 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 		},
 		password: "",
 		description: "",
-		roles: [""]
+		roles: [""],
+		followers: [],
+		following: []
 	});
 
 	const currentUser = useSelector((state: IState) => state.person.info);

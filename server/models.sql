@@ -6,6 +6,8 @@ CREATE TABLE person(
 	avatar TEXT,
 	password TEXT NOT NULL,
 	roles VARCHAR(255) ARRAY,
+	followers INTEGER ARRAY DEFAULT {},
+	following INTEGER ARRAY DEFAULT {},
 	description TEXT DEFAULT 'No description'
 );
 
@@ -32,4 +34,12 @@ CREATE TABLE comment(
 	FOREIGN KEY (owner_id) REFERENCES person (id),
 	text TEXT NOT NULL,
 	date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE follow(
+	id SERIAL PRIMARY KEY,
+	follower_id INTEGER,
+	FOREIGN KEY (follower_id) REFERENCES person (id),
+	user_id INTEGER,
+	FOREIGN KEY (user_id) REFERENCES person (id)
 );

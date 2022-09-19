@@ -23,7 +23,9 @@ function Comment({ info }: { info: IComment }): JSX.Element {
 		},
 		password: "",
 		description: "",
-		roles: [""]
+		roles: [""],
+		followers: [],
+		following: []
 	});
 	const { id: currentPersonId } = useSelector((state: IState) => state.person.info);
 	const commentOwnerId = info.owner_id;

@@ -15,6 +15,10 @@ import getOneUser from "../../http/user/getOneUser.http";
 import useAvatar from "../../hooks/useAvatar";
 import { IState } from "../../models/redux.models";
 import { useSelector } from "react-redux";
+import socket from "socket.io-client";
+import followUserFetch from "../../http/user/followUser.http";
+
+const { REACT_APP_API_URL } = process.env;
 
 function Profile(): JSX.Element {
 	const [pageUser, setPageUser] = React.useState<IPerson>({
@@ -28,13 +32,17 @@ function Profile(): JSX.Element {
 		},
 		password: "",
 		description: "",
-		roles: [""]
+		roles: [""],
+		followers: [],
+		following: []
 	});
-	const [currentUser, setCurrentUser] = React.useState<boolean>(false);
 
 	const { id: currentIdUser } = useSelector((state: IState) => state.person.info);
 	const posts = useSelector((state: IState) => state.posts);
 	const userPosts = posts.filter((post: IPost) => +post.owner_id === +pageUser.id);
+
+	const [currentUser, setCurrentUser] = React.useState<boolean>(false);
+	const [followUser, setFollowUser] = React.useState<boolean>(pageUser.followers.includes(currentIdUser));
 
 	const pageAvatarUser = useAvatar(pageUser.avatar.base64);
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -59,7 +67,7 @@ function Profile(): JSX.Element {
 					setCurrentUser(+pageIdUser === +currentIdUser);
 				});
 		}
-	}, [pageIdUser, currentIdUser]);
+	}, [pageIdUser, currentIdUser, followUser]);
 
 	React.useEffect(() => {
 		if (posts[count] && queryPostOpen) {
@@ -72,6 +80,28 @@ function Profile(): JSX.Element {
 			setCount(posts.findIndex(item => item.id === +queryPostId));
 		}
 	}, [queryPostId]);
+
+	function followClick() {
+		if (!pageIdUser) return;
+
+		followUserFetch(pageIdUser)
+			.then((data) => {
+				const { success, message, error } = data;
+
+				if (!success) {
+					setText(message || error);
+					return;
+				}
+
+				const io: any = socket;
+				const socketConnect = io.connect(REACT_APP_API_URL);
+
+				socketConnect.on("follow", (data: any) => {
+					console.log(data);
+					setFollowUser(!data);
+				});
+			});
+	}
 
 	return (
 		<MainLayout>
@@ -105,7 +135,12 @@ function Profile(): JSX.Element {
 							<span className={classes.name}>{pageUser.user_name}</span>
 							{!currentUser
 								?
-								<Button className={classes.infoTopButton}>Follow</Button>
+								<Button
+									onClick={followClick}
+									className={classes.infoTopButton}
+								>
+									{followUser ? "Unfollow" : "Follow"}
+								</Button>
 								:
 								<Button className={classes.infoTopButton}>
 									<Link to="/settings">Settings</Link>
@@ -121,12 +156,16 @@ function Profile(): JSX.Element {
 								</li>
 								<li className={classes.infoNumsItem}>
 									<span>
-										<Link to="/"><strong>0</strong> followers</Link>
+										<Link to="/">
+											<strong>{pageUser.followers.length}</strong> followers
+										</Link>
 									</span>
 								</li>
 								<li className={classes.infoNumsItem}>
 									<span>
-										<Link to="/"><strong>0</strong> following</Link>
+										<Link to="/">
+											<strong>{pageUser.following.length}</strong> following
+										</Link>
 									</span>
 								</li>
 							</ul>

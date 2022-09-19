@@ -44,9 +44,7 @@ class CommentController {
 				// send comment to client
 				const io = req.app.get("socketio");
 
-				io.on("connection", (socket) => {
-					io.emit("comment", newComment.rows[0]);
-				});
+				io.on("connection", (socket) => io.emit("comment", newComment.rows[0]));
 
 				return res.status(201).json({ success: true, message: "Comment has been created", comment: newComment.rows[0] });
 			})

@@ -256,6 +256,49 @@ class UserController {
 			})
 			.catch((error) => res.status(400).json({ succces: false, message: error.message, error }));
 	}
+
+	follow(req, res) {
+		const { id: followerId } = req.user;
+		const { id: followingId } = req.params;
+
+		const queryForFindFollow = `SELECT follower_id FROM follow WHERE user_id = $1`;
+
+		new Promise((resolve) => resolve(db.query(queryForFindFollow, [followingId])))
+			.then((follow) => {
+				const followAsBool = Boolean(follow.rows.length && follow.rows[0].follower_id);
+				const io = req.app.get("socketio");
+
+				io.on("connection", (socket) => io.emit("follow", followAsBool));
+
+				if (!followAsBool) {
+					const queryForCreateFollow = `INSERT INTO follow(follower_id, user_id) VALUES($1, $2) RETURNING user_id`;
+					return Promise.resolve(db.query(queryForCreateFollow, [followerId, followingId]));
+				}
+
+				const queryForDeleteFollow = `DELETE FROM follow WHERE user_id = $1`;
+				return Promise.resolve(db.query(queryForDeleteFollow, [followingId]));
+			})
+			.then((result) => {
+				if (result.rows.length && result.rows[0].user_id) {
+					const queryForUpdateFollower = `UPDATE person SET following = ARRAY_APPEND(following, $1) WHERE id = $2 RETURNING id`;
+					return Promise.resolve(db.query(queryForUpdateFollower, [result.rows[0].user_id, followerId]));
+				}
+
+				const queryForUpdateFollower = `UPDATE person SET following = ARRAY_REMOVE(following, $1) WHERE id = $2`;
+				return Promise.resolve(db.query(queryForUpdateFollower, [followingId, followerId]));
+			})
+			.then((follower) => {
+				if (follower && follower.rows[0]) {
+					const queryForUpdateFollowing = `UPDATE person SET followers = ARRAY_APPEND(followers, $1) WHERE id = $2`;
+					return Promise.resolve(db.query(queryForUpdateFollowing, [follower.rows[0].id, followingId]));
+				}
+
+				const queryForUpdateFollowing = `UPDATE person SET followers = ARRAY_REMOVE(followers, $1) WHERE id = $2`;
+				return Promise.resolve(db.query(queryForUpdateFollowing, [followerId, followingId]));
+			})
+			.then((result) => res.status(200).json({ success: true }))
+			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
+	}
 }
 
 module.exports = new UserController();
