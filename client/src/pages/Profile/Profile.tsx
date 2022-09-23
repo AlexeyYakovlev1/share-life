@@ -187,7 +187,7 @@ function Profile(): JSX.Element {
 					{
 						userPosts.length ?
 							<ul className={classes.contentList}>
-								{posts.map((post: IPost) => {
+								{userPosts.map((post: IPost) => {
 									return (
 										<Post
 											key={post.id}
