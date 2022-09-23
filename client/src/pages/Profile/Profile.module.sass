@@ -2,12 +2,13 @@
 
 .wrapper
 	display: grid
-	grid-template-rows: minmax(auto, 160px) 1fr
+	grid-template-rows: 160px 1fr
 	gap: 50px
 	position: relative
 
 .top
-	display: flex
+	display: grid
+	grid-template-columns: 152px 1fr
 	align-items: center
 	gap: 65px
 
@@ -36,6 +37,14 @@
 			align-items: center
 			justify-content: space-between
 			gap: 10px
+	&DescriptionText
+		display: -webkit-box
+		-webkit-line-clamp: 3
+		-webkit-box-orient: vertical
+		overflow: hidden
+		text-overflow: ellipsis
+		line-height: 22px
+		font-size: 15px
 
 .name
 	font-size: 32px

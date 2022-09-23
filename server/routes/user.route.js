@@ -17,14 +17,19 @@ router.post(
 	RoleMiddleware(["ADMIN"]),
 	UserController.create
 );
-// for example: /users/follow
-router.get("/follow/:id", AuthMiddleware, UserController.follow);
+
 // for example: /users/remove/2
 router.delete("/remove/:id", RoleMiddleware(["ADMIN"]), UserController.remove);
+
+// for example: /users/interaction/2
+router.get("/interaction/:id", UserController.getFollowersAndFollowings);
+// for example: /users/follow
+router.get("/follow/:id", AuthMiddleware, UserController.follow);
 // for example: /users/all
 router.get("/all", UserController.getAll);
 // for example: /users/2
 router.get("/:id", UserController.getOne);
+
 // for example: /users/update/2
 router.put(
 	"/update/:id",

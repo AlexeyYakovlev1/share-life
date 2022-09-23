@@ -17,6 +17,7 @@ import { IState } from "../../models/redux.models";
 import { useSelector } from "react-redux";
 import socket from "socket.io-client";
 import followUserFetch from "../../http/user/followUser.http";
+import checkFollow from "../../http/follow/checkFollow.http";
 
 const { REACT_APP_API_URL } = process.env;
 
@@ -66,6 +67,14 @@ function Profile(): JSX.Element {
 					setPageUser(person);
 					setCurrentUser(+pageIdUser === +currentIdUser);
 				});
+			checkFollow(+pageIdUser)
+				.then((data) => {
+					const { success } = data;
+
+					if (!success) return;
+
+					setFollowUser(data.follow);
+				});
 		}
 	}, [pageIdUser, currentIdUser, followUser]);
 
@@ -96,10 +105,7 @@ function Profile(): JSX.Element {
 				const io: any = socket;
 				const socketConnect = io.connect(REACT_APP_API_URL);
 
-				socketConnect.on("follow", (data: any) => {
-					console.log(data);
-					setFollowUser(!data);
-				});
+				socketConnect.on("follow", (data: any) => setFollowUser(!data));
 			});
 	}
 
@@ -156,14 +162,14 @@ function Profile(): JSX.Element {
 								</li>
 								<li className={classes.infoNumsItem}>
 									<span>
-										<Link to="/">
+										<Link to={`/interaction/${pageUser.id}?followers=y`}>
 											<strong>{pageUser.followers.length}</strong> followers
 										</Link>
 									</span>
 								</li>
 								<li className={classes.infoNumsItem}>
 									<span>
-										<Link to="/">
+										<Link to={`/interaction/${pageUser.id}?following=y`}>
 											<strong>{pageUser.following.length}</strong> following
 										</Link>
 									</span>

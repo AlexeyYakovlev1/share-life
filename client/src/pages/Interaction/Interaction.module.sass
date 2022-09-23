@@ -1,0 +1,59 @@
+@import "../../styles/_vars"
+
+.list
+	display: flex
+	flex-direction: column
+
+.user
+	padding: 10px 0
+	border-bottom: 1px solid $grayDark
+	display: grid
+	grid-template-columns: 1fr auto
+	justify-content: space-between
+	align-items: flex-start
+	&Left
+		display: grid
+		grid-template-columns: 80px 1fr
+		gap: 20px
+	&Avatar
+		width: 80px
+		height: 80px
+		background-position: center
+		background-repeat: no-repeat
+		background-size: cover
+		border-radius: 50%
+	&Info
+		display: grid
+		grid-template-rows: auto 1fr
+		gap: 10px
+		&Header
+			max-width: 500px
+			display: flex
+			align-items: center
+			gap: 10px
+	&Name
+		max-width: 100px
+		font-weight: bold
+		display: -webkit-box
+		-webkit-line-clamp: 1
+		-webkit-box-orient: vertical
+		overflow: hidden
+		text-overflow: ellipsis
+	&FullName
+		font-size: 15px
+		max-width: 150px
+		color: $grayDark
+		display: -webkit-box
+		-webkit-line-clamp: 1
+		-webkit-box-orient: vertical
+		overflow: hidden
+		text-overflow: ellipsis
+	&Description
+		max-width: 500px
+		font-size: 15px
+		line-height: 22px
+		display: -webkit-box
+		-webkit-line-clamp: 3
+		-webkit-box-orient: vertical
+		overflow: hidden
+		text-overflow: ellipsis

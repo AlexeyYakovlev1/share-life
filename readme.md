@@ -12,6 +12,7 @@ This application is social network were you can posting your interests or your l
 -   Update information for user
 -   View posts in home and user page
 -   Follow users
+-   View your followers\following
 
 ## What i used?
 
@@ -38,7 +39,6 @@ This application is social network were you can posting your interests or your l
 
 ## In future
 
--   Page for view followers
 -   Likes for posts
 -   Update post
 -   Page for notifications (also maybe send to email)

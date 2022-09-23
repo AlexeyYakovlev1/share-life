@@ -16,16 +16,28 @@ class UserController {
 		this.create = this.create.bind(this);
 		this.update = this.update.bind(this);
 		this.remove = this.remove.bind(this);
+		this.getFollowersAndFollowings = this.getFollowersAndFollowings.bind(this);
 	}
 
 	_existRole(role) {
+		if (!role) return;
+
 		const queryForFindRole = `SELECT text FROM role WHERE text = $1`;
 		return new Promise((resolve) => resolve(db.query(queryForFindRole, [role])));
 	}
 
 	_removeComments(postId) {
+		if (!postId) return;
+
 		const queryForDeleteComments = `DELETE FROM comment WHERE post_id = $1`;
 		return new Promise((resolve) => resolve(db.query(queryForDeleteComments, [postId])));
+	}
+
+	_findPerson(personId) {
+		if (!personId) return;
+
+		const queryForFindPerson = `SELECT * FROM person WHERE id = $1`;
+		return new Promise((resolve) => resolve(db.query(queryForFindPerson, [personId])));
 	}
 
 	create(req, res) {
@@ -297,6 +309,59 @@ class UserController {
 				return Promise.resolve(db.query(queryForUpdateFollowing, [followerId, followingId]));
 			})
 			.then((result) => res.status(200).json({ success: true }))
+			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
+	}
+
+	getFollowersAndFollowings(req, res) {
+		if (!Object.entries(req.params).length || !req.params.id) {
+			return res.status(400).json({ success: false, message: "Params must exist" });
+		}
+
+		const { id: userId } = req.params;
+		const queryForFindPerson = `SELECT followers, following FROM person WHERE id = $1`;
+		const findPerson = db.query(queryForFindPerson, [userId]);
+
+		new Promise((resolve) => resolve(findPerson))
+			.then((findPerson) => {
+				if (!findPerson.rows || !findPerson.rows[0]) return Promise.reject("User is not found");
+
+				const person = findPerson.rows[0];
+
+				const postpone = async (from) => {
+					const result = [];
+
+					for (let i = 0; i < from.length; i++) {
+						const id = from[i];
+						const find = await this._findPerson(id);
+
+						if (find.rows && find.rows[0]) {
+							// convert avatars to base64 and push to followers
+							const user = find.rows[0];
+							const filePath = path.relative(PROJECT_ROOT, `./templates/user/${user.avatar}`);
+							const avatarInBase64 = toBase64(filePath);
+							const obj = {
+								...user,
+								avatar: {
+									base64: avatarInBase64,
+									filename: user.avatar
+								}
+							};
+
+							result.push(obj);
+						}
+					}
+
+					return result;
+				}
+
+				const followers = postpone(person.followers);
+				const following = postpone(person.following);
+
+				return Promise.all([followers, following]);
+			})
+			.then(([followers, following]) => {
+				return res.status(200).json({ success: true, following, followers });
+			})
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}
 }
