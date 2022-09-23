@@ -114,7 +114,7 @@ function Profile(): JSX.Element {
 			<div className={classes.wrapper}>
 				{queryPostOpen &&
 					<React.Fragment>
-						{posts.length > 1 && <div className={classes.switchPost}>
+						{userPosts.length > 1 && <div className={classes.switchPost}>
 							<button
 								className={cn(classes.switchBtn, classes.switchLeft)}
 								onClick={() => setCount(count - 1)}
