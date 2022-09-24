@@ -15,11 +15,7 @@ import getOneUser from "../../http/user/getOneUser.http";
 import useAvatar from "../../hooks/useAvatar";
 import { IState } from "../../models/redux.models";
 import { useSelector } from "react-redux";
-import socket from "socket.io-client";
-import followUserFetch from "../../http/user/followUser.http";
-import checkFollow from "../../http/follow/checkFollow.http";
-
-const { REACT_APP_API_URL } = process.env;
+import { useFollow } from "../../hooks/useFollow";
 
 function Profile(): JSX.Element {
 	const [pageUser, setPageUser] = React.useState<IPerson>({
@@ -53,6 +49,8 @@ function Profile(): JSX.Element {
 	const { id: pageIdUser } = useParams();
 	const { setText } = React.useContext(AlertContext);
 
+	const { followClick } = useFollow(+pageUser.id, setText, setFollowUser);
+
 	React.useEffect(() => {
 		if (pageIdUser) {
 			getOneUser(+pageIdUser)
@@ -66,14 +64,6 @@ function Profile(): JSX.Element {
 
 					setPageUser(person);
 					setCurrentUser(+pageIdUser === +currentIdUser);
-				});
-			checkFollow(+pageIdUser)
-				.then((data) => {
-					const { success } = data;
-
-					if (!success) return;
-
-					setFollowUser(data.follow);
 				});
 		}
 	}, [pageIdUser, currentIdUser, followUser]);
@@ -89,25 +79,6 @@ function Profile(): JSX.Element {
 			setCount(posts.findIndex(item => item.id === +queryPostId));
 		}
 	}, [queryPostId]);
-
-	function followClick() {
-		if (!pageIdUser) return;
-
-		followUserFetch(pageIdUser)
-			.then((data) => {
-				const { success, message, error } = data;
-
-				if (!success) {
-					setText(message || error);
-					return;
-				}
-
-				const io: any = socket;
-				const socketConnect = io.connect(REACT_APP_API_URL);
-
-				socketConnect.on("follow", (data: any) => setFollowUser(!data));
-			});
-	}
 
 	return (
 		<MainLayout>
