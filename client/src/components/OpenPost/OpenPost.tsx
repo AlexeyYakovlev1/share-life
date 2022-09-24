@@ -19,8 +19,11 @@ import getAllCommentsByPost from "../../http/comments/getAllCommentsByPost.http"
 import { IState } from "../../models/redux.models";
 import { useSelector } from "react-redux";
 import getDatePost from "../../utils/getDatePost.util";
+import checkFollow from "../../http/follow/checkFollow.http";
 
 function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
+	const currentUser = useSelector((state: IState) => state.person.info);
+
 	const [currentPost, setCurrentPost] = React.useState<IPost>({
 		id: -1,
 		owner_id: -1,
@@ -45,8 +48,8 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 	});
 	const [visible, setVisible] = React.useState<boolean>(false);
 	const [commentsPost, setCommentsPost] = React.useState<Array<IComment>>([]);
+	const [followUser, setFollowUser] = React.useState<boolean>(userPost.followers.includes(+currentUser.id));
 
-	const isTrue = true;
 	const location = useLocation();
 
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -57,7 +60,6 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 	const { setCount, sliderWrapperRef, count, widthSlider } = useSlider({ list: currentPost.photos });
 
 	const { setText } = React.useContext(AlertContext);
-	const currentUser = useSelector((state: IState) => state.person.info);
 
 	// comments
 	React.useEffect(() => {
@@ -102,6 +104,14 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 
 					if (!success) return;
 					setUserPost({ ...person, avatar: useAvatar(person.avatar) });
+				});
+			checkFollow(+ownerId)
+				.then((data) => {
+					const { success } = data;
+
+					if (!success) return;
+
+					setFollowUser(data.follow);
 				});
 		}
 	}, [ownerId]);
@@ -159,11 +169,13 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 								style={{ backgroundImage: `url(${userPost.avatar.base64})` }}
 							></div>
 							<div className={classes.infoUser}>
-								<div>
-									<span className={classes.infoUserName}>{userPost.user_name} &#x2022;</span>
-									<span className={classes.infoUserFollowing}>
-										&nbsp;{isTrue ? "Following" : "Not followed"}
-									</span>
+								<div className={classes.infoUserLeft}>
+									<span className={classes.infoUserName}>{userPost.user_name}&nbsp;</span>
+									{+currentUser.id !== +userPost.id &&
+										<span className={classes.infoUserFollowing}>
+											&#x2022;&nbsp;{followUser ? "Following" : "Not followed"}
+										</span>
+									}
 								</div>
 								<span className={classes.location}>{currentPost.location}</span>
 							</div>
