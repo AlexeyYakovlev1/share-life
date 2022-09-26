@@ -6,7 +6,8 @@ export interface IPhoto {
 function readerImages(
 	selectedImages: any, // React.Dispatch<React.SetStateAction<any[]>> but this not work for "forEach"
 	setPhotos: React.Dispatch<React.SetStateAction<any[]>>,
-	setText: React.Dispatch<React.SetStateAction<string>>
+	setText: React.Dispatch<React.SetStateAction<string>>,
+	filename = false
 ) {
 	const resultPhotos: Array<IPhoto> = [];
 	const fileReaders: any = [];
@@ -21,10 +22,18 @@ function readerImages(
 
 			reader.onload = () => {
 				const result = reader.result;
-				const obj: IPhoto = {
+				let obj: any = {
 					id: index + 1,
 					img: result
 				};
+
+				if (filename) {
+					obj = {
+						base64: result,
+						filename: file.name
+					};
+				}
+
 				resultPhotos.push(obj);
 
 				if (resultPhotos.length === selectedImages.length && !isCancel) {

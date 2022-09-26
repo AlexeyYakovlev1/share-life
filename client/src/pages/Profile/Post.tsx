@@ -5,10 +5,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import getAllCommentsByPost from "../../http/comments/getAllCommentsByPost.http";
 import AlertContext from "../../context/alert.context";
-// import socket from "socket.io-client";
+import { IPostPhoto } from "../../models/post.models";
 
 interface IPostProps {
-	photos: Array<string>;
+	photos: Array<IPostPhoto>;
 	postId: number;
 	ownerId: number;
 }
@@ -16,8 +16,6 @@ interface IPostProps {
 function Post({ photos, postId, ownerId }: IPostProps): JSX.Element {
 	const [hover, setHover] = React.useState<boolean>(false);
 	const [commentsLength, setCommentsLength] = React.useState<number>(0);
-	// const io: any = socket;
-	// const socketConnect = io.connect("http://localhost:5000");
 
 	const { setText } = React.useContext(AlertContext);
 
@@ -40,7 +38,7 @@ function Post({ photos, postId, ownerId }: IPostProps): JSX.Element {
 		<li
 			onMouseEnter={() => setHover(!hover)}
 			onMouseLeave={() => setHover(!hover)}
-			style={{ backgroundImage: `url(${photos[0]})` }}
+			style={{ backgroundImage: `url(${photos[0].base64})` }}
 			className={classes.contentItem}
 		>
 			{hover && <Link to={`/profile/${ownerId}?watch=true&post_id=${postId}`}>

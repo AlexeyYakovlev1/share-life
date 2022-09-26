@@ -132,12 +132,12 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 						{info.photos.map((photo, index) => (
 							<li
 								className={classes.bodyListItem}
-								key={`${photo[photo.length - 1]}${index}`}
+								key={`${photo.filename}_${index}`}
 								style={{
 									width: `${widthSlider}px`,
 									height: "530px",
 									transform: `translate(-${count * widthSlider}px)`,
-									backgroundImage: `url(${photo})`
+									backgroundImage: `url(${photo.base64})`
 								}}
 							>
 							</li>

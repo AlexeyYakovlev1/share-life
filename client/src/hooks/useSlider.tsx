@@ -1,7 +1,9 @@
 import React from "react";
+import { IPost, IPostPhoto } from "../models/post.models";
+import { IPhoto } from "../utils/readerImages.util";
 
 interface IUseSliderProps {
-	list: Array<any>;
+	list: Array<IPostPhoto> | Array<string> | Array<IPhoto> | Array<IPost>;
 	defaultCountValue?: number;
 }
 

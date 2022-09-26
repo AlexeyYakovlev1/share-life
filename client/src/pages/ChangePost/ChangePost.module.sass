@@ -1,0 +1,43 @@
+@import "../../styles/_vars"
+
+.wrapper
+	display: grid
+	grid-template-rows: 1fr auto
+	gap: 20px
+
+.content
+	display: grid
+	grid-template-rows: repeat(auto-fill, auto)
+	gap: 30px
+	&ChangeTitle
+		font-size: 15px
+		margin-bottom: 10px
+
+.photos
+	width: 100%
+	&List
+		display: grid
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr))
+		gap: 10px
+		margin-bottom: 20px
+	&Item
+		background-position: center
+		background-repeat: no-repeat
+		background-size: cover
+		width: 100%
+		height: 150px
+	&Add
+		max-width: 200px
+
+.caption
+	&Input
+		border: 1px solid $grayDark
+		background-color: #fff
+		padding: 8px 10px
+		font-family: $fontInter
+		width: 100%
+		min-height: 150px
+		resize: vertical
+
+.submit
+	max-width: 200px

@@ -27,7 +27,10 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 	const [currentPost, setCurrentPost] = React.useState<IPost>({
 		id: -1,
 		owner_id: -1,
-		photos: [""],
+		photos: [{
+			base64: "",
+			filename: ""
+		}],
 		description: "",
 		date: ""
 	});
@@ -150,12 +153,12 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 						{currentPost.photos.map((photo, index) => (
 							<li
 								className={classes.leftListItem}
-								key={`${photo[photo.length - 2]}_${index + 1}`}
+								key={`${photo.filename}_${index + 1}`}
 								style={{
 									width: `${widthSlider}px`,
 									height: "100%",
 									transform: `translate(-${count * widthSlider}px)`,
-									backgroundImage: `url(${photo})`
+									backgroundImage: `url(${photo.base64})`
 								}}
 							></li>
 						))}

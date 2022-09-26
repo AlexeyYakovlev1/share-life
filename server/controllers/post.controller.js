@@ -40,7 +40,12 @@ class PostController {
 				for (let i = 0; i < post.rows[0].photos.length; i++) {
 					const photo = post.rows[0].photos[i];
 					const filePath = path.relative(PROJECT_ROOT, `./templates/post/${photo}`);
-					photos.push(toBase64(filePath, true));
+					const obj = {
+						base64: toBase64(filePath, true),
+						filename: photo
+					};
+
+					photos.push(obj);
 				}
 
 				res.status(201).json({ success: true, message: "Post has been created", post: { ...post.rows[0], photos } });
@@ -126,7 +131,10 @@ class PostController {
 					for (let j = 0; j < post.photos.length; j++) {
 						const photo = post.photos[j];
 						const filePath = path.relative(PROJECT_ROOT, `./templates/post/${photo}`);
-						const newPhoto = toBase64(filePath, true);
+						const newPhoto = {
+							base64: toBase64(filePath, true),
+							filename: photo
+						};
 
 						if (newPhoto) newPhotos.push(newPhoto);
 					}
@@ -155,15 +163,16 @@ class PostController {
 						const photo = post.photos[j];
 						const filePath = path.relative(PROJECT_ROOT, `./templates/post/${photo}`);
 						const photoInBase64 = toBase64(filePath, true);
+						const obj = {
+							base64: photoInBase64,
+							filename: photo
+						};
 
-						if (photoInBase64) {
-							newPhotos.push(photoInBase64);
-						}
+						if (photoInBase64) newPhotos.push(obj);
 					}
 
 					newPosts.push({ ...post, photos: newPhotos });
 				}
-
 				return res.status(200).json({ success: true, posts: newPosts });
 			})
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
@@ -186,7 +195,10 @@ class PostController {
 				for (let i = 0; i < findPost.rows[0].photos.length; i++) {
 					const photo = findPost.rows[0].photos[i];
 					const filePath = path.relative(PROJECT_ROOT, `./templates/post/${photo}`);
-					const newPhoto = toBase64(filePath, true);
+					const newPhoto = {
+						base64: toBase64(filePath, true),
+						filename: photo
+					};
 
 					if (newPhoto) newPhotos.push(newPhoto);
 				}
@@ -214,12 +226,13 @@ class PostController {
 		const { description, location, photos } = req.body;
 
 		const queryForFindPerson = `SELECT email FROM person WHERE id = $1`;
+		let oldPhotos = [];
 
 		new Promise((resolve) => resolve(db.query(queryForFindPerson, [idCurrentUser])))
 			.then((findPerson) => {
 				if (!findPerson.rows || !findPerson.rows[0]) return Promise.reject("User is not found");
 
-				const queryForFindPost = `SELECT owner_id FROM post WHERE id = $1`;
+				const queryForFindPost = `SELECT owner_id,photos FROM post WHERE id = $1`;
 				const findPost = db.query(queryForFindPost, [idPost]);
 
 				return Promise.resolve(findPost);
@@ -228,12 +241,25 @@ class PostController {
 				if (!findPost.rows || !findPost.rows[0]) return Promise.reject("Post is not found");
 				if (+idCurrentUser !== findPost.rows[0].owner_id) return Promise.reject("Access closed");
 
+				// save old photos. then delete they
+				oldPhotos = findPost.rows[0].photos;
+
 				const queryForUpdatePost = `UPDATE post SET description=$1, location=$2, photos=$3 WHERE id=$4 RETURNING *`;
 				const updatePost = db.query(queryForUpdatePost, [description, location, photos, idPost]);
 
 				return Promise.resolve(updatePost);
 			})
 			.then((updatePost) => {
+				// remove old photos
+				oldPhotos.forEach(photo => {
+					if (!updatePost.rows[0].photos.includes(photo)) {
+						const filePath = path.relative(PROJECT_ROOT, `./templates/post/${photo}`);
+						fs.unlink(filePath, (err) => {
+							if (err) return Promise.reject(err);
+						});
+					}
+				});
+
 				return res.status(200).json({ success: true, message: "Post has been updated", post: updatePost.rows[0] });
 			})
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }))

@@ -7,7 +7,7 @@ This application is social network were you can posting your interests or your l
 ## What you can do?
 
 -   Registration/Login
--   Create/Remove/Search posts
+-   Create/Remove/Change/Search posts
 -   Create/Remove comments
 -   Update information for user
 -   View posts in home and user page
@@ -40,13 +40,13 @@ This application is social network were you can posting your interests or your l
 ## In future
 
 -   Likes for posts
--   Update post
 -   Page for notifications (also maybe send to email)
 -   Dark theme
 -   Tests (Jest)
 -   Docker
 -   Admin page
 -   Lazy loading
+-   Add check at pages for access users
 
 ## Conclusion
 
@@ -61,6 +61,7 @@ I hope you don't forget to rate this project. Good luck!
 ![view application](https://sun9-82.userapi.com/impg/b7w_hFRg698yVVevM9FhJCNJS3uglzGBUnx1IQ/UjoeljL2tRQ.jpg?size=1920x1080&quality=96&sign=305551e40aa4e95fbacd9754bc69d6ba&type=album)
 ![view application](https://sun9-6.userapi.com/impg/Tin8dhxS73_W3UdFTcKMIewOshzsh4E8Q6BFnQ/9eQLTFq0BtU.jpg?size=1920x1080&quality=96&sign=d985aaac53bf282ee988ce124d3a1454&type=album)
 ![view application](https://sun9-87.userapi.com/impg/ILXcgqJyA_c6hIagk6Hu8iIPkak0irL2eQ-sCQ/z53Zp2Y-iJo.jpg?size=1920x1080&quality=96&sign=33f8494ea9549fe8462291eccc0ac1bd&type=album)
+![view application](https://sun9-32.userapi.com/impg/YXPBzAlY_ZVCiygJNObzx-Gkew0twtQWqTPGmQ/3ElqhfSixn0.jpg?size=1920x1080&quality=96&sign=89313652f16c5f03f7db4a769534e3a6&type=album)
 ![view application](https://sun9-82.userapi.com/impg/ugVZ2I2ejCRpaxjpiu6-0S5dmb1uuuDeXgK1wA/snvVLD8h1Vk.jpg?size=1920x1080&quality=96&sign=2a1fde34596413160f7ba214eddccec5&type=album)
 ![view application](https://sun7-14.userapi.com/impg/s_9kIm4ATNB2YS6bFJUyNIwLIEwt9Hc1qy2poQ/6cRjCBThU6U.jpg?size=1920x1080&quality=96&sign=a9b593aaa2eae9b11285a408b1b08fb8&type=album)
 ![view application](https://sun9-80.userapi.com/impg/A8E6uK_zR0HjbRcPhHNog6nTK4EtclvFi35Q_g/NkaJeqs7-cc.jpg?size=1920x1080&quality=96&sign=208cd19e7206ce90d75ffc38e76692c3&type=album)

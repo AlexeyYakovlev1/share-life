@@ -121,7 +121,7 @@ function AddPost(): JSX.Element {
 								<input
 									ref={uploadRef}
 									type="file"
-									style={{ display: "none" }}
+									hidden
 									accept="image/*"
 									multiple
 									required
