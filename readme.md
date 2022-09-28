@@ -13,6 +13,7 @@ This application is social network were you can posting your interests or your l
 -   View posts in home and user page
 -   Follow users
 -   View your followers\following
+-         View 404 page
 
 ## What i used?
 
@@ -65,3 +66,4 @@ I hope you don't forget to rate this project. Good luck!
 ![view application](https://sun9-82.userapi.com/impg/ugVZ2I2ejCRpaxjpiu6-0S5dmb1uuuDeXgK1wA/snvVLD8h1Vk.jpg?size=1920x1080&quality=96&sign=2a1fde34596413160f7ba214eddccec5&type=album)
 ![view application](https://sun7-14.userapi.com/impg/s_9kIm4ATNB2YS6bFJUyNIwLIEwt9Hc1qy2poQ/6cRjCBThU6U.jpg?size=1920x1080&quality=96&sign=a9b593aaa2eae9b11285a408b1b08fb8&type=album)
 ![view application](https://sun9-80.userapi.com/impg/A8E6uK_zR0HjbRcPhHNog6nTK4EtclvFi35Q_g/NkaJeqs7-cc.jpg?size=1920x1080&quality=96&sign=208cd19e7206ce90d75ffc38e76692c3&type=album)
+![view application](https://sun9-13.userapi.com/impg/ieioD6OURvwAyuxsQfN23Lbp3VZEKmGa5L9Tiw/VRFuW1x-E_o.jpg?size=1920x1080&quality=96&sign=b766066df0ba5443f3b264255d451e45&type=album)

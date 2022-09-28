@@ -7,6 +7,7 @@ import Home from "../pages/Home/Home";
 import Profile from "../pages/Profile/Profile";
 import Settings from "../pages/Settings/Settings";
 import ChangePost from "../pages/ChangePost/ChangePost";
+import Error from "../pages/Error/Error";
 
 function useRoutes() {
 	return (
@@ -20,6 +21,8 @@ function useRoutes() {
 			<Route path="/settings" element={<Settings />} />
 			<Route path="/interaction/:id" element={<Interaction />} />
 			<Route path="/change-post/:id" element={<ChangePost />} />
+
+			<Route path="*" element={<Error />} />
 		</Routes>
 	);
 }

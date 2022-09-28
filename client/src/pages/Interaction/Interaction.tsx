@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import MainLayout from "../../components/Layouts/MainLayout/MainLayout";
 import AlertContext from "../../context/alert.context";
 import getOneUser from "../../http/user/getOneUser.http";
@@ -31,6 +31,7 @@ function Interaction(): JSX.Element {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const queryFollowers = searchParams.get("followers") === "y";
 	const queryFollowing = searchParams.get("following") === "y";
+	const navigate = useNavigate();
 
 	const { setText } = React.useContext(AlertContext);
 
@@ -43,6 +44,7 @@ function Interaction(): JSX.Element {
 
 				if (!success) {
 					setText(message || error);
+					navigate("/");
 					return;
 				}
 

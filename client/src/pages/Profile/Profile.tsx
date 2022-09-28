@@ -1,4 +1,4 @@
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import MainLayout from "../../components/Layouts/MainLayout/MainLayout";
 import OpenPost from "../../components/OpenPost/OpenPost";
 import Post from "./Post";
@@ -48,6 +48,7 @@ function Profile(): JSX.Element {
 	const { setCount, count } = useSlider({ list: posts });
 	const { id: pageIdUser } = useParams();
 	const { setText } = React.useContext(AlertContext);
+	const navigate = useNavigate();
 
 	const { followClick } = useFollow(+pageUser.id, setText, setFollowUser);
 
@@ -59,6 +60,7 @@ function Profile(): JSX.Element {
 
 					if (!success) {
 						setText(message);
+						navigate("/");
 						return;
 					}
 

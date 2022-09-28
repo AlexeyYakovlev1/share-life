@@ -44,6 +44,7 @@ function ChangePost(): JSX.Element {
 
 				if (!success) {
 					setText(message || error);
+					navigate("/");
 					return;
 				}
 

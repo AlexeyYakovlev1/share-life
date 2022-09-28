@@ -12,7 +12,7 @@
 # production
 /client/build
 
-/clients/.env
+/client/.env
 /server/.env
 
 # misc

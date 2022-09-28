@@ -90,7 +90,10 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 
 					setText(message || error);
 
-					if (!success) return;
+					if (!success) {
+						navigate(`/profile/${userPost.id}`);
+						return;
+					}
 
 					setCurrentPost(post);
 				});
