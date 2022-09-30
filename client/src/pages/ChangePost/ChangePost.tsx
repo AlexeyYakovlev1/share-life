@@ -12,6 +12,7 @@ import uploadImages from "../../utils/uploadImages.util";
 import readerImages from "../../utils/readerImages.util";
 import updatePost, { IUpdateBody } from "../../http/posts/updatePost.http";
 import uploadPhotos from "../../http/files/uploadPhotos.http";
+import useAccessUser from "../../hooks/useAccessUser";
 
 function ChangePost(): JSX.Element {
 	const { id: postId } = useParams();
@@ -33,7 +34,9 @@ function ChangePost(): JSX.Element {
 	});
 	const navigate = useNavigate();
 	const [imagesUpload, setImagesUpload] = React.useState<boolean>(false);
-	const disabled = (changePost.description.length >= 2200) || (changePost.location.length < 3) || (changePost.location.length >= 20) || !selectedImages.length;
+	const disabled = (changePost.description.length >= 2200) || (changePost.location.length < 3) || (changePost.location.length >= 20) || !photos.length;
+
+	useAccessUser(post, post.owner_id, setText, navigate);
 
 	React.useEffect(() => {
 		if (!postId) return;
