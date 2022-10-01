@@ -9,6 +9,16 @@
 	display: grid
 	grid-template-rows: auto 1fr auto
 	gap: 10px
+	&.light
+		& .text
+			color: $black
+			& a
+				color: $pink
+	&.dark
+		& .text
+			color: $white
+			& a
+				color: $darkBlueLight
 
 .title
 	text-align: center
@@ -23,10 +33,8 @@
 .text
 	font-size: 15px
 	margin-top: 15px
-	& a
-		color: $pink
-		&:hover
-			text-decoration: underline
+	& a:hover
+		text-decoration: underline
 
 .wrong
 	color: red

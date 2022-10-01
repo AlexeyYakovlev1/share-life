@@ -20,9 +20,12 @@ import { IState } from "../../models/redux.models";
 import { useSelector } from "react-redux";
 import getDatePost from "../../utils/getDatePost.util";
 import checkFollow from "../../http/follow/checkFollow.http";
+import Button from "../UI/Button/Button";
+import useTheme from "../../hooks/useTheme";
 
 function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 	const currentUser = useSelector((state: IState) => state.person.info);
+	const { light, dark } = useTheme();
 
 	const [currentPost, setCurrentPost] = React.useState<IPost>({
 		id: -1,
@@ -131,22 +134,28 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 
 	return (
 		<div className={classes.wrapper} onClick={closePost}>
-			<div className={classes.content} onClick={event => event.stopPropagation()}>
+			<div
+				className={cn(classes.content, {
+					[classes.light]: light,
+					[classes.dark]: dark
+				})}
+				onClick={event => event.stopPropagation()}
+			>
 				<div className={classes.left} ref={sliderWrapperRef}>
 					{currentPost.photos.length > 1 &&
 						<React.Fragment>
-							<button
+							<Button
 								className={cn(classes.leftBtn, classes.leftBtnLeft)}
 								onClick={() => setCount(count - 1)}
 							>
 								<ArrowLeftIcon />
-							</button>
-							<button
+							</Button>
+							<Button
 								className={cn(classes.leftBtn, classes.leftBtnRight)}
 								onClick={() => setCount(count + 1)}
 							>
 								<ArrowLeftIcon />
-							</button>
+							</Button>
 						</React.Fragment>
 					}
 					<ul
@@ -189,7 +198,7 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 						{+currentUser.id === +userPost.id && <div className={classes.infoSettings}>
 							<button
 								onClick={() => setVisible(!visible)}
-								className={classes.infoSettingsBtn}
+								className={cn(classes.infoSettingsBtn, classes.threeDots)}
 							>
 								<ThreeDotsIcon />
 							</button>

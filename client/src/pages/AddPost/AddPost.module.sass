@@ -1,9 +1,24 @@
 @import "../../styles/_vars"
 
 .wrapper
-	background-color: #fff
 	display: flex
 	flex-direction: column
+	&.light
+		background-color: $white
+		& .sliderNoPhotos
+			color: $black
+		& .title
+			color: $black
+		& .rightUserName
+			color: $black
+	&.dark
+		background-color: $dark
+		& .sliderNoPhotos
+			color: $white
+		& .title
+			color: $white
+		& .rightUserName
+			color: $white
 
 .header
 	padding: 15px
@@ -28,15 +43,13 @@
 	overflow: hidden
 	&Btn
 		position: absolute
-		border: none
-		background-color: $pink
 		display: flex
 		align-items: center
 		justify-content: center
-		padding: 2px
-		cursor: pointer
+		padding: 2px !important
 		top: 50%
 		z-index: 99
+		width: 5%
 		&Right
 			right: 5%
 			& svg
@@ -78,13 +91,9 @@
 		height: 40px
 		border-radius: 50%
 	&Caption
-		border: none
-		border-left: 1px solid $grayDark
-		font-family: $fontInter
-		font-size: 15px
-		line-height: 22px
-		padding: 10px
-		resize: none
+		border: none !important
+		border-left: 1px solid $grayDark !important
+		resize: none !important
 	&Down
 		display: grid
 		grid-template-rows: minmax(200px, 1fr) repeat(2, minmax(auto, 40px))

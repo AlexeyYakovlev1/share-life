@@ -2,16 +2,24 @@
 
 .button
 	cursor: pointer
-	background-color: $pink
 	border: 1px solid transparent
 	padding: 8px
 	width: 100%
-	color: #fff
+	color: $white
 	border-radius: 2px
 	font-weight: 600
-	transition: background-color .2s ease
-	&:hover
-		background-color: $pinkHover
-	&:disabled
-		cursor: default
-		background-color: $pinkLight
+	transition: all .2s ease
+	&.light
+		background-color: $pink
+		&:hover
+			background-color: $pinkHover
+		&:disabled
+			cursor: default
+			background-color: $pinkLight
+	&.dark
+		background-color: $darkBlue
+		&:hover
+			background-color: $darkBlueHover
+		&:disabled
+			cursor: default
+			background-color: $darkBlueLight

@@ -1,7 +1,14 @@
 @import "../../styles/_vars"
 
 .footer
-	background-color: #fff
+	&.light
+		background-color: $white
+		& .text a
+			color: $pink
+	&.dark
+		background-color: $darkBlue
+		& .text a
+			color: $darkBlueLight
 
 .container
 	max-width: $containerWidth
@@ -12,6 +19,5 @@
 .text
 	color: $grayDark
 	& a
-		color: $pink
 		&:hover
 			text-decoration: underline

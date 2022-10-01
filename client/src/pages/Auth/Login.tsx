@@ -12,8 +12,11 @@ import { useDispatch } from "react-redux";
 import { setUser as setUserToReducer } from "../../redux/actions/user.actions";
 import login from "../../http/auth/login.http";
 import { usePromiseTracker } from "react-promise-tracker";
+import cn from "classnames";
+import useTheme from "../../hooks/useTheme";
 
 function Login() {
+	const { light, dark } = useTheme();
 	const dispatch = useDispatch();
 	const [user, setUser] = React.useState({ email: "", password: "" });
 	const [errors, setErrors] = React.useState<boolean>(false);
@@ -53,7 +56,10 @@ function Login() {
 		<React.Fragment>
 			{text && <Alert />}
 			{promiseInProgress === true && <Loader />}
-			<div className={classes.wrapper}>
+			<div className={cn(classes.wrapper, {
+				[classes.light]: light,
+				[classes.dark]: dark
+			})}>
 				<Logo className={classes.title} />
 				{errors && <span className={classes.wrong}>Submit failed. Check your data</span>}
 				<form onSubmit={logSubmit} className={classes.form}>

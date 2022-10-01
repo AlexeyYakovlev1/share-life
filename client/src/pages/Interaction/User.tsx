@@ -7,15 +7,21 @@ import classes from "./Interaction.module.sass";
 import { useSelector } from "react-redux";
 import { IState } from "../../models/redux.models";
 import { useFollow } from "../../hooks/useFollow";
+import cn from "classnames";
+import useTheme from "../../hooks/useTheme";
 
 function User({ user }: { user: IPerson }): JSX.Element {
+	const { light, dark } = useTheme();
 	const { setText } = React.useContext(AlertContext);
 	const { id: currentIdUser } = useSelector((state: IState) => state.person.info);
 	const [followUser, setFollowUser] = React.useState<boolean>(user.followers.includes(currentIdUser));
 	const { followClick } = useFollow(+user.id, setText, setFollowUser);
 
 	return (
-		<li className={classes.user}>
+		<li className={cn(classes.user, {
+			[classes.light]: light,
+			[classes.dark]: dark
+		})}>
 			<div className={classes.userLeft}>
 				<div
 					className={classes.userAvatar}

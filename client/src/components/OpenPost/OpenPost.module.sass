@@ -14,12 +14,23 @@
 	top: 50%
 	left: 50%
 	transform: translate(-50%, -50%)
-	background-color: #fff
 	width: $containerWidth
 	max-height: 65vh
 	display: grid
 	grid-template-columns: 1fr 350px
 	align-items: flex-start
+	&.light
+		background-color: $white
+		color: $black
+		& .threeDots svg, path
+			fill: $black
+			stroke: $black
+	&.dark
+		background-color: $darkBlue
+		color: $white
+		& .threeDots svg, path
+			fill: $white !important
+			stroke: $white !important
 
 .left
 	position: relative
@@ -28,18 +39,17 @@
 	max-height: 65vh
 	overflow: hidden
 	&Btn
-		position: absolute
-		border: none
-		background-color: $pink
-		cursor: pointer
+		position: absolute !important
 		top: 60%
 		z-index: 99
 		display: flex
 		align-items: center
 		justify-content: center
-		padding: 2px
-		& svg path
-			fill: #fff !important
+		padding: 2px !important
+		width: 5% !important
+		& svg, path
+			fill: $white !important
+			stroke: $white !important
 		&Right
 			right: 3%
 			& svg
@@ -156,6 +166,14 @@
 	gap: 15px
 	align-items: flex-start
 	justify-content: space-between
+	&.light
+		& .commentName, .commentText:not(a), .commentRemove
+		& .commentRemove svg, path
+			fill: $black !important
+			stroke: $black !important
+	&.dark
+		& .commentName, .commentText:not(a), .commentRemove
+			color: $white
 	&Avatar
 		border-radius: 50%
 		width: 40px

@@ -9,8 +9,12 @@ import useAvatar from "../../hooks/useAvatar";
 import { IState } from "../../models/redux.models";
 import { useSelector } from "react-redux";
 import removeComment from "../../http/comments/removeComment.http";
+import useTheme from "../../hooks/useTheme";
+import cn from "classnames";
 
 function Comment({ info }: { info: IComment }): JSX.Element {
+	const { light, dark } = useTheme();
+
 	const { setText } = React.useContext(AlertContext);
 	const [userComment, setUserComment] = React.useState<IPerson>({
 		id: 1,
@@ -59,7 +63,10 @@ function Comment({ info }: { info: IComment }): JSX.Element {
 	}
 
 	return (
-		<li className={classes.comment}>
+		<li className={cn(classes.comment, {
+			[classes.light]: light,
+			[classes.dark]: dark
+		})}>
 			<div
 				style={{ backgroundImage: `url(${useAvatar(userComment.avatar.base64)})` }}
 				className={classes.commentAvatar}

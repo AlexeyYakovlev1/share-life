@@ -7,8 +7,11 @@ import interactionFetch from "../../http/user/interaction.http";
 import { IPerson } from "../../models/person.models";
 import classes from "./Interaction.module.sass";
 import User from "./User";
+import cn from "classnames";
+import useTheme from "../../hooks/useTheme";
 
 function Interaction(): JSX.Element {
+	const { light, dark } = useTheme();
 	const [followersUsr, setFollowersUsr] = React.useState<Array<IPerson>>([]);
 	const [followingUsr, setFollowingUsr] = React.useState<Array<IPerson>>([]);
 	const [pageUser, setPageUser] = React.useState<IPerson>({
@@ -80,29 +83,29 @@ function Interaction(): JSX.Element {
 	if (queryFollowing && !followingUsr.length) {
 		return (
 			<MainLayout>
-				<h1 className={classes.title}>This user hasn`t followed anyone yet</h1>
+				<h1 className={classes.title}>
+					This user hasn`t followed anyone yet
+				</h1>
 			</MainLayout>
 		);
 	}
 
 	return (
 		<MainLayout>
-			{
-				queryFollowers &&
-				<ul className={classes.list}>
-					{followersUsr.map((follower: IPerson) => (
+			<ul className={classes.list}>
+				{
+					queryFollowers &&
+					followersUsr.map((follower: IPerson) => (
 						<User key={follower.id} user={follower} />
-					))}
-				</ul>
-			}
-			{
-				queryFollowing &&
-				<ul className={classes.list}>
-					{followingUsr.map((usr: IPerson) => (
+					))
+				}
+				{
+					queryFollowing &&
+					followingUsr.map((usr: IPerson) => (
 						<User key={usr.id} user={usr} />
-					))}
-				</ul>
-			}
+					))
+				}
+			</ul>
 		</MainLayout>
 	);
 }

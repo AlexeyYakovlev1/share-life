@@ -15,10 +15,9 @@ import AlertContext from "../../context/alert.context";
 import getAllPosts from "../../http/posts/getAllPosts.http";
 import { setPosts } from "../../redux/actions/posts.actions";
 import searchPostsByKeyWords from "../../http/posts/search.http";
+import useTheme from "../../hooks/useTheme";
 
 interface IHeaderProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> { }
-
-const { REACT_APP_API_URL } = process.env;
 
 function Header({ className }: IHeaderProps): JSX.Element {
 	interface IMenu {
@@ -26,6 +25,9 @@ function Header({ className }: IHeaderProps): JSX.Element {
 		url: string;
 		img: FunctionComponent<SVGProps<SVGSVGElement>>;
 	}
+
+	const { light, dark } = useTheme();
+
 	const { info: { avatar, id, user_name }, isAuth } = useSelector((state: IState) => state.person);
 	const [searchVal, setSearchVal] = React.useState<string>("");
 	const dispatch = useDispatch();
@@ -76,7 +78,10 @@ function Header({ className }: IHeaderProps): JSX.Element {
 	}
 
 	return (
-		<header className={cn(classes.header, className)}>
+		<header className={cn(classes.header, className, {
+			[classes.light]: light,
+			[classes.dark]: dark
+		})}>
 			<div className={classes.container}>
 				<Logo className={classes.logoHeader} />
 				<div className={classes.search}>

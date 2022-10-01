@@ -4,6 +4,13 @@
 	display: flex
 	flex-direction: column
 
+.title
+	font-size: 17px
+	font-family: $fontInter
+	color: $grayDark
+	text-align: center
+	font-weight: 400
+
 .user
 	padding: 10px 0
 	border-bottom: 1px solid $grayDark
@@ -11,6 +18,18 @@
 	grid-template-columns: 1fr auto
 	justify-content: space-between
 	align-items: flex-start
+	&.light
+		& .user
+			&Name
+				color: $black
+			&Description
+				color: $black
+	&.dark
+		& .user
+			&Name
+				color: $white
+			&Description
+				color: $white
 	&Left
 		display: grid
 		grid-template-columns: 80px 1fr

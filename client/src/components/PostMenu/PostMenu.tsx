@@ -6,6 +6,7 @@ import cn from "classnames";
 import AlertContext from "../../context/alert.context";
 import { useDispatch } from "react-redux";
 import removePostAsyncAction from "../../redux/actions/async/posts/removePost";
+import useTheme from "../../hooks/useTheme";
 
 interface IPostMenuProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
 	post: IPost;
@@ -16,10 +17,14 @@ interface IPostMenuProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement
 function PostMenu({ post, setVisible, visible, className = "", ...props }: IPostMenuProps): JSX.Element {
 	const { setText } = React.useContext(AlertContext);
 	const dispatch: any = useDispatch();
+	const { light, dark } = useTheme();
 
 	return (
 		<div
-			className={cn(classes.wrapper, className)}
+			className={cn(classes.wrapper, className, {
+				[classes.light]: light,
+				[classes.dark]: dark
+			})}
 			{...props}
 		>
 			<span

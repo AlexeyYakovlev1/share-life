@@ -3,9 +3,39 @@
 .post
 	display: grid
 	grid-template-rows: 70px 1fr
-	border-radius: 3px
 	border: 1px solid $grayDark
-	background-color: #fff
+	&.light
+		background-color: $white
+		& .header
+			&Name
+				color: $black
+			&SettingsBtn svg, path
+				fill: $black !important
+				stroke: $black !important
+		& .bodyDescription
+			&Like svg, path
+				fill: $black !important
+				stroke: $black !important
+			&LikesNum
+				color: $black
+			&Text
+				color: $black
+	&.dark
+		background-color: $darkBlue
+		& .header
+			&Name
+				color: $white
+			&SettingsBtn svg, path
+				fill: $white !important
+				stroke: $white !important
+		& .bodyDescription
+			&Like svg, path
+				fill: $white !important
+				stroke: $white !important
+			&LikesNum
+				color: $white
+			&Text
+				color: $white
 
 .header
 	padding: 15px
@@ -49,15 +79,13 @@
 	grid-template-rows: 1fr repeat(2, auto) 50px
 	&SwitchBtn
 		position: absolute
-		border: none
-		cursor: pointer
 		top: 50%
 		z-index: 9
-		background-color: $pink
 		display: flex
 		align-items: center
 		justify-content: center
-		padding: 2px
+		padding: 2px !important
+		width: 5%
 		& svg path
 			fill: #fff !important
 		&Right

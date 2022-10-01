@@ -2,12 +2,28 @@
 
 .wrapper
 	border: 1px solid $grayDark
-	background-color: #fff
-	border-radius: 3px
+	border-radius: 2px
 	position: absolute
 	bottom: 0
 	right: 0
 	height: 94px
+	z-index: 9
+	&.light
+		background-color: $white
+		& .close
+			color: $black
+		& .item
+			color: $black
+			&:hover
+				background-color: $gray
+	&.dark
+		background-color: $darkBlueHover
+		& .close
+			color: $white
+		& .item
+			color: $white
+			&:hover
+				background-color: $darkBlueLight
 
 .close
 	cursor: pointer
@@ -26,7 +42,5 @@
 	padding: 5px 10px
 	font-weight: 600
 	cursor: pointer
-	&:hover
-		background-color: $gray
 	&Delete
-		color: red
+		color: red !important

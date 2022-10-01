@@ -6,6 +6,7 @@ This application is social network were you can posting your interests or your l
 
 ## What you can do?
 
+-   Select dark or light theme
 -   Registration/Login
 -   Create/Remove/Change/Search posts
 -   Create/Remove comments
@@ -42,7 +43,6 @@ This application is social network were you can posting your interests or your l
 
 -   Likes for posts
 -   Page for notifications (also maybe send to email)
--   Dark theme
 -   Tests (Jest)
 -   Docker
 -   Admin page
@@ -54,6 +54,7 @@ I hope you don't forget to rate this project. Good luck!
 
 ## Photos
 
+![view application](https://sun9-85.userapi.com/impg/pvQETl_qqVXgR0RnR9yUlEvE2ElnbYo_YXyl7A/7ZMXe7M8vfY.jpg?size=1920x1080&quality=96&sign=38dd28551722514c9fcb2b453b335e23&type=album)
 ![view application](https://sun9-11.userapi.com/impg/n9IYx1qgi_EoBnyqjT6639jAWKiSNglcaxMF5Q/UAlCYAXy2no.jpg?size=1920x1080&quality=96&sign=0312bfa89cef0f3057587c436f45b0d5&type=album)
 ![view application](https://sun9-41.userapi.com/impg/TY-9qt4oUuSBPtwqTf5LVar-yT5uYEWISge6bw/B19e4hYJ9e8.jpg?size=1920x1080&quality=96&sign=ff416bd8c9557658cd19f8ae67bd671e&type=album)
 ![view application](https://sun9-88.userapi.com/impg/JbMalU2o2d-cNG3K67ib18Sn5RU6raeSfVhHEg/Itoatwv61PQ.jpg?size=1920x1080&quality=96&sign=97f11cadd9bf804dc8aaa631ce2b7175&type=album)
@@ -66,3 +67,21 @@ I hope you don't forget to rate this project. Good luck!
 ![view application](https://sun7-14.userapi.com/impg/s_9kIm4ATNB2YS6bFJUyNIwLIEwt9Hc1qy2poQ/6cRjCBThU6U.jpg?size=1920x1080&quality=96&sign=a9b593aaa2eae9b11285a408b1b08fb8&type=album)
 ![view application](https://sun9-80.userapi.com/impg/A8E6uK_zR0HjbRcPhHNog6nTK4EtclvFi35Q_g/NkaJeqs7-cc.jpg?size=1920x1080&quality=96&sign=208cd19e7206ce90d75ffc38e76692c3&type=album)
 ![view application](https://sun9-13.userapi.com/impg/ieioD6OURvwAyuxsQfN23Lbp3VZEKmGa5L9Tiw/VRFuW1x-E_o.jpg?size=1920x1080&quality=96&sign=b766066df0ba5443f3b264255d451e45&type=album)
+
+## Build Setup
+
+Note: you must create a database that will contain all the models that are in models.sql!
+
+```bash
+$ npm install
+```
+
+```bash
+$ cd ./server
+$ npm run dev
+```
+
+```bash
+$ cd ./client
+$ npm start
+```

@@ -4,9 +4,8 @@
 	position: fixed
 	top: 2%
 	right: 2%
-	background-color: #fff
 	padding: 10px
-	border-radius: 6px
+	border-radius: 2px
 	border: 1px solid $grayDark
 	z-index: 999
 	display: grid
@@ -14,6 +13,14 @@
 	gap: 10px
 	align-items: center
 	max-width: 450px
+	&.light
+		background-color: $white
+		& .text
+			color: $black
+	&.dark
+		background-color: $darkBlueHover
+		& .text
+			color: $white
 
 .text
 	line-height: 22px

@@ -12,6 +12,11 @@ import updateUser from "../../http/user/updateUser.http";
 import uploadAvatar from "../../http/files/uploadAvatar.http";
 import useAvatar from "../../hooks/useAvatar";
 import { IPerson } from "../../models/person.models";
+import { setTheme } from "../../redux/actions/theme.actions";
+import Textarea from "../../components/UI/Textarea/Textarea";
+import Label from "../../components/UI/Label/Label";
+import useTheme from "../../hooks/useTheme";
+import cn from "classnames";
 
 interface IPersonForSettings extends IPerson {
 	oldPassword?: string;
@@ -21,16 +26,20 @@ interface IPersonForSettings extends IPerson {
 function Settings(): JSX.Element {
 	const avatarRef = React.useRef<HTMLInputElement | null>(null);
 	const navigate = useNavigate();
+	const { light, dark } = useTheme();
 
 	const info = useSelector((state: IState) => state.person.info);
+	const theme = useSelector((state: IState) => state.theme);
+
 	const dispatch = useDispatch();
 
 	const [avatar, setAvatar] = React.useState({
 		base64: info.avatar.base64,
 		file: ""
 	});
-	const [user, setUser] = React.useState<IPersonForSettings>({ ...info, newPassword: undefined, oldPassword: undefined });
-
+	const [user, setUser] = React.useState<IPersonForSettings>({
+		...info, newPassword: undefined, oldPassword: undefined
+	});
 	const { setText } = React.useContext(AlertContext);
 
 	React.useEffect(() => {
@@ -91,15 +100,36 @@ function Settings(): JSX.Element {
 		setUser({ ...info, newPassword: "", oldPassword: "" });
 	}
 
-	// logout
 	function logout() {
 		dispatch(setUserToReducer({ ...user }, true));
 		navigate("/auth/login");
 	}
 
+	function selectTheme(theme: "LIGHT" | "DARK") {
+		dispatch(setTheme(theme));
+		document.body.className = theme.toLowerCase();
+	}
+
 	return (
 		<MainLayout>
-			<div className={classes.wrapper}>
+			<div className={cn(classes.wrapper, {
+				[classes.light]: light,
+				[classes.dark]: dark
+			})}>
+				<div className={classes.theme}>
+					<h2 className={classes.themeTitle}>Select theme</h2>
+					<div className={classes.themeSelect}>
+						<Button
+							onClick={() => selectTheme("LIGHT")}
+							className={theme === "LIGHT" ? classes.themeSelectActive : undefined}
+						>
+							Light
+						</Button>
+						<Button onClick={() => selectTheme("DARK")}>
+							Dark
+						</Button>
+					</div>
+				</div>
 				<div className={classes.user}>
 					<img
 						src={useAvatar(info.avatar.base64)}
@@ -126,7 +156,7 @@ function Settings(): JSX.Element {
 				</div>
 				<form onSubmit={submitUpdate} className={classes.form}>
 					<div className={classes.formInputBlock}>
-						<label htmlFor="fullName">Full Name</label>
+						<Label htmlFor="fullName">Full Name</Label>
 						<Input
 							onChange={event => setUser({ ...user, full_name: event.target.value })}
 							id="fullName"
@@ -135,7 +165,7 @@ function Settings(): JSX.Element {
 						/>
 					</div>
 					<div className={classes.formInputBlock}>
-						<label htmlFor="userName">User Name</label>
+						<Label htmlFor="userName">User Name</Label>
 						<Input
 							onChange={event => setUser({ ...user, user_name: event.target.value })}
 							id="userName"
@@ -144,15 +174,15 @@ function Settings(): JSX.Element {
 						/>
 					</div>
 					<div className={classes.formInputBlock}>
-						<label htmlFor="description">Description</label>
-						<textarea
+						<Label htmlFor="description">Description</Label>
+						<Textarea
 							onChange={event => setUser({ ...user, description: event.target.value })}
 							id="description"
 							defaultValue={info.description}
 						/>
 					</div>
 					<div className={classes.formInputBlock}>
-						<label htmlFor="email">Email</label>
+						<Label htmlFor="email">Email</Label>
 						<Input
 							onChange={event => setUser({ ...user, email: event.target.value })}
 							id="email"
@@ -161,7 +191,7 @@ function Settings(): JSX.Element {
 						/>
 					</div>
 					<div className={classes.formInputBlock}>
-						<label htmlFor="oldPassword">Old password</label>
+						<Label htmlFor="oldPassword">Old password</Label>
 						<Input
 							value={user.oldPassword || ""}
 							onChange={event => setUser({ ...user, oldPassword: event.target.value })}
@@ -170,7 +200,7 @@ function Settings(): JSX.Element {
 						/>
 					</div>
 					<div className={classes.formInputBlock}>
-						<label htmlFor="newPassword">New password</label>
+						<Label htmlFor="newPassword">New password</Label>
 						<Input
 							value={user.newPassword || ""}
 							onChange={event => setUser({ ...user, newPassword: event.target.value })}

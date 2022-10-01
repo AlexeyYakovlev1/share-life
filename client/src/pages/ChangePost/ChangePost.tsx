@@ -13,8 +13,11 @@ import readerImages from "../../utils/readerImages.util";
 import updatePost, { IUpdateBody } from "../../http/posts/updatePost.http";
 import uploadPhotos from "../../http/files/uploadPhotos.http";
 import useAccessUser from "../../hooks/useAccessUser";
+import Textarea from "../../components/UI/Textarea/Textarea";
+import useTheme from "../../hooks/useTheme";
 
 function ChangePost(): JSX.Element {
+	const { light, dark } = useTheme();
 	const { id: postId } = useParams();
 	const [post, setPost] = React.useState<IPost>({
 		id: -1,
@@ -112,7 +115,10 @@ function ChangePost(): JSX.Element {
 
 	return (
 		<MainLayout>
-			<div className={classes.wrapper}>
+			<div className={cn(classes.wrapper, {
+				[classes.light]: light,
+				[classes.dark]: dark
+			})}>
 				<div className={classes.content}>
 					<div className={cn(classes.contentChange, classes.photos)}>
 						<h2 className={classes.contentChangeTitle}>Photos</h2>
@@ -151,7 +157,7 @@ function ChangePost(): JSX.Element {
 					</div>
 					<div className={cn(classes.contentChange, classes.description)}>
 						<h2 className={classes.contentChangeTitle}>Caption</h2>
-						<textarea
+						<Textarea
 							value={changePost.description}
 							className={classes.captionInput}
 							onChange={(event) => setChangePost({ ...changePost, description: event.target.value })}

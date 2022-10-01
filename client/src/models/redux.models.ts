@@ -16,6 +16,7 @@ export interface IState {
 	person: IUserReducer;
 	posts: Array<IPost>;
 	comments: Array<IComment>;
+	theme: "LIGHT" | "DARK";
 }
 
 export interface IPostAction {
@@ -36,4 +37,9 @@ export interface ICommentsAction {
 export interface ICommentsRemoveAction {
 	type: string;
 	payload: number;
+}
+
+export interface IThemeAction {
+	type: string;
+	payload: "LIGHT" | "DARK";
 }

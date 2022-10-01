@@ -16,8 +16,10 @@ import useAvatar from "../../hooks/useAvatar";
 import { IState } from "../../models/redux.models";
 import { useSelector } from "react-redux";
 import { useFollow } from "../../hooks/useFollow";
+import useTheme from "../../hooks/useTheme";
 
 function Profile(): JSX.Element {
+	const { light, dark } = useTheme();
 	const [pageUser, setPageUser] = React.useState<IPerson>({
 		id: -1,
 		full_name: "",
@@ -84,7 +86,10 @@ function Profile(): JSX.Element {
 
 	return (
 		<MainLayout>
-			<div className={classes.wrapper}>
+			<div className={cn(classes.wrapper, {
+				[classes.light]: light,
+				[classes.dark]: dark
+			})}>
 				{queryPostOpen &&
 					<React.Fragment>
 						{userPosts.length > 1 && <div className={classes.switchPost}>

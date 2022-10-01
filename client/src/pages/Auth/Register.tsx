@@ -9,8 +9,11 @@ import Alert from "../../components/UI/Alert/Alert";
 import Loader from "../../components/UI/Loader/Loader";
 import { usePromiseTracker } from "react-promise-tracker";
 import register from "../../http/auth/register.http";
+import cn from "classnames";
+import useTheme from "../../hooks/useTheme";
 
 function Register() {
+	const { light, dark } = useTheme();
 	const [user, setUser] = React.useState({ fullName: "", userName: "", email: "", password: "" });
 	const [errors, setErrors] = React.useState<boolean>(false);
 	const { text, setText } = React.useContext(AlertContext);
@@ -47,7 +50,10 @@ function Register() {
 		<React.Fragment>
 			{text && <Alert />}
 			{promiseInProgress === true && <Loader />}
-			<div className={classes.wrapper}>
+			<div className={cn(classes.wrapper, {
+				[classes.light]: light,
+				[classes.dark]: dark
+			})}>
 				<Logo className={classes.title} />
 				{errors && <span className={classes.wrong}>Submit failed. Check your data</span>}
 				<form onSubmit={regisSubmit} className={classes.form}>

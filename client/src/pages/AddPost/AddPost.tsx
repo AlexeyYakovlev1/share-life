@@ -15,8 +15,11 @@ import useAvatar from "../../hooks/useAvatar";
 import uploadPhotos from "../../http/files/uploadPhotos.http";
 import addPostAsyncAction from "../../redux/actions/async/posts/addPost";
 import { useNavigate } from "react-router-dom";
+import Textarea from "../../components/UI/Textarea/Textarea";
+import useTheme from "../../hooks/useTheme";
 
 function AddPost(): JSX.Element {
+	const { light, dark } = useTheme();
 	const { avatar: avatarRedux, user_name } = useSelector((state: IState) => state.person.info);
 	const dispatch: any = useDispatch();
 
@@ -72,7 +75,10 @@ function AddPost(): JSX.Element {
 
 	return (
 		<MainLayout>
-			<div className={classes.wrapper}>
+			<div className={cn(classes.wrapper, {
+				[classes.light]: light,
+				[classes.dark]: dark
+			})}>
 				<header className={classes.header}>
 					<h3 className={classes.title}>Create new post</h3>
 					{errors && <span className={classes.errors}>Submit failed. Check your data</span>}
@@ -81,18 +87,18 @@ function AddPost(): JSX.Element {
 					<div className={classes.slider} ref={sliderWrapperRef}>
 						{photos.length > 1 ?
 							<React.Fragment>
-								<button
+								<Button
 									className={cn(classes.sliderBtn, classes.sliderBtnLeft)}
 									onClick={() => setCount(count - 1)}
 								>
 									<ArrowLeftIcon />
-								</button>
-								<button
+								</Button>
+								<Button
 									className={cn(classes.sliderBtn, classes.sliderBtnRight)}
 									onClick={() => setCount(count + 1)}
 								>
 									<ArrowLeftIcon />
-								</button>
+								</Button>
 							</React.Fragment>
 							: false
 						}
@@ -148,7 +154,7 @@ function AddPost(): JSX.Element {
 							className={classes.rightDown}
 							onSubmit={submitPost}
 						>
-							<textarea
+							<Textarea
 								className={classes.rightCaption}
 								placeholder="Write a caption..."
 								value={post.description}

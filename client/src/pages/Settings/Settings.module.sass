@@ -4,6 +4,16 @@
 	display: grid
 	grid-template-rows: auto 1fr
 	gap: 50px
+	&.light
+		& .themeTitle
+			color: $black
+		& .userInfoName
+			color: $black
+	&.dark
+		& .themeTitle
+			color: $white
+		& .userInfoName
+			color: $white
 
 .user
 	display: grid
@@ -30,16 +40,6 @@
 		align-items: flex-start
 		grid-template-columns: 120px 1fr
 		gap: 15px
-		& label
-			font-weight: 600
-			font-size: 15px
-		& textarea
-			border: 1px solid $grayDark
-			font-family: $fontInter
-			line-height: 22px
-			padding: 10px
-			resize: vertical
-			min-height: 66px
 	&Submit
 		margin-left: auto
 
@@ -49,3 +49,18 @@
 	gap: 50px
 	& button
 		max-width: 150px
+
+.theme
+	display: grid
+	grid-template-rows: auto 1fr
+	gap: 15px
+	&Title
+		font-size: 17px
+	&Select
+		display: flex
+		justify-content: space-between
+		align-items: center
+		max-width: 300px
+		gap: 10px
+		&Active
+			background-color: $pinkHover

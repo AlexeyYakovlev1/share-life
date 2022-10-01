@@ -18,8 +18,11 @@ import getAllCommentsByPost from "../../http/comments/getAllCommentsByPost.http"
 import Comment from "../OpenPost/Comment";
 import { useSelector } from "react-redux";
 import { IState } from "../../models/redux.models";
+import useTheme from "../../hooks/useTheme";
 
 function HomePost({ info }: { info: IPost }): JSX.Element {
+	const { light, dark } = useTheme();
+
 	const [dotsToEnd, setDotsToEnd] = React.useState<boolean>(info.description ? info.description.trim().length >= 200 : false);
 	const [comments, setComments] = React.useState<Array<any>>([]);
 	const [viewComments, setViewComments] = React.useState<boolean>(comments.length >= 3);
@@ -76,7 +79,10 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 	}, [info]);
 
 	return (
-		<li className={classes.post}>
+		<li className={cn(classes.post, {
+			[classes.light]: light,
+			[classes.dark]: dark
+		})}>
 			<header className={classes.header}>
 				<div className={classes.headerLeft}>
 					<img
@@ -111,18 +117,18 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 				<div className={classes.bodyPhotos} ref={sliderWrapperRef}>
 					{info.photos.length > 1 &&
 						<React.Fragment>
-							<button
+							<Button
 								className={cn(classes.bodySwitchBtn, classes.bodySwitchBtnLeft)}
 								onClick={() => setCount(count - 1)}
 							>
 								<ArrowLeftIcon />
-							</button>
-							<button
+							</Button>
+							<Button
 								className={cn(classes.bodySwitchBtn, classes.bodySwitchBtnRight)}
 								onClick={() => setCount(count + 1)}
 							>
 								<ArrowLeftIcon />
-							</button>
+							</Button>
 						</React.Fragment>
 					}
 					<ul
@@ -160,28 +166,34 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 						{0} likes
 					</span>
 					<div>
-						{info.description && <p
-							className={cn(classes.bodyDescriptionText, {
-								[classes.bodyDescriptionTextHideSide]: dotsToEnd
-							})}
-						>
-							<span className={classes.headerName}>{userPost.user_name}</span>
-							&nbsp;
-							{info.description}
-						</p>}
+						{info.description &&
+							<p
+								className={cn(classes.bodyDescriptionText, {
+									[classes.bodyDescriptionTextHideSide]: dotsToEnd
+								})}
+							>
+								<span className={classes.headerName}>{userPost.user_name}</span>
+								&nbsp;
+								{info.description}
+							</p>
+						}
 						<div className={classes.bodyDescriptionActions}>
-							{dotsToEnd && <Button
-								className={classes.bodyDescriptionMore}
-								onClick={() => setDotsToEnd(!dotsToEnd)}
-							>
-								Read more
-							</Button>}
-							{viewComments && <Button
-								className={classes.bodyDescriptionMore}
-								onClick={() => setViewComments(!viewComments)}
-							>
-								View all {comments.length} comments
-							</Button>}
+							{dotsToEnd &&
+								<Button
+									className={classes.bodyDescriptionMore}
+									onClick={() => setDotsToEnd(!dotsToEnd)}
+								>
+									Read more
+								</Button>
+							}
+							{viewComments &&
+								<Button
+									className={classes.bodyDescriptionMore}
+									onClick={() => setViewComments(!viewComments)}
+								>
+									View all {comments.length} comments
+								</Button>
+							}
 						</div>
 					</div>
 				</div>
@@ -196,7 +208,12 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 						})}
 					</ul>
 				</div>
-				<AddComment postId={info.id} className={classes.formComment} comments={comments} setComments={setComments} />
+				<AddComment
+					postId={info.id}
+					className={classes.formComment}
+					comments={comments}
+					setComments={setComments}
+				/>
 			</div>
 		</li>
 	);

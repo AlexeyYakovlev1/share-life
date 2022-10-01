@@ -1,16 +1,36 @@
 @import "../../styles/_vars"
 
 .header
-	background-color: rgba(255,255,255,.9)
 	backdrop-filter: blur(4px)
 	position: sticky
 	top: 0
 	z-index: 99
+	&.light
+		background-color: $lightHeader
+		& .item
+			& svg, path
+				fill: $white !important
+				stroke: $black !important
+		& .searchIcon svg, path
+			fill: $black !important
+			stroke: $black !important
+	&.dark
+		background-color: $darkHeader
+		& .item
+			& svg, path
+				fill: $white !important
+				stroke: $white !important
+		& .searchIcon svg, path
+			fill: $white !important
+			stroke: $white !important
 
 .logo
 	font-family: $fontInter
 	font-weight: 600
-	color: #000
+	&.light
+		color: $black
+	&.dark
+		color: $white
 	&::first-letter
 		color: $pink
 	&Header
@@ -50,9 +70,6 @@
 	gap: 20px
 
 .item
-	& svg, path
-		fill: #fff !important
-		stroke: #000 !important
 	&User img
 		border-radius: 50%
 		width: 30px

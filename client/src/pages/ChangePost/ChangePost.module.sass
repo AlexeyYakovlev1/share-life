@@ -4,6 +4,12 @@
 	display: grid
 	grid-template-rows: 1fr auto
 	gap: 20px
+	&.light
+		& .contentChangeTitle
+			color: $black
+	&.dark
+		& .contentChangeTitle
+			color: $white
 
 .content
 	display: grid
@@ -31,13 +37,10 @@
 
 .caption
 	&Input
-		border: 1px solid $grayDark
-		background-color: #fff
 		padding: 8px 10px
-		font-family: $fontInter
-		width: 100%
-		min-height: 150px
+		min-height: 150px !important
 		resize: vertical
+		width: 100%
 
 .submit
 	max-width: 200px
