@@ -22,6 +22,7 @@ import getDatePost from "../../utils/getDatePost.util";
 import checkFollow from "../../http/follow/checkFollow.http";
 import Button from "../UI/Button/Button";
 import useTheme from "../../hooks/useTheme";
+import useLike from "../../hooks/useLike";
 
 function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 	const currentUser = useSelector((state: IState) => state.person.info);
@@ -30,6 +31,8 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 	const [currentPost, setCurrentPost] = React.useState<IPost>({
 		id: -1,
 		owner_id: -1,
+		person_id_likes: [],
+		location: "",
 		photos: [{
 			base64: "",
 			filename: ""
@@ -66,6 +69,8 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 	const { setCount, sliderWrapperRef, count, widthSlider } = useSlider({ list: currentPost.photos });
 
 	const { setText } = React.useContext(AlertContext);
+
+	const { likeClick, likesNum, putedLike } = useLike(currentPost, setText, currentUser);
 
 	// comments
 	React.useEffect(() => {
@@ -223,17 +228,22 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 							<div className={classes.infoActionsTop}>
 								<div className={classes.infoActionsBtns}>
 									<button
-										className={cn(classes.infoActionsLike, {
-											[classes.infoActionsLikeActive]: false
-										})}
+										onClick={likeClick}
+										className={classes.infoActionsLike}
 									>
-										<LikeIcon />
+										<LikeIcon className={
+											putedLike.puted ? classes.svgLikeActive : classes.svgLike
+										} />
 									</button>
 								</div>
-								<span className={classes.infoActionsLikesNum}>0 likes</span>
+								<span className={classes.infoActionsLikesNum}>{likesNum} likes</span>
 								<span className={classes.infoActionsCreatedAt}>{createdAt}</span>
 							</div>
-							<AddComment postId={currentPost.id} comments={commentsPost} setComments={setCommentsPost} />
+							<AddComment
+								postId={currentPost.id}
+								comments={commentsPost}
+								setComments={setCommentsPost}
+							/>
 						</div>
 					</div>
 				</div>

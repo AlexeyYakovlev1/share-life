@@ -6,8 +6,8 @@ CREATE TABLE person(
 	avatar TEXT,
 	password TEXT NOT NULL,
 	roles VARCHAR(255) ARRAY,
-	followers INTEGER ARRAY DEFAULT {},
-	following INTEGER ARRAY DEFAULT {},
+	followers INTEGER ARRAY DEFAULT array[]::integer[],
+	following INTEGER ARRAY DEFAULT array[]::integer[],
 	description TEXT DEFAULT 'No description'
 );
 
@@ -23,7 +23,8 @@ CREATE TABLE post(
 	photos TEXT ARRAY,
 	description TEXT,
 	location VARCHAR(255),
-	date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+	date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	person_id_likes INTEGER ARRAY DEFAULT array[]::integer[]
 );
 
 CREATE TABLE comment(
@@ -43,3 +44,4 @@ CREATE TABLE follow(
 	user_id INTEGER,
 	FOREIGN KEY (user_id) REFERENCES person (id)
 );
+

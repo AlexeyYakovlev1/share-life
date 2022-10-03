@@ -6,6 +6,7 @@ This application is social network were you can posting your interests or your l
 
 ## What you can do?
 
+-   Put likes for posts
 -   Select dark or light theme
 -   Registration/Login
 -   Create/Remove/Change/Search posts
@@ -41,7 +42,6 @@ This application is social network were you can posting your interests or your l
 
 ## In future
 
--   Likes for posts
 -   Page for notifications (also maybe send to email)
 -   Tests (Jest)
 -   Docker

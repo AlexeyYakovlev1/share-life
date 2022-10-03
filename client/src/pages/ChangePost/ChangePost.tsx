@@ -25,7 +25,8 @@ function ChangePost(): JSX.Element {
 		photos: [],
 		description: "",
 		location: "",
-		date: ""
+		date: "",
+		person_id_likes: []
 	});
 	const { setText } = React.useContext(AlertContext);
 	const uploadRef = React.useRef<HTMLInputElement | null>(null);

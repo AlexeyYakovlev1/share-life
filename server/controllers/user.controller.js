@@ -292,7 +292,9 @@ class UserController {
 			})
 			.then((result) => {
 				if (result.rows.length && result.rows[0].user_id) {
-					const queryForUpdateFollower = `UPDATE person SET following = ARRAY_APPEND(following, $1) WHERE id = $2 RETURNING id`;
+					const queryForUpdateFollower = `
+						UPDATE person SET following = ARRAY_APPEND(following, $1) WHERE id = $2 RETURNING id
+					`;
 					return Promise.resolve(db.query(queryForUpdateFollower, [result.rows[0].user_id, followerId]));
 				}
 

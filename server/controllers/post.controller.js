@@ -262,7 +262,75 @@ class PostController {
 
 				return res.status(200).json({ success: true, message: "Post has been updated", post: updatePost.rows[0] });
 			})
-			.catch((error) => res.status(400).json({ success: false, message: error.message, error }))
+			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
+	}
+
+	// ставим лайк
+	like(req, res) {
+		if (!Object.entries(req.params).length || !req.params.id) {
+			return res.status(404).json({ success: false, message: "Params must exist" });
+		}
+
+		const { id: userId } = req.user;
+		const { id: postId } = req.params;
+
+		const queryForFindPost = `SELECT person_id_likes FROM post WHERE id = $1`;
+		const findPost = db.query(queryForFindPost, [postId]);
+
+		new Promise((resolve) => resolve(findPost))
+			.then((findPost) => {
+				if (!findPost.rows || !findPost.rows[0]) return Promise.reject("Post is not found");
+
+				const queryForViewIdLikes = `SELECT id, person_id_likes FROM post WHERE $1 = ANY(person_id_likes)`;
+				const likePost = db.query(queryForViewIdLikes, [userId]);
+
+				return Promise.resolve(likePost);
+			})
+			.then((likePost) => {
+				const likeAsBool = Boolean(likePost.rows.length && likePost.rows[0].id);
+				const io = req.app.get("socketio");
+
+				io.on("connection", (socket) => io.emit("likePost", likeAsBool));
+
+				// если пользователь не ставил лайк (раньше), то вносим его в массив
+				if (!likeAsBool) {
+					const queryForAddIdToLikes = `
+						UPDATE post SET person_id_likes = ARRAY_APPEND(person_id_likes, $1) WHERE id = $2 RETURNING person_id_likes
+					`;
+					return Promise.resolve(db.query(queryForAddIdToLikes, [userId, postId]));
+				}
+
+				// если пользователь ставил лайк (раньше), то удаляем его из массива
+				const queryForRemoveIdFromLikes = `
+					UPDATE post SET person_id_likes = ARRAY_REMOVE(person_id_likes, $1) WHERE id = $2 RETURNING person_id_likes
+				`;
+				return Promise.resolve(db.query(queryForRemoveIdFromLikes, [userId, postId]));
+			})
+			.then((result) => {
+				return res.status(200).json({ success: true, likesNum: result.rows[0].person_id_likes.length });
+			})
+			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
+	}
+
+	// проверка переданного id пользователя на поставленный лайк на определенном посте
+	putedLike(req, res) {
+		if (!Object.entries(req.params).length || !req.params.id) {
+			return res.status(404).json({ success: false, message: "Params must exist" });
+		}
+
+		const { id: postId } = req.params;
+		const { id: userId } = req.user;
+
+		const queryForCheckIdInLikes = `SELECT id FROM post WHERE $1 = ANY(person_id_likes)`;
+		const findPost = db.query(queryForCheckIdInLikes, [userId]);
+
+		new Promise((resolve) => resolve(findPost))
+			.then((findPost) => {
+				if (!findPost.rows || !findPost.rows[0]) return Promise.resolve(false);
+				return Promise.resolve(+findPost.rows[0].id === +postId);
+			})
+			.then((result) => res.status(200).json({ success: true, result }))
+			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}
 }
 

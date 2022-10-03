@@ -3,8 +3,9 @@ export interface IPost {
 	owner_id: number;
 	photos: Array<IPostPhoto>;
 	description?: string;
-	location?: string;
+	location: string;
 	date: Date | string;
+	person_id_likes: Array<number>;
 }
 
 export interface IPostPhoto {

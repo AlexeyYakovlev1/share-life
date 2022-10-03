@@ -14,7 +14,7 @@ function Home(): JSX.Element {
 				<ul className={classes.list}>
 					{(posts && posts.length) ? posts.map((post: IPost) => (
 						<HomePost key={post.id} info={post} />
-					)) : <span>No posts</span>}
+					)) : <span className={classes.noPosts}>No posts</span>}
 				</ul>
 			</div>
 		</MainLayout>

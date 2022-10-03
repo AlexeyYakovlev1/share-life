@@ -25,10 +25,16 @@
 		& .threeDots svg, path
 			fill: $black
 			stroke: $black
+		& .svgLike path
+			fill: $black !important
+			stroke: $black !important
 	&.dark
 		background-color: $darkBlue
 		color: $white
 		& .threeDots svg, path
+			fill: $white !important
+			stroke: $white !important
+		& .svgLike path
 			fill: $white !important
 			stroke: $white !important
 
@@ -135,11 +141,6 @@
 				display: flex
 				align-items: center
 				justify-content: center
-		&Like
-			& svg, path
-				fill: black
-			&Active svg, path
-				fill: red
 		&LikesNum
 			font-size: 14px
 			font-weight: 600
@@ -204,3 +205,13 @@
 	&Text:not(a)
 		font-size: 15px
 		line-height: 22px
+
+.svgLike
+	width: 25px
+	height: 25px
+
+.svgLikeActive, svg, path
+	width: 25px
+	height: 25px
+	fill: red !important
+	stroke: red !important

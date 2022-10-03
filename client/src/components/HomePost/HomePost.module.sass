@@ -12,10 +12,9 @@
 			&SettingsBtn svg, path
 				fill: $black !important
 				stroke: $black !important
-		& .bodyDescription
-			&Like svg, path
-				fill: $black !important
-				stroke: $black !important
+		& .svgLike
+			fill: $black !important
+			stroke: $black !important
 			&LikesNum
 				color: $black
 			&Text
@@ -29,13 +28,13 @@
 				fill: $white !important
 				stroke: $white !important
 		& .bodyDescription
-			&Like svg, path
-				fill: $white !important
-				stroke: $white !important
 			&LikesNum
 				color: $white
 			&Text
 				color: $white
+		& .svgLike
+			fill: $white !important
+			stroke: $white !important
 
 .header
 	padding: 15px
@@ -121,11 +120,6 @@
 				background: transparent
 				border: none
 				cursor: pointer
-		&Like
-			& svg, path
-				fill: black
-			// &Active svg, path
-			// 	fill: red !important
 		&LikesNum
 			font-weight: 600
 		&Text
@@ -146,3 +140,13 @@
 	border-left: none
 	border-right: none
 	border-bottom: none
+
+.svgLike
+	width: 25px
+	height: 25px
+
+.svgLikeActive
+	width: 25px
+	height: 25px
+	fill: red !important
+	stroke: red !important

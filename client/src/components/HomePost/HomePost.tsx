@@ -19,11 +19,19 @@ import Comment from "../OpenPost/Comment";
 import { useSelector } from "react-redux";
 import { IState } from "../../models/redux.models";
 import useTheme from "../../hooks/useTheme";
+import useLike from "../../hooks/useLike";
 
 function HomePost({ info }: { info: IPost }): JSX.Element {
-	const { light, dark } = useTheme();
+	const currentUser = useSelector((state: IState) => state.person.info);
+	const { setCount, count, sliderWrapperRef, widthSlider } = useSlider({ list: info.photos });
+	const { setText } = React.useContext(AlertContext);
 
-	const [dotsToEnd, setDotsToEnd] = React.useState<boolean>(info.description ? info.description.trim().length >= 200 : false);
+	const { light, dark } = useTheme();
+	const { likeClick, likesNum, putedLike } = useLike(info, setText, currentUser);
+
+	const [dotsToEnd, setDotsToEnd] = React.useState<boolean>(
+		info.description ? info.description.trim().length >= 200 : false
+	);
 	const [comments, setComments] = React.useState<Array<any>>([]);
 	const [viewComments, setViewComments] = React.useState<boolean>(comments.length >= 3);
 	const [visible, setVisible] = React.useState<boolean>(false);
@@ -42,10 +50,6 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 		followers: [],
 		following: []
 	});
-
-	const currentUser = useSelector((state: IState) => state.person.info);
-	const { setCount, count, sliderWrapperRef, widthSlider } = useSlider({ list: info.photos });
-	const { setText } = React.useContext(AlertContext);
 
 	// user
 	React.useEffect(() => {
@@ -154,17 +158,15 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 				<div className={classes.bodyDescription}>
 					<div className={classes.bodyDescriptionBtns}>
 						<button
-							className={cn(classes.bodyDescriptionLike, {
-								[classes.bodyDescriptionLikeActive]: false
-							})}
+							onClick={likeClick}
+							className={classes.bodyDescriptionLike}
 						>
-							<LikeIcon />
+							<LikeIcon className={
+								putedLike.puted ? classes.svgLikeActive : classes.svgLike
+							} />
 						</button>
 					</div>
-					<span className={classes.bodyDescriptionLikesNum}>
-						{/* {info.usersLikesIds.length} likes */}
-						{0} likes
-					</span>
+					<span className={classes.bodyDescriptionLikesNum}>{likesNum} likes</span>
 					<div>
 						{info.description &&
 							<p
@@ -197,13 +199,14 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 						</div>
 					</div>
 				</div>
-				<div className={classes.bodyComments} style={{ marginTop: `${comments.length ? "20px" : "0"}` }}>
+				<div
+					className={classes.bodyComments}
+					style={{ marginTop: `${comments.length ? "20px" : "0"}` }}
+				>
 					<ul className={classes.bodyCommentsList}>
 						{comments.map((_, index: number) => {
 							if (viewComments && index >= 2) return;
-
 							const comment = comments[index];
-
 							return <Comment key={`${comment.id}_${index}`} info={comment} />;
 						})}
 					</ul>
