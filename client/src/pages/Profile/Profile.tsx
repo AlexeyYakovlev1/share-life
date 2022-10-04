@@ -1,7 +1,5 @@
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import MainLayout from "../../components/Layouts/MainLayout/MainLayout";
-import OpenPost from "../../components/OpenPost/OpenPost";
-import Post from "./Post";
 import Button from "../../components/UI/Button/Button";
 import { IPost } from "../../models/post.models";
 import classes from "./Profile.module.sass";
@@ -17,8 +15,14 @@ import { IState } from "../../models/redux.models";
 import { useSelector } from "react-redux";
 import { useFollow } from "../../hooks/useFollow";
 import useTheme from "../../hooks/useTheme";
+import { Suspense } from "react";
+import OpenPostLoading from "../../components/Loading/OpenPost/OpenPostLoading";
+import ProfilePostLoading from "../../components/Loading/ProfilePost/ProfilePostLoading";
 
 function Profile(): JSX.Element {
+	const OpenPost = React.lazy(() => import("../../components/OpenPost/OpenPost"));
+	const Post = React.lazy(() => import("./Post"));
+
 	const { light, dark } = useTheme();
 	const [pageUser, setPageUser] = React.useState<IPerson>({
 		id: -1,
@@ -45,6 +49,7 @@ function Profile(): JSX.Element {
 
 	const pageAvatarUser = useAvatar(pageUser.avatar.base64);
 	const [searchParams, setSearchParams] = useSearchParams();
+	const queryWatch = searchParams.get("watch") === "true";
 	const queryPostOpen = searchParams.get("watch") === "true";
 	const queryPostId = searchParams.get("post_id");
 	const { setCount, count } = useSlider({ list: posts });
@@ -84,6 +89,11 @@ function Profile(): JSX.Element {
 		}
 	}, [queryPostId]);
 
+	function closePost() {
+		const params = new URLSearchParams({ watch: `${!queryWatch}` });
+		navigate({ pathname: location.pathname, search: params.toString() });
+	}
+
 	return (
 		<MainLayout>
 			<div className={cn(classes.wrapper, {
@@ -106,7 +116,11 @@ function Profile(): JSX.Element {
 								<ArrowLeftIcon />
 							</button>
 						</div>}
-						<OpenPost ownerId={pageUser.id} />
+						<div className={classes.modalWrapper} onClick={closePost}>
+							<Suspense fallback={<OpenPostLoading />}>
+								<OpenPost ownerId={pageUser.id} />
+							</Suspense>
+						</div>
 					</React.Fragment>
 				}
 				<div className={classes.top}>
@@ -167,12 +181,17 @@ function Profile(): JSX.Element {
 							<ul className={classes.contentList}>
 								{userPosts.map((post: IPost) => {
 									return (
-										<Post
+										<Suspense
 											key={post.id}
-											photos={post.photos}
-											postId={post.id}
-											ownerId={post.owner_id}
-										/>
+											fallback={<ProfilePostLoading />}
+										>
+											<Post
+												photos={post.photos}
+												postId={post.id}
+												ownerId={post.owner_id}
+											/>
+										</Suspense>
+
 									);
 								})}
 							</ul> :

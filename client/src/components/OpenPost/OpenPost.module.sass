@@ -1,14 +1,5 @@
 @import "../../styles/_vars"
 
-.wrapper
-	position: fixed
-	top: 0
-	bottom: 0
-	right: 0
-	left: 0
-	background-color: rgba(0,0,0,.4)
-	z-index: 99
-
 .content
 	position: absolute
 	top: 50%
@@ -22,21 +13,25 @@
 	&.light
 		background-color: $white
 		color: $black
-		& .threeDots svg, path
-			fill: $black
-			stroke: $black
-		& .svgLike path
-			fill: $black !important
-			stroke: $black !important
+		& .threeDots
+			& svg, path
+				fill: $black
+				stroke: $black
+		& .svgLike
+			path
+				fill: $black !important
+				stroke: $black !important
 	&.dark
 		background-color: $darkBlue
 		color: $white
-		& .threeDots svg, path
-			fill: $white !important
-			stroke: $white !important
-		& .svgLike path
-			fill: $white !important
-			stroke: $white !important
+		& .threeDots
+			&svg, path
+				fill: $white !important
+				stroke: $white !important
+		& .svgLike
+			& path
+				fill: $white !important
+				stroke: $white !important
 
 .left
 	position: relative
@@ -210,8 +205,9 @@
 	width: 25px
 	height: 25px
 
-.svgLikeActive, svg, path
+.svgLikeActive
 	width: 25px
 	height: 25px
-	fill: red !important
-	stroke: red !important
+	& path
+		fill: red !important
+		stroke: red !important

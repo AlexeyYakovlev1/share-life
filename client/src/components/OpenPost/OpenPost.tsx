@@ -3,7 +3,7 @@ import classes from "./OpenPost.module.sass";
 import { ReactComponent as ThreeDotsIcon } from "../../assets/images/three_dots.svg";
 import { ReactComponent as LikeIcon } from "../../assets/images/heart.svg";
 import { ReactComponent as ArrowLeftIcon } from "../../assets/images/arrow-left.svg";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Comment from "./Comment";
 import cn from "classnames";
 import AddComment from "../AddComment/AddComment";
@@ -59,10 +59,7 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 	const [commentsPost, setCommentsPost] = React.useState<Array<IComment>>([]);
 	const [followUser, setFollowUser] = React.useState<boolean>(userPost.followers.includes(+currentUser.id));
 
-	const location = useLocation();
-
 	const [searchParams, setSearchParams] = useSearchParams();
-	const queryWatch = searchParams.get("watch") === "true";
 	const queryPostId = searchParams.get("post_id");
 
 	const navigate = useNavigate();
@@ -130,125 +127,120 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 		}
 	}, [ownerId]);
 
-	function closePost() {
-		const params = new URLSearchParams({ watch: `${!queryWatch}` });
-		navigate({ pathname: location.pathname, search: params.toString() });
-	}
+
 
 	const createdAt = getDatePost(currentPost.date);
 
 	return (
-		<div className={classes.wrapper} onClick={closePost}>
-			<div
-				className={cn(classes.content, {
-					[classes.light]: light,
-					[classes.dark]: dark
-				})}
-				onClick={event => event.stopPropagation()}
-			>
-				<div className={classes.left} ref={sliderWrapperRef}>
-					{currentPost.photos.length > 1 &&
-						<React.Fragment>
-							<Button
-								className={cn(classes.leftBtn, classes.leftBtnLeft)}
-								onClick={() => setCount(count - 1)}
-							>
-								<ArrowLeftIcon />
-							</Button>
-							<Button
-								className={cn(classes.leftBtn, classes.leftBtnRight)}
-								onClick={() => setCount(count + 1)}
-							>
-								<ArrowLeftIcon />
-							</Button>
-						</React.Fragment>
-					}
-					<ul
-						className={classes.leftList}
-						style={{ width: `${widthSlider * currentPost.photos.length}px` }}
-					>
-						{currentPost.photos.map((photo, index) => (
-							<li
-								className={classes.leftListItem}
-								key={`${photo.filename}_${index + 1}`}
-								style={{
-									width: `${widthSlider}px`,
-									height: "100%",
-									transform: `translate(-${count * widthSlider}px)`,
-									backgroundImage: `url(${photo.base64})`
-								}}
-							></li>
-						))}
-					</ul>
-				</div>
-				<div className={classes.info}>
-					<header className={classes.infoHeader}>
-						<div className={classes.infoHeaderDescription}>
-							<div
-								className={classes.avatar}
-								style={{ backgroundImage: `url(${userPost.avatar.base64})` }}
-							></div>
-							<div className={classes.infoUser}>
-								<div className={classes.infoUserLeft}>
-									<span className={classes.infoUserName}>{userPost.user_name}&nbsp;</span>
-									{+currentUser.id !== +userPost.id &&
-										<span className={classes.infoUserFollowing}>
-											&#x2022;&nbsp;{followUser ? "Following" : "Not followed"}
-										</span>
-									}
-								</div>
-								<span className={classes.location}>{currentPost.location}</span>
+		<div
+			className={cn(classes.content, {
+				[classes.light]: light,
+				[classes.dark]: dark
+			})}
+			onClick={event => event.stopPropagation()}
+		>
+			<div className={classes.left} ref={sliderWrapperRef}>
+				{currentPost.photos.length > 1 &&
+					<React.Fragment>
+						<Button
+							className={cn(classes.leftBtn, classes.leftBtnLeft)}
+							onClick={() => setCount(count - 1)}
+						>
+							<ArrowLeftIcon />
+						</Button>
+						<Button
+							className={cn(classes.leftBtn, classes.leftBtnRight)}
+							onClick={() => setCount(count + 1)}
+						>
+							<ArrowLeftIcon />
+						</Button>
+					</React.Fragment>
+				}
+				<ul
+					className={classes.leftList}
+					style={{ width: `${widthSlider * currentPost.photos.length}px` }}
+				>
+					{currentPost.photos.map((photo, index) => (
+						<li
+							className={classes.leftListItem}
+							key={`${photo.filename}_${index + 1}`}
+							style={{
+								width: `${widthSlider}px`,
+								height: "100%",
+								transform: `translate(-${count * widthSlider}px)`,
+								backgroundImage: `url(${photo.base64})`
+							}}
+						></li>
+					))}
+				</ul>
+			</div>
+			<div className={classes.info}>
+				<header className={classes.infoHeader}>
+					<div className={classes.infoHeaderDescription}>
+						<div
+							className={classes.avatar}
+							style={{ backgroundImage: `url(${userPost.avatar.base64})` }}
+						></div>
+						<div className={classes.infoUser}>
+							<div className={classes.infoUserLeft}>
+								<span className={classes.infoUserName}>{userPost.user_name}&nbsp;</span>
+								{+currentUser.id !== +userPost.id &&
+									<span className={classes.infoUserFollowing}>
+										&#x2022;&nbsp;{followUser ? "Following" : "Not followed"}
+									</span>
+								}
 							</div>
+							<span className={classes.location}>{currentPost.location}</span>
 						</div>
-						{+currentUser.id === +userPost.id && <div className={classes.infoSettings}>
-							<button
-								onClick={() => setVisible(!visible)}
-								className={cn(classes.infoSettingsBtn, classes.threeDots)}
-							>
-								<ThreeDotsIcon />
-							</button>
-							{visible &&
-								<PostMenu
-									post={currentPost}
-									setVisible={setVisible}
-									visible={visible}
-								/>
-							}
-						</div>}
-					</header>
-					<div className={classes.infoBody}>
-						<div className={classes.infoComments}>
-							<ul className={classes.infoCommentsList}>
-								{commentsPost.length ? commentsPost.map((comment: IComment) => (
-									<Comment key={comment.id} info={comment} />
-								)) : <span>No comments</span>}
-							</ul>
-						</div>
-						<div className={classes.infoActions}>
-							<div className={classes.infoActionsTop}>
-								<div className={classes.infoActionsBtns}>
-									<button
-										onClick={likeClick}
-										className={classes.infoActionsLike}
-									>
-										<LikeIcon className={
-											putedLike.puted ? classes.svgLikeActive : classes.svgLike
-										} />
-									</button>
-								</div>
-								<span className={classes.infoActionsLikesNum}>{likesNum} likes</span>
-								<span className={classes.infoActionsCreatedAt}>{createdAt}</span>
-							</div>
-							<AddComment
-								postId={currentPost.id}
-								comments={commentsPost}
-								setComments={setCommentsPost}
+					</div>
+					{+currentUser.id === +userPost.id && <div className={classes.infoSettings}>
+						<button
+							onClick={() => setVisible(!visible)}
+							className={cn(classes.infoSettingsBtn, classes.threeDots)}
+						>
+							<ThreeDotsIcon />
+						</button>
+						{visible &&
+							<PostMenu
+								post={currentPost}
+								setVisible={setVisible}
+								visible={visible}
 							/>
+						}
+					</div>}
+				</header>
+				<div className={classes.infoBody}>
+					<div className={classes.infoComments}>
+						<ul className={classes.infoCommentsList}>
+							{commentsPost.length ? commentsPost.map((comment: IComment) => (
+								<Comment key={comment.id} info={comment} />
+							)) : <span>No comments</span>}
+						</ul>
+					</div>
+					<div className={classes.infoActions}>
+						<div className={classes.infoActionsTop}>
+							<div className={classes.infoActionsBtns}>
+								<button
+									onClick={likeClick}
+									className={classes.infoActionsLike}
+								>
+									<LikeIcon className={
+										putedLike.puted ? classes.svgLikeActive : classes.svgLike
+									} />
+								</button>
+							</div>
+							<span className={classes.infoActionsLikesNum}>{likesNum} likes</span>
+							<span className={classes.infoActionsCreatedAt}>{createdAt}</span>
 						</div>
+						<AddComment
+							postId={currentPost.id}
+							comments={commentsPost}
+							setComments={setCommentsPost}
+						/>
 					</div>
 				</div>
 			</div>
-		</div >
+		</div>
 	);
 }
 

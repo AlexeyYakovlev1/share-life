@@ -154,6 +154,7 @@ class PostController {
 		new Promise((resolve) => resolve(db.query(queryForFindPosts)))
 			.then((posts) => {
 				let newPosts = [];
+
 				// convert photos to base64
 				for (let i = 0; i < posts.rows.length; i++) {
 					const post = posts.rows[i];
@@ -172,7 +173,8 @@ class PostController {
 					}
 
 					newPosts.push({ ...post, photos: newPhotos });
-				}
+				};
+
 				return res.status(200).json({ success: true, posts: newPosts });
 			})
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));

@@ -1,0 +1,54 @@
+@import "../../../styles/_vars"
+
+.wrapper
+	position: absolute
+	top: 50%
+	left: 50%
+	transform: translate(-50%, -50%)
+	width: 970px
+	height: 65vh
+	display: grid
+	grid-template-columns: 1fr 350px
+	align-items: flex-start
+	background-color: $white
+
+.left
+	width: 100%
+	height: 100%
+
+.rightHeader
+	padding: 15px
+	border-bottom: 1px solid $grayDark
+	display: flex
+	align-items: center
+	justify-content: space-between
+	&User
+		display: flex
+		align-items: center
+		gap: 15px
+	&Avatar
+		width: 40px
+		height: 40px
+		border-radius: 50%
+	&Info
+		display: flex
+		flex-direction: column
+		gap: 3px
+		&Name
+			width: 120px
+			height: 10px
+			border-radius: 20px
+		&Location
+			width: 80px
+			height: 10px
+			border-radius: 20px
+
+.animate
+	background-color: $grayDark
+	animation: block 1.2s infinite
+
+@keyframes block
+	50%
+		background-color: $gray
+	100%
+		background-color: $grayDark

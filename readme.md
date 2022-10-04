@@ -46,7 +46,6 @@ This application is social network were you can posting your interests or your l
 -   Tests (Jest)
 -   Docker
 -   Admin page
--   Lazy loading
 
 ## Conclusion
 
