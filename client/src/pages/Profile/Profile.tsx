@@ -186,9 +186,7 @@ function Profile(): JSX.Element {
 											fallback={<ProfilePostLoading />}
 										>
 											<Post
-												photos={post.photos}
-												postId={post.id}
-												ownerId={post.owner_id}
+												{...post}
 											/>
 										</Suspense>
 

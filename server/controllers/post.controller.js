@@ -276,20 +276,17 @@ class PostController {
 		const { id: userId } = req.user;
 		const { id: postId } = req.params;
 
-		const queryForFindPost = `SELECT person_id_likes FROM post WHERE id = $1`;
+		const queryForFindPost = `SELECT id, person_id_likes FROM post WHERE id = $1`;
 		const findPost = db.query(queryForFindPost, [postId]);
 
 		new Promise((resolve) => resolve(findPost))
 			.then((findPost) => {
 				if (!findPost.rows || !findPost.rows[0]) return Promise.reject("Post is not found");
 
-				const queryForViewIdLikes = `SELECT id, person_id_likes FROM post WHERE $1 = ANY(person_id_likes)`;
-				const likePost = db.query(queryForViewIdLikes, [userId]);
-
-				return Promise.resolve(likePost);
-			})
-			.then((likePost) => {
-				const likeAsBool = Boolean(likePost.rows.length && likePost.rows[0].id);
+				const likeAsBool = Boolean(
+					findPost.rows.length && findPost.rows[0].id &&
+					findPost.rows[0].person_id_likes.includes(userId)
+				);
 				const io = req.app.get("socketio");
 
 				io.on("connection", (socket) => io.emit("likePost", likeAsBool));
@@ -323,15 +320,16 @@ class PostController {
 		const { id: postId } = req.params;
 		const { id: userId } = req.user;
 
-		const queryForCheckIdInLikes = `SELECT id FROM post WHERE $1 = ANY(person_id_likes)`;
-		const findPost = db.query(queryForCheckIdInLikes, [userId]);
+		const queryForCheckIdInLikes = `SELECT id FROM post WHERE id = $1 AND $2 = ANY(person_id_likes)`;
+		const findPost = db.query(queryForCheckIdInLikes, [postId, userId]);
 
 		new Promise((resolve) => resolve(findPost))
 			.then((findPost) => {
-				if (!findPost.rows || !findPost.rows[0]) return Promise.resolve(false);
-				return Promise.resolve(+findPost.rows[0].id === +postId);
+				res.status(200).json({
+					success: true,
+					result: Boolean(findPost.rows.length && findPost.rows[0].id)
+				});
 			})
-			.then((result) => res.status(200).json({ success: true, result }))
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}
 }

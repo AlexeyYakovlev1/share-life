@@ -27,12 +27,9 @@ function useLike(
 	React.useEffect(() => {
 		checkLike(+info.id)
 			.then((data) => {
-				const { success, result, error, message } = data;
+				const { success, result } = data;
 
-				if (!success) {
-					setText(message || error);
-					return;
-				}
+				if (!success) return;
 
 				setPutedLike({ ...putedLike, puted: result });
 			});
@@ -54,15 +51,15 @@ function useLike(
 	function likeClick() {
 		putLike(+info.id)
 			.then((data) => {
-				const { success, error, message, likesNum } = data;
+				const { success, error, message, likesNum: numsFromServer } = data;
 
 				if (!success) {
 					setText(message || error);
 					return;
 				}
 
-				setLikesNum(likesNum);
 				setPutedLike({ ...putedLike, submit: true });
+				setLikesNum(numsFromServer);
 			});
 	}
 

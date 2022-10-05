@@ -151,7 +151,6 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 								}}
 							>
 							</li>
-
 						))}
 					</ul>
 				</div>

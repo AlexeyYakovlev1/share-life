@@ -26,7 +26,10 @@ export function useFollow(
 				const io: any = socket;
 				const socketConnect = io.connect(REACT_APP_API_URL);
 
-				socketConnect.on("follow", (data: any) => setFollowUser(!data));
+				socketConnect.on("follow", (data: any) => {
+					console.log(data);
+					setFollowUser(!data);
+				});
 			});
 	}
 
