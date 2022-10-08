@@ -64,7 +64,6 @@ $ npm start
 -   Tests (Jest)
 -   Docker
 -   Admin page
--   Pagination for posts
 
 ## Conclusion
 
