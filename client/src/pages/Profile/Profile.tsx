@@ -18,6 +18,7 @@ import useTheme from "../../hooks/useTheme";
 import { Suspense } from "react";
 import OpenPostLoading from "../../components/Loading/OpenPost/OpenPostLoading";
 import ProfilePostLoading from "../../components/Loading/ProfilePost/ProfilePostLoading";
+import getPostsByUser from "../../http/posts/getPostsByUser.http";
 
 function Profile(): JSX.Element {
 	const OpenPost = React.lazy(() => import("../../components/OpenPost/OpenPost"));
@@ -41,8 +42,9 @@ function Profile(): JSX.Element {
 	});
 
 	const { id: currentIdUser } = useSelector((state: IState) => state.person.info);
-	const posts = useSelector((state: IState) => state.posts);
-	const userPosts = posts.filter((post: IPost) => +post.owner_id === +pageUser.id);
+	// const posts = useSelector((state: IState) => state.posts);
+	// const userPosts = posts.filter((post: IPost) => +post.owner_id === +pageUser.id);
+	const [userPosts, setUserPosts] = React.useState<Array<IPost>>([]);
 
 	const [currentUser, setCurrentUser] = React.useState<boolean>(false);
 	const [followUser, setFollowUser] = React.useState<boolean>(pageUser.followers.includes(currentIdUser));
@@ -52,13 +54,14 @@ function Profile(): JSX.Element {
 	const queryWatch = searchParams.get("watch") === "true";
 	const queryPostOpen = searchParams.get("watch") === "true";
 	const queryPostId = searchParams.get("post_id");
-	const { setCount, count } = useSlider({ list: posts });
+	const { setCount, count } = useSlider({ list: userPosts });
 	const { id: pageIdUser } = useParams();
 	const { setText } = React.useContext(AlertContext);
 	const navigate = useNavigate();
 
 	const { followClick } = useFollow(+pageUser.id, setText, setFollowUser);
 
+	// get user and get posts for user
 	React.useEffect(() => {
 		if (pageIdUser) {
 			getOneUser(+pageIdUser)
@@ -74,18 +77,30 @@ function Profile(): JSX.Element {
 					setPageUser(person);
 					setCurrentUser(+pageIdUser === +currentIdUser);
 				});
+
+			getPostsByUser(+pageIdUser)
+				.then((data) => {
+					const { success, posts, message, error } = data;
+
+					if (!success) {
+						setText(message || error);
+						return;
+					}
+
+					setUserPosts(posts);
+				});
 		}
 	}, [pageIdUser, currentIdUser, followUser]);
 
 	React.useEffect(() => {
-		if (posts[count] && queryPostOpen) {
-			setSearchParams({ watch: `${queryPostOpen}`, post_id: `${posts[count].id}` });
+		if (userPosts[count] && queryPostOpen) {
+			setSearchParams({ watch: `${queryPostOpen}`, post_id: `${userPosts[count].id}` });
 		}
 	}, [count]);
 
 	React.useEffect(() => {
 		if (queryPostId) {
-			setCount(posts.findIndex(item => item.id === +queryPostId));
+			setCount(userPosts.findIndex(item => item.id === +queryPostId));
 		}
 	}, [queryPostId]);
 

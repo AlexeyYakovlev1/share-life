@@ -21,6 +21,20 @@ function AddComment({ className, postId, setComments, comments, ...props }: IAdd
 	const { setText } = React.useContext(AlertContext);
 	const disabled = (message.text.length < 6) || (message.text.length >= 400);
 
+	// get comment
+	React.useEffect(() => {
+		if (!message.submit) return;
+
+		const io: any = socket;
+		const socketConnect = io.connect(REACT_APP_API_URL);
+
+		socketConnect.on("comment", (data: any) => {
+			setComments([...comments, data]);
+		});
+
+		setMessage({ text: "", submit: false });
+	}, [message]);
+
 	// give comment data
 	function submitAddComment(event: any) {
 		event.preventDefault();
@@ -42,20 +56,6 @@ function AddComment({ className, postId, setComments, comments, ...props }: IAdd
 				setMessage({ text: "", submit: true });
 			});
 	}
-
-	// get comment
-	React.useEffect(() => {
-		if (!message.submit) return;
-
-		const io: any = socket;
-		const socketConnect = io.connect(REACT_APP_API_URL);
-
-		socketConnect.on("comment", (data: any) => {
-			setComments([...comments, data]);
-		});
-
-		setMessage({ text: "", submit: false });
-	}, [message]);
 
 	return (
 		<form

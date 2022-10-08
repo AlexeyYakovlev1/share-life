@@ -149,9 +149,10 @@ class PostController {
 	}
 
 	getAll(req, res) {
-		const queryForFindPosts = `SELECT * FROM post`;
+		const { _limit, _page } = req.query;
+		const queryForFindPosts = `SELECT * FROM post ORDER BY date DESC LIMIT $1 OFFSET $2`;
 
-		new Promise((resolve) => resolve(db.query(queryForFindPosts)))
+		new Promise((resolve) => resolve(db.query(queryForFindPosts, [_limit, _page])))
 			.then((posts) => {
 				let newPosts = [];
 

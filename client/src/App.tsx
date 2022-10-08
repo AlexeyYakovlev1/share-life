@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import AlertContext from "./context/alert.context";
 import useRoutes from "./hooks/useRoutes";
 import checkAuthAsyncAction from "./redux/actions/async/auth/checkAuth";
-import getPostsAsyncAction from "./redux/actions/async/posts/getPosts";
 import { setTheme } from "./redux/actions/theme.actions";
 
 function App() {
@@ -15,7 +14,6 @@ function App() {
 
 	React.useEffect(() => {
 		dispatch(checkAuthAsyncAction());
-		dispatch(getPostsAsyncAction(setText));
 		dispatch(setTheme(currentTheme));
 
 		document.body.classList.add(currentTheme.toLowerCase());
