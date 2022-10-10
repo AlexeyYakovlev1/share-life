@@ -60,11 +60,11 @@ $ npm start
 
 ## In future
 
+-   Admin page
 -   Page for notifications (also maybe send to email)
+-   Adaptive for mobile
 -   Tests (Jest)
 -   Docker
--   Admin page
--   Adaptive for mobile
 
 ## Conclusion
 
