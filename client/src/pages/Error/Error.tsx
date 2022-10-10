@@ -1,10 +1,17 @@
 import { Link } from "react-router-dom";
 import Button from "../../components/UI/Button/Button";
+import useTheme from "../../hooks/useTheme";
 import classes from "./Error.module.sass";
+import cn from "classnames";
 
 function Error(): JSX.Element {
+	const { light, dark } = useTheme();
+
 	return (
-		<div className={classes.wrapper}>
+		<div className={cn(classes.wrapper, {
+			[classes.light]: light,
+			[classes.dark]: dark
+		})}>
 			<div className={classes.info}>
 				<h1 className={classes.title}>404</h1>
 				<h2 className={classes.subtitle}>Oops! Page not found</h2>
