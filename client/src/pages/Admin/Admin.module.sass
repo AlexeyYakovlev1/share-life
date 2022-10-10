@@ -1,0 +1,72 @@
+@import "../../styles/_vars"
+
+.emptyTitle
+	font-size: 19px
+	font-weight: 400
+	line-height: 25px
+	&.light
+		color: $black
+	&.dark
+		color: $white
+
+.wrapper
+	display: grid
+	grid-template-rows: auto 1fr
+	gap: 40px
+	padding: 15px
+	&.dark
+		background-color: $darkBlue
+		color: $white
+		& .navbarListItem.active
+			background-color: $darkBlueHover
+			&:hover
+				background-color: $darkBlueLight
+		& .content
+			&List th, td
+				border: 1px solid $darkBlueLight
+	&.light
+		background-color: $white
+		color: $black
+		& .navbarListItem.active
+			background-color: $pink
+			color: $white
+			&:hover
+				background-color: $pinkHover
+		& .content
+			&List th, td
+				border: 1px solid $black
+
+.header
+	display: flex
+	justify-content: center
+	align-items: center
+
+.navbarList
+	display: grid
+	grid-template-columns: repeat(3, auto)
+	gap: 10px
+	&Item
+		cursor: pointer
+		padding: 10px
+		transition: background-color .2s ease
+
+.content
+	max-width: 910px
+	overflow-x: auto
+	&Header
+		display: grid
+		grid-template-columns: auto 250px
+		gap: 10px
+		margin-bottom: 50px
+	&List
+		width: 910px
+		&Title
+			padding: 10px
+			font-weight: 600
+		& td
+			padding: 10px
+			line-height: 22px
+			font-weight: 400
+			vertical-align: top
+	&EmptyTitle
+		font-weight: 400

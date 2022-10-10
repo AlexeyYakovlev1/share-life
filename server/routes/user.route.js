@@ -26,7 +26,11 @@ router.get("/interaction/:id", UserController.getFollowersAndFollowings);
 // for example: /users/follow
 router.get("/follow/:id", AuthMiddleware, UserController.follow);
 // for example: /users/all
+
+// FOR TEST
+// router.get("/all", RoleMiddleware(["ADMIN"]), UserController.getAll);
 router.get("/all", UserController.getAll);
+
 // for example: /users/2
 router.get("/:id", UserController.getOne);
 
