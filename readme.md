@@ -64,6 +64,7 @@ $ npm start
 -   Tests (Jest)
 -   Docker
 -   Admin page
+-   Adaptive for mobile
 
 ## Conclusion
 
