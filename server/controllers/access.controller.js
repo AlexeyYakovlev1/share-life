@@ -26,6 +26,20 @@ class AccessController {
 			})
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}
+
+	admin(req, res) {
+		const { roles } = req.user;
+
+		const queryForFindRole = `SELECT text FROM role WHERE text = $1`;
+		const findRole = db.query(queryForFindRole, ["ADMIN"]);
+
+		new Promise((resolve) => resolve(findRole))
+			.then((findRole) => {
+				if (!findRole.rows || !findRole.rows[0].text) return Promise.reject("Access closed");
+				return res.status(200).json({ success: roles.includes(findRole.rows[0].text) });
+			})
+			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
+	}
 }
 
 module.exports = new AccessController();

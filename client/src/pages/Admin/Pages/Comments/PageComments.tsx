@@ -1,18 +1,18 @@
 import Input from "../../../../components/UI/Input/Input";
 import classes from "../../Admin.module.sass";
 import React from "react";
-import Button from "../../../../components/UI/Button/Button";
 import AlertContext from "../../../../context/alert.context";
 import { IComment } from "../../../../models/post.models";
 import CommentItem from "./CommentItem";
 import getAllComments from "../../../../http/comments/getAllComments.http";
+import searchCommentsForAdmin from "../../../../http/comments/searchCommentsForAdmin.http";
 
 function PageComments() {
-	const tableTitles = ["id", "text", "owner id", "post id", "delete"];
+	const tableTitles = ["id", "text", "author id", "post id", "delete"];
 	const { setText } = React.useContext(AlertContext);
 	const [comments, setComments] = React.useState<Array<IComment>>([]);
 
-	React.useEffect(() => {
+	function getComments() {
 		getAllComments()
 			.then((data) => {
 				const { success, error, message, comments: commentsFromServer } = data;
@@ -24,7 +24,35 @@ function PageComments() {
 
 				setComments(commentsFromServer);
 			});
-	}, []);
+	}
+
+	React.useEffect(getComments, []);
+
+	function searchCommentsHandler(event: any) {
+		if (event.key !== "Enter") return;
+
+		if (!event.target?.value) {
+			getComments();
+			return;
+		}
+
+		searchCommentsForAdmin(event.target?.value)
+			.then((data) => {
+				const { success, message, error, comment } = data;
+
+				if (!success) {
+					setText(message || error);
+					return;
+				}
+
+				if (comment === undefined) {
+					setComments([]);
+					return;
+				}
+
+				setComments([comment]);
+			});
+	}
 
 	return (
 		<React.Fragment>
@@ -33,8 +61,8 @@ function PageComments() {
 					type="text"
 					placeholder="Write id comment"
 					className={classes.contentSearch}
+					onKeyDown={searchCommentsHandler}
 				/>
-				<Button>Find</Button>
 			</header>
 			<div className={classes.contentBody}>
 				{comments.length ? <table className={classes.contentList}>

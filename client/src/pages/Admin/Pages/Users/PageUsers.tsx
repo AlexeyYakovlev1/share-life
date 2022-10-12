@@ -1,18 +1,18 @@
 import Input from "../../../../components/UI/Input/Input";
 import classes from "../../Admin.module.sass";
 import React from "react";
-import Button from "../../../../components/UI/Button/Button";
 import { IPerson } from "../../../../models/person.models";
 import getAllUsers from "../../../../http/user/getAllUsers.http";
 import AlertContext from "../../../../context/alert.context";
 import UserItem from "./UserItem";
+import searchUsersForAdmin from "../../../../http/user/searchUsersForAdmin.http";
 
 function PageUsers() {
 	const [users, setUsers] = React.useState<Array<IPerson>>([]);
 	const { setText } = React.useContext(AlertContext);
 	const tableTitles = ["id", "username", "email", "fullname", "edit", "delete"];
 
-	React.useEffect(() => {
+	function getUsers() {
 		getAllUsers()
 			.then((data) => {
 				const { success, message, error, persons } = data;
@@ -24,7 +24,35 @@ function PageUsers() {
 
 				setUsers(persons);
 			});
-	}, []);
+	}
+
+	React.useEffect(getUsers, []);
+
+	function searchUsersHandler(event: any) {
+		if (event.key !== "Enter") return;
+
+		if (!event.target?.value) {
+			getUsers();
+			return;
+		}
+
+		searchUsersForAdmin(event.target?.value)
+			.then((data) => {
+				const { success, message, error, person } = data;
+
+				if (!success) {
+					setText(message || error);
+					return;
+				}
+
+				if (person === undefined) {
+					setUsers([]);
+					return;
+				}
+
+				setUsers([person]);
+			});
+	}
 
 	return (
 		<React.Fragment>
@@ -33,8 +61,8 @@ function PageUsers() {
 					type="text"
 					placeholder="Write id user"
 					className={classes.contentSearch}
+					onKeyDown={searchUsersHandler}
 				/>
-				<Button>Find</Button>
 			</header>
 			<div className={classes.contentBody}>
 				{users.length ? <table className={classes.contentList}>

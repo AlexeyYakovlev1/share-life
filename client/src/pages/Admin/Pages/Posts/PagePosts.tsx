@@ -1,18 +1,18 @@
 import Input from "../../../../components/UI/Input/Input";
 import classes from "../../Admin.module.sass";
 import React from "react";
-import Button from "../../../../components/UI/Button/Button";
 import AlertContext from "../../../../context/alert.context";
 import { IPost } from "../../../../models/post.models";
 import PostItem from "./PostItem";
 import getAllPosts from "../../../../http/posts/getAllPosts.http";
+import searchPostsForAdmin from "../../../../http/posts/searchPostsForAdmin.http";
 
 function PagePosts() {
 	const tableTitles = ["id", "description", "author id", "edit", "delete"];
 	const { setText } = React.useContext(AlertContext);
 	const [posts, setPosts] = React.useState<Array<IPost>>([]);
 
-	React.useEffect(() => {
+	function getPosts() {
 		getAllPosts({ limit: 5, page: 0 })
 			.then((data) => {
 				const { success, error, message, posts: postsFromServer } = data;
@@ -24,7 +24,35 @@ function PagePosts() {
 
 				setPosts(postsFromServer);
 			});
-	}, []);
+	}
+
+	React.useEffect(getPosts, []);
+
+	function searchPostsHandler(event: any) {
+		if (event.key !== "Enter") return;
+
+		if (!event.target?.value) {
+			getPosts();
+			return;
+		}
+
+		searchPostsForAdmin(event.target?.value)
+			.then((data) => {
+				const { success, message, error, post } = data;
+
+				if (!success) {
+					setText(message || error);
+					return;
+				}
+
+				if (post === undefined) {
+					setPosts([]);
+					return;
+				}
+
+				setPosts([post]);
+			});
+	}
 
 	return (
 		<React.Fragment>
@@ -33,8 +61,8 @@ function PagePosts() {
 					type="text"
 					placeholder="Write id post"
 					className={classes.contentSearch}
+					onKeyDown={searchPostsHandler}
 				/>
-				<Button>Find</Button>
 			</header>
 			<div className={classes.contentBody}>
 				{posts.length ? <table className={classes.contentList}>

@@ -6,6 +6,7 @@ import cn from "classnames";
 import PageUsers from "./Pages/Users/PageUsers";
 import PagePosts from "./Pages/Posts/PagePosts";
 import PageComments from "./Pages/Comments/PageComments";
+import useAccessAdmin from "../../hooks/useAccessAdmin";
 
 function Admin() {
 	const { light, dark } = useTheme();
@@ -15,6 +16,8 @@ function Admin() {
 	const pageUsers = page === "users";
 	const pagePosts = page === "posts";
 	const pageComments = page === "comments";
+
+	useAccessAdmin();
 
 	if (!page) {
 		return (

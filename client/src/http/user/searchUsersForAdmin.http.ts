@@ -3,8 +3,8 @@ import { trackPromise } from "react-promise-tracker";
 
 const { REACT_APP_API_URL } = process.env;
 
-function getAllComments() {
-	return trackPromise(fetch(`${REACT_APP_API_URL}/comments/all`, {
+function searchUsersForAdmin(userId: number) {
+	return trackPromise(fetch(`${REACT_APP_API_URL}/admin/search/users?q=${userId}`, {
 		method: "GET",
 		headers: {
 			Authorization: `Bearer ${Cookies.get("token")}`
@@ -14,4 +14,4 @@ function getAllComments() {
 		.then((data) => data));
 }
 
-export default getAllComments;
+export default searchUsersForAdmin;

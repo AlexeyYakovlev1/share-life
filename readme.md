@@ -16,6 +16,7 @@ This application is social network were you can posting your interests or your l
 -   Follow users
 -   View your followers\following
 -   View 404 page
+-   Work with admins (search info from tables yet)
 
 ## Build Setup
 
@@ -60,7 +61,6 @@ $ npm start
 
 ## In future
 
--   Admin page
 -   Page for notifications (also maybe send to email)
 -   Adaptive for mobile
 -   Tests (Jest)

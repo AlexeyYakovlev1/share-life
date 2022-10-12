@@ -8,7 +8,8 @@ CREATE TABLE person(
 	roles VARCHAR(255) ARRAY,
 	followers INTEGER ARRAY DEFAULT array[]::integer[],
 	following INTEGER ARRAY DEFAULT array[]::integer[],
-	description TEXT DEFAULT 'No description'
+	description TEXT DEFAULT 'No description',
+	date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE role(

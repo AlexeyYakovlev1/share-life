@@ -130,7 +130,7 @@ class UserController {
 	}
 
 	getAll(req, res) {
-		const queryForFindPersons = `SELECT * FROM person`;
+		const queryForFindPersons = `SELECT * FROM person ORDER BY date DESC`;
 
 		new Promise((resolve) => resolve(db.query(queryForFindPersons)))
 			.then((persons) => {

@@ -97,7 +97,7 @@ class CommentController {
 	}
 
 	getAll(req, res) {
-		const queryForFindComments = `SELECT * FROM comment`;
+		const queryForFindComments = `SELECT * FROM comment ORDER BY date DESC`;
 		const comments = db.query(queryForFindComments);
 
 		new Promise((resolve) => resolve(comments))

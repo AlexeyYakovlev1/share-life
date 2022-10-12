@@ -9,6 +9,7 @@ module.exports = function (allowedRoles) {
 		}
 
 		const AuthToken = req.headers.authorization.replace("Bearer", "").trim();
+
 		if (!AuthToken) {
 			return res.status(400).json({ success: false, message: "Header authorization must exist" });
 		}

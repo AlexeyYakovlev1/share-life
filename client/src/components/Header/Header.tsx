@@ -14,7 +14,7 @@ import useAvatar from "../../hooks/useAvatar";
 import AlertContext from "../../context/alert.context";
 import getAllPosts from "../../http/posts/getAllPosts.http";
 import { setPosts } from "../../redux/actions/posts.actions";
-import searchPostsByKeyWords from "../../http/posts/search.http";
+import searchPostsByKeyWords from "../../http/posts/searchPosts.http";
 import useTheme from "../../hooks/useTheme";
 
 interface IHeaderProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> { }
