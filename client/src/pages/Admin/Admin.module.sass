@@ -24,6 +24,8 @@
 		& .content
 			&List th, td
 				border: 1px solid $darkBlueLight
+		& .modalButtonActive
+			background-color: $darkBlueHover !important
 	&.light
 		background-color: $white
 		color: $black
@@ -35,6 +37,8 @@
 		& .content
 			&List th, td
 				border: 1px solid $black
+		& .modalButtonActive
+			background-color: $pinkHover !important
 
 .header
 	display: flex
@@ -69,3 +73,15 @@
 			vertical-align: top
 	&EmptyTitle
 		font-weight: 400
+
+.modal
+	display: grid
+	grid-template-rows: auto 1fr
+	gap: 30px
+	text-align: center
+	&Title
+		font-size: 22px
+		margin-bottom: 20px
+	&Actions
+		display: grid
+		grid-template-columns: repeat(2, minmax(100px, 200px))

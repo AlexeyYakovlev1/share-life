@@ -3,10 +3,19 @@ import MainLayout from "../../components/Layouts/MainLayout/MainLayout";
 import useTheme from "../../hooks/useTheme";
 import classes from "./Admin.module.sass";
 import cn from "classnames";
-import PageUsers from "./Pages/Users/PageUsers";
-import PagePosts from "./Pages/Posts/PagePosts";
 import PageComments from "./Pages/Comments/PageComments";
 import useAccessAdmin from "../../hooks/useAccessAdmin";
+import PageUsers from "./Pages/Users/PageUsers";
+import PagePosts from "./Pages/Posts/PagePosts";
+
+export interface IActionInfo {
+	remove: boolean;
+	change: boolean;
+}
+
+export interface IPageItem {
+	setClose: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 function Admin() {
 	const { light, dark } = useTheme();

@@ -16,7 +16,7 @@ This application is social network were you can posting your interests or your l
 -   Follow users
 -   View your followers\following
 -   View 404 page
--   Work with admins (search info from tables yet)
+-   Work with admins (search/remove tables)
 
 ## Build Setup
 
@@ -72,6 +72,7 @@ I hope you don't forget to rate this project. Good luck!
 
 ## Photos
 
+![view application](https://sun9-35.userapi.com/impg/tOrDtPqPf3cgHTpwHuE_P1ChQohbLfeY7-kZhQ/i3f2TxcSE7w.jpg?size=1920x1080&quality=96&sign=1bb091cd6e164888aba760fb8028f051&type=album)
 ![view application](https://sun9-82.userapi.com/impg/CS3YS0TYSzZir6ZqplfStM2L3TsaTRj5oAw_bA/j0QDlVGEvQ0.jpg?size=1920x1080&quality=96&sign=8df07e76d202ac0a6ea41fc08bd43fba&type=album)
 ![view application](https://sun9-85.userapi.com/impg/pvQETl_qqVXgR0RnR9yUlEvE2ElnbYo_YXyl7A/7ZMXe7M8vfY.jpg?size=1920x1080&quality=96&sign=38dd28551722514c9fcb2b453b335e23&type=album)
 ![view application](https://sun9-11.userapi.com/impg/n9IYx1qgi_EoBnyqjT6639jAWKiSNglcaxMF5Q/UAlCYAXy2no.jpg?size=1920x1080&quality=96&sign=0312bfa89cef0f3057587c436f45b0d5&type=album)

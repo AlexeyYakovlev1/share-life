@@ -9,4 +9,11 @@ router.get("/search/posts", RoleMiddleware(["ADMIN"]), AdminController.searchPos
 // for example: /admin/search/comments?q=2, where q = user id
 router.get("/search/comments", RoleMiddleware(["ADMIN"]), AdminController.searchComments);
 
+// for example: /admin/remove/user/3
+router.delete("/remove/user/:id", RoleMiddleware(["ADMIN"]), AdminController.removeUser);
+// for example: /admin/remove/post/3
+router.delete("/remove/post/:id", RoleMiddleware(["ADMIN"]), AdminController.removePost);
+// for example: /admin/remove/comment/3
+router.delete("/remove/comment/:id", RoleMiddleware(["ADMIN"]), AdminController.removeComment);
+
 module.exports = router;
