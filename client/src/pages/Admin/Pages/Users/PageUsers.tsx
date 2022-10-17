@@ -2,14 +2,14 @@ import Input from "../../../../components/UI/Input/Input";
 import classes from "../../Admin.module.sass";
 import React from "react";
 import { IPerson } from "../../../../models/person.models";
-import getAllUsers from "../../../../http/user/getAllUsers.http";
 import AlertContext from "../../../../context/alert.context";
 import UserItem from "./UserItem";
-import searchUsersForAdmin from "../../../../http/user/searchUsersForAdmin.http";
 import Modal from "../../../../components/UI/Modal/Modal";
 import Button from "../../../../components/UI/Button/Button";
-import removeUser from "../../../../http/admin/removeUserAdmin.http";
 import { IActionInfo } from "../../Admin";
+import removeAdminAction from "../actions/remove.adminAction";
+import searchAdminAction from "../actions/search.adminAction";
+import getAdminAction from "../actions/get.adminAction";
 
 export interface IUserActionInfo extends IActionInfo {
 	userId: number;
@@ -28,17 +28,7 @@ function PageUsers() {
 	React.useEffect(getUsers, []);
 
 	function getUsers() {
-		getAllUsers()
-			.then((data) => {
-				const { success, message, error, persons } = data;
-
-				if (!success) {
-					setText(message || error);
-					return;
-				}
-
-				setUsers(persons);
-			});
+		getAdminAction("USER", setUsers, setText);
 	}
 
 	function searchUsersHandler(event: any) {
@@ -49,34 +39,12 @@ function PageUsers() {
 			return;
 		}
 
-		searchUsersForAdmin(event.target?.value)
-			.then((data) => {
-				const { success, message, error, person } = data;
-
-				if (!success) {
-					setText(message || error);
-					return;
-				}
-
-				if (person === undefined) {
-					setUsers([]);
-					return;
-				}
-
-				setUsers([person]);
-			});
+		searchAdminAction(event, "USER", setText, setUsers);
 	}
 
 	function removeUserClick() {
-		if (actionInfo.userId === -1) return;
-
-		removeUser(actionInfo.userId)
-			.then((data) => {
-				const { success, message, error } = data;
-				setText(message || error);
-				if (!success) return;
-				setClose(true);
-			});
+		removeAdminAction(actionInfo.userId, "USER", setText);
+		setClose(true);
 	}
 
 	function changeUserClick() {

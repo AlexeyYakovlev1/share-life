@@ -195,22 +195,11 @@ class UserController {
 		const { id } = req.params;
 		const { user_name, full_name, email, oldPassword, newPassword, description } = req.body;
 
-		// THIS FOR ADMIN
-		// if (!roles) return res.status(400).json({ success: false, message: "Roles is not found" });
-
 		const queryForFindPerson = `SELECT * FROM person WHERE id = $1`;
 
 		new Promise((resolve) => resolve(db.query(queryForFindPerson, [id])))
 			.then(async (findPerson) => {
 				if (!findPerson.rows || !findPerson.rows[0]) return Promise.reject("User is not found");
-
-				// THIS FOR ADMIN
-				// if (!roles.length || !roles.includes("USER")) roles.push("USER");
-
-				// for (let i = 0; i < roles.length; i++) {
-				// 	const role = await this._existRole(roles[i]);
-				// 	if (!role.rows || !role.rows[0]) return Promise.reject(`Some role is not found`);
-				// }
 
 				let findPersonByEmail = null;
 				let comparePassword = null;

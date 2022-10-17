@@ -4,12 +4,12 @@ import React from "react";
 import AlertContext from "../../../../context/alert.context";
 import { IComment } from "../../../../models/post.models";
 import CommentItem from "./CommentItem";
-import getAllComments from "../../../../http/comments/getAllComments.http";
-import searchCommentsForAdmin from "../../../../http/comments/searchCommentsForAdmin.http";
 import Modal from "../../../../components/UI/Modal/Modal";
 import Button from "../../../../components/UI/Button/Button";
-import removeCommentAdmin from "../../../../http/admin/removeCommentAdmin.http";
 import { IActionInfo } from "../../Admin";
+import removeAdminAction from "../actions/remove.adminAction";
+import searchAdminAction from "../actions/search.adminAction";
+import getAdminAction from "../actions/get.adminAction";
 
 export interface ICommentActionInfo extends IActionInfo {
 	commentId: number;
@@ -28,17 +28,7 @@ function PageComments() {
 	React.useEffect(getComments, []);
 
 	function getComments() {
-		getAllComments()
-			.then((data) => {
-				const { success, error, message, comments: commentsFromServer } = data;
-
-				if (!success) {
-					setText(message || error);
-					return;
-				}
-
-				setComments(commentsFromServer);
-			});
+		getAdminAction("COMMENT", setComments, setText);
 	}
 
 	function searchCommentsHandler(event: any) {
@@ -49,34 +39,12 @@ function PageComments() {
 			return;
 		}
 
-		searchCommentsForAdmin(event.target?.value)
-			.then((data) => {
-				const { success, message, error, comment } = data;
-
-				if (!success) {
-					setText(message || error);
-					return;
-				}
-
-				if (comment === undefined) {
-					setComments([]);
-					return;
-				}
-
-				setComments([comment]);
-			});
+		searchAdminAction(event, "COMMENT", setText, setComments);
 	}
 
 	function removeCommentClick() {
-		if (actionInfo.commentId === -1) return;
-
-		removeCommentAdmin(actionInfo.commentId)
-			.then((data) => {
-				const { success, message, error } = data;
-				setText(message || error);
-				if (!success) return;
-				setClose(true);
-			});
+		removeAdminAction(actionInfo.commentId, "COMMENT", setText);
+		setClose(true);
 	}
 
 	function changeCommentClick() {

@@ -4,12 +4,12 @@ import React from "react";
 import AlertContext from "../../../../context/alert.context";
 import { IPost } from "../../../../models/post.models";
 import PostItem from "./PostItem";
-import getAllPosts from "../../../../http/posts/getAllPosts.http";
-import searchPostsForAdmin from "../../../../http/posts/searchPostsForAdmin.http";
 import Modal from "../../../../components/UI/Modal/Modal";
 import Button from "../../../../components/UI/Button/Button";
-import removePostAdmin from "../../../../http/admin/removePostAdmin.http";
 import { IActionInfo } from "../../Admin";
+import removeAdminAction from "../actions/remove.adminAction";
+import searchAdminAction from "../actions/search.adminAction";
+import getAdminAction from "../actions/get.adminAction";
 
 export interface IPostActionInfo extends IActionInfo {
 	postId: number;
@@ -28,17 +28,7 @@ function PagePosts() {
 	React.useEffect(getPosts, []);
 
 	function getPosts() {
-		getAllPosts({ limit: 5, page: 0 })
-			.then((data) => {
-				const { success, error, message, posts: postsFromServer } = data;
-
-				if (!success) {
-					setText(message || error);
-					return;
-				}
-
-				setPosts(postsFromServer);
-			});
+		getAdminAction("POST", setPosts, setText);
 	}
 
 	function searchPostsHandler(event: any) {
@@ -49,34 +39,12 @@ function PagePosts() {
 			return;
 		}
 
-		searchPostsForAdmin(event.target?.value)
-			.then((data) => {
-				const { success, message, error, post } = data;
-
-				if (!success) {
-					setText(message || error);
-					return;
-				}
-
-				if (post === undefined) {
-					setPosts([]);
-					return;
-				}
-
-				setPosts([post]);
-			});
+		searchAdminAction(event, "POST", setText, setPosts);
 	}
 
 	function removePostClick() {
-		if (actionInfo.postId === -1) return;
-
-		removePostAdmin(actionInfo.postId)
-			.then((data) => {
-				const { success, message, error } = data;
-				setText(message || error);
-				if (!success) return;
-				setClose(true);
-			});
+		removeAdminAction(actionInfo.postId, "POST", setText);
+		setClose(true);
 	}
 
 	function changePostClick() {
