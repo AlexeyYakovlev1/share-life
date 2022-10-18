@@ -61,6 +61,7 @@ $ npm start
 
 ## In future
 
+-   Icon for application
 -   Page for notifications (also maybe send to email)
 -   Adaptive for mobile
 -   Tests (Jest)
