@@ -141,7 +141,7 @@ function Settings(): JSX.Element {
 						</span>
 						<input
 							type="file"
-							style={{ display: "none" }}
+							hidden
 							ref={avatarRef}
 							accept="image/*"
 							onChange={uploadHandler}

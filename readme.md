@@ -72,6 +72,7 @@ I hope you don't forget to rate this project. Good luck!
 
 ## Photos
 
+![view application](https://sun9-77.userapi.com/impg/yBXwMbmyPGt_OithCbx33TQFkmgbLPQjnszh1Q/O4yngQayFDM.jpg?size=1920x1080&quality=96&sign=866cef9e44620a089b11eec2dad41dc9&type=album)
 ![view application](https://sun7-7.userapi.com/impg/tOrDtPqPf3cgHTpwHuE_P1ChQohbLfeY7-kZhQ/i3f2TxcSE7w.jpg?size=1920x1080&quality=96&sign=1bb091cd6e164888aba760fb8028f051&type=album)
 ![view application](https://sun9-67.userapi.com/impg/GQQItJFGQwE4EjzfNefhdsLBNudzMiVNMZ_gNw/a-xhLIO5SQE.jpg?size=1920x1080&quality=96&sign=a61e0efc53da387adbd7562035b39e9a&type=album)
 ![view application](https://sun9-85.userapi.com/impg/pvQETl_qqVXgR0RnR9yUlEvE2ElnbYo_YXyl7A/7ZMXe7M8vfY.jpg?size=1920x1080&quality=96&sign=38dd28551722514c9fcb2b453b335e23&type=album)

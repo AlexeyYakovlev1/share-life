@@ -4,12 +4,11 @@ import React from "react";
 import AlertContext from "../../../../context/alert.context";
 import { IPost } from "../../../../models/post.models";
 import PostItem from "./PostItem";
-import Modal from "../../../../components/UI/Modal/Modal";
-import Button from "../../../../components/UI/Button/Button";
 import { IActionInfo } from "../../Admin";
-import removeAdminAction from "../actions/remove.adminAction";
 import searchAdminAction from "../actions/search.adminAction";
 import getAdminAction from "../actions/get.adminAction";
+import PostModalChange from "./PostModalChange";
+import PostModalRemove from "./PostModalRemove";
 
 export interface IPostActionInfo extends IActionInfo {
 	postId: number;
@@ -42,40 +41,14 @@ function PagePosts() {
 		searchAdminAction(event, "POST", setText, setPosts);
 	}
 
-	function removePostClick() {
-		removeAdminAction(actionInfo.postId, "POST", setText);
-		setClose(true);
-	}
-
-	function changePostClick() {
-		console.log("change post");
-	}
-
 	return (
 		<React.Fragment>
-			{!close && <Modal setClose={setClose}>
-				<div className={classes.modal}>
-					<header className={classes.modalHeader}>
-						<h3 className={classes.modalTitle}>You sure?</h3>
-						<p className={classes.modalDescription}>
-							Post by id {actionInfo.postId} will be removed full!
-						</p>
-					</header>
-					<div className={classes.modalActions}>
-						<Button
-							onClick={actionInfo.remove ? removePostClick : changePostClick}
-						>
-							Yes
-						</Button>
-						<Button
-							className={classes.modalButtonActive}
-							onClick={() => setClose(true)}
-						>
-							No
-						</Button>
-					</div>
-				</div>
-			</Modal>}
+			{(!close && actionInfo.change) &&
+				<PostModalChange setClose={setClose} actionInfo={actionInfo} />
+			}
+			{(!close && actionInfo.remove) &&
+				<PostModalRemove setClose={setClose} actionInfo={actionInfo} />
+			}
 			<header className={classes.contentHeader}>
 				<Input
 					type="text"

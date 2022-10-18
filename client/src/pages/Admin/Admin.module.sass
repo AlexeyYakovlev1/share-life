@@ -24,8 +24,11 @@
 		& .content
 			&List th, td
 				border: 1px solid $darkBlueLight
-		& .modalButtonActive
-			background-color: $darkBlueHover !important
+		& .modal
+			&ButtonActive
+				background-color: $darkBlueHover !important
+			&ChangeContentInputRoles li
+				color: $black
 	&.light
 		background-color: $white
 		color: $black
@@ -37,8 +40,11 @@
 		& .content
 			&List th, td
 				border: 1px solid $black
-		& .modalButtonActive
-			background-color: $pinkHover !important
+		& .modal
+			&ButtonActive
+				background-color: $pinkHover !important
+			&ChangeContentInputRoles li
+				color: $black
 
 .header
 	display: flex
@@ -75,13 +81,58 @@
 		font-weight: 400
 
 .modal
-	display: grid
-	grid-template-rows: auto 1fr
-	gap: 30px
-	text-align: center
+	&Remove
+		display: grid
+		grid-template-rows: auto 1fr
+		gap: 30px
+		text-align: center
+		&Actions
+			display: grid
+			grid-template-columns: repeat(2, minmax(100px, 200px))
 	&Title
 		font-size: 22px
 		margin-bottom: 20px
-	&Actions
+	&Change
 		display: grid
-		grid-template-columns: repeat(2, minmax(100px, 200px))
+		grid-template-rows: auto 1fr
+		gap: 30px
+		&Title
+			font-weight: 400
+			font-size: 22px
+			text-align: center
+		&Content
+			overflow-y: auto
+			max-height: 300px
+			display: grid
+			grid-template-rows: repeat(auto, minmax(250px, 300px))
+			gap: 20px
+			&Input
+				& input
+					margin-top: 10px
+				&Roles
+					margin-top: 10px
+					display: flex
+					flex-direction: column
+					gap: 10px
+					& li
+						display: flex
+						align-items: center
+						justify-content: space-between
+						background-color: $gray
+						padding: 10px
+						& svg
+							cursor: pointer
+							width: 15px
+							height: 15px
+				&AddRoleBtn
+					margin-top: 10px
+			&Avatar
+				margin-top: 10px
+				&Image
+					margin: 0 auto
+					margin-top: 10px
+					width: 180px
+					height: 180px
+					background-size: cover
+					background-position: center
+					background-repeat: no-repeat

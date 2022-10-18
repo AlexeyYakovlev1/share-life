@@ -4,12 +4,11 @@ import React from "react";
 import { IPerson } from "../../../../models/person.models";
 import AlertContext from "../../../../context/alert.context";
 import UserItem from "./UserItem";
-import Modal from "../../../../components/UI/Modal/Modal";
-import Button from "../../../../components/UI/Button/Button";
 import { IActionInfo } from "../../Admin";
-import removeAdminAction from "../actions/remove.adminAction";
 import searchAdminAction from "../actions/search.adminAction";
 import getAdminAction from "../actions/get.adminAction";
+import UserModalChange from "./UserModalChange";
+import UserModalRemove from "./UserModalRemove";
 
 export interface IUserActionInfo extends IActionInfo {
 	userId: number;
@@ -21,6 +20,7 @@ function PageUsers() {
 	const [actionInfo, setActionInfo] = React.useState<IUserActionInfo>({
 		userId: -1, remove: false, change: false
 	});
+
 
 	const { setText } = React.useContext(AlertContext);
 	const tableTitles = ["id", "username", "email", "fullname", "edit", "delete"];
@@ -42,40 +42,14 @@ function PageUsers() {
 		searchAdminAction(event, "USER", setText, setUsers);
 	}
 
-	function removeUserClick() {
-		removeAdminAction(actionInfo.userId, "USER", setText);
-		setClose(true);
-	}
-
-	function changeUserClick() {
-		console.log("change user...");
-	}
-
 	return (
 		<React.Fragment>
-			{!close && <Modal setClose={setClose}>
-				<div className={classes.modal}>
-					<header className={classes.modalHeader}>
-						<h3 className={classes.modalTitle}>You sure?</h3>
-						<p className={classes.modalDescription}>
-							User by id {actionInfo.userId} will be removed full!
-						</p>
-					</header>
-					<div className={classes.modalActions}>
-						<Button
-							onClick={actionInfo.remove ? removeUserClick : changeUserClick}
-						>
-							Yes
-						</Button>
-						<Button
-							className={classes.modalButtonActive}
-							onClick={() => setClose(true)}
-						>
-							No
-						</Button>
-					</div>
-				</div>
-			</Modal>}
+			{(!close && actionInfo.change) &&
+				<UserModalChange setClose={setClose} actionInfo={actionInfo} />
+			}
+			{(!close && actionInfo.remove) &&
+				<UserModalRemove setClose={setClose} actionInfo={actionInfo} />
+			}
 			<header className={classes.contentHeader}>
 				<Input
 					type="text"

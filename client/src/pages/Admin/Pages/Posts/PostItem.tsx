@@ -14,7 +14,14 @@ function PostItem({ post, setClose, setActionInfo }: IPostItem) {
 	function removeClick() {
 		setClose(false);
 		setActionInfo((prevState) => ({
-			...prevState, postId: post.id, remove: true
+			...prevState, postId: post.id, remove: true, change: false
+		}));
+	}
+
+	function changeClick() {
+		setClose(false);
+		setActionInfo((prevState) => ({
+			...prevState, postId: post.id, remove: false, change: true
 		}));
 	}
 
@@ -24,7 +31,11 @@ function PostItem({ post, setClose, setActionInfo }: IPostItem) {
 			<td className={classes.contentItem}>{post.description}</td>
 			<td className={classes.contentItem}>{post.owner_id}</td>
 			<td className={classes.contentItem}>
-				<Button>Edit</Button>
+				<Button
+					onClick={changeClick}
+				>
+					Edit
+				</Button>
 			</td>
 			<td className={classes.contentItem}>
 				<Button

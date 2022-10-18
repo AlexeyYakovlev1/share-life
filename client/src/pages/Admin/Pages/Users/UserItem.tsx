@@ -14,7 +14,14 @@ function UserItem({ setActionInfo, setClose, user }: IUserItem) {
 	function removeClick() {
 		setClose(false);
 		setActionInfo((prevState) => ({
-			...prevState, userId: user.id, remove: true
+			...prevState, userId: user.id, remove: true, change: false
+		}));
+	}
+
+	function changeClick() {
+		setClose(false);
+		setActionInfo((prevState) => ({
+			...prevState, userId: user.id, remove: false, change: true
 		}));
 	}
 
@@ -25,7 +32,11 @@ function UserItem({ setActionInfo, setClose, user }: IUserItem) {
 			<td className={classes.contentItem}>{user.email}</td>
 			<td className={classes.contentItem}>{user.full_name}</td>
 			<td className={classes.contentItem}>
-				<Button>Edit</Button>
+				<Button
+					onClick={changeClick}
+				>
+					Edit
+				</Button>
 			</td>
 			<td className={classes.contentItem}>
 				<Button
