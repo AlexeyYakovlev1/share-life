@@ -22,6 +22,19 @@ This application is social network were you can posting your interests or your l
 
 Note: you must create a database that will contain all the models that are in models.sql!
 
+### .env for server must includes:
+```code
+PORT=
+DB_NAME=
+DB_USER=
+DB_PASSWORD=
+DB_HOST=
+DB_PORT=
+JWT_KEY=
+PROJECT_ROOT=
+```
+Also you must create folder templates for photos user and post
+
 ```bash
 $ npm install
 ```
