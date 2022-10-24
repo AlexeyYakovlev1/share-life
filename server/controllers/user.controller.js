@@ -299,7 +299,7 @@ class UserController {
 				const queryForUpdateFollowing = `UPDATE person SET followers = ARRAY_REMOVE(followers, $1) WHERE id = $2`;
 				return Promise.resolve(db.query(queryForUpdateFollowing, [followerId, followingId]));
 			})
-			.then((result) => res.status(200).json({ success: true }))
+			.then(() => res.status(200).json({ success: true }))
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}
 

@@ -1,10 +1,26 @@
 const db = require("../db");
 const path = require("path");
 const fs = require("fs");
+const findAndQuery = require("../utils/findAndQuery.util");
 
 const { PROJECT_ROOT } = process.env;
 
 class AdminController {
+	constructor() {
+		this.removeUser = this.removeUser.bind(this);
+	}
+
+	_removeCommentForDeletedPost(postId, userId) {
+		if (!postId || !userId) {
+			throw new Error(`Required arguments not found`);
+		};
+
+		const queryForDeleteComment = `DELETE FROM comment WHERE owner_id = $1 OR post_id = $2`;
+		const deletedComment = db.query(queryForDeleteComment, [userId, postId]);
+
+		return new Promise((resolve) => resolve(deletedComment));
+	}
+
 	// search by id for users
 	searchUsers(req, res) {
 		if (!Object.entries(req.query).length || !req.query.q) {
@@ -60,17 +76,52 @@ class AdminController {
 		}
 
 		const { id: userId } = req.params;
+
 		const queryForFindUser = `SELECT id FROM person WHERE id = $1`;
 		const findUser = db.query(queryForFindUser, [userId]);
 
 		new Promise((resolve) => resolve(findUser))
 			.then((findUser) => {
-				if (!findUser.rows.length || !findUser.rows[0]) return Promise.reject("User not found");
+				// UPDATE ARRAYS FOR PERSONS AND REMOVE FOLLOW
+				if (!findUser.rows || !findUser.rows[0].id) Promise.reject("User not found");
 
+				const queryForUpdatePerson = `
+					UPDATE person SET followers = ARRAY_REMOVE(followers, $1), following = ARRAY_REMOVE(following, $1)
+				`;
+				const queryForUpdatePost = `
+					UPDATE post SET person_id_likes = ARRAY_REMOVE(person_id_likes, $1)
+				`;
+
+				const updatePerson = db.query(queryForUpdatePerson, [userId]);
+				const updatePost = db.query(queryForUpdatePost, [userId]);
+
+				return Promise.all([updatePerson, updatePost]);
+			})
+			.then(() => {
+				// FIND POSTS
+				const queryForFindPosts = `SELECT id FROM post WHERE owner_id = $1`;
+				const findPosts = db.query(queryForFindPosts, [userId]);
+
+				return Promise.resolve(findPosts);
+			})
+			.then(async (findPosts) => {
+				// REMOVE ALL COMMENTS FROM POSTS THEN POSTS FOLLOW AND USER
+				if (findPosts.rows && findPosts.rows.length) {
+					for (let i = 0; i < findPosts.rows.length; i++) {
+						const post = findPosts.rows[i];
+						await this._removeCommentForDeletedPost(post.id, userId);
+					}
+				}
+
+				const queryForDeletePosts = `DELETE FROM post WHERE owner_id = $1`;
+				const queryForDeleteFollow = `DELETE FROM follow WHERE user_id = $1 OR follower_id = $1`;
 				const queryForDeleteUser = `DELETE FROM person WHERE id = $1`;
+
+				const deletedPost = db.query(queryForDeletePosts, [userId]);
+				const deleteFollow = db.query(queryForDeleteFollow, [userId]);
 				const deleteUser = db.query(queryForDeleteUser, [userId]);
 
-				return Promise.resolve(deleteUser);
+				return Promise.all([deletedPost, deleteFollow, deleteUser]);
 			})
 			.then(() => res.status(200).json({ success: true, message: "User has been removed" }))
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));

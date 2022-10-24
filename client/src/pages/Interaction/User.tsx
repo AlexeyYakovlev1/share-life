@@ -9,6 +9,7 @@ import { IState } from "../../models/redux.models";
 import { useFollow } from "../../hooks/useFollow";
 import cn from "classnames";
 import useTheme from "../../hooks/useTheme";
+import useAvatar from "../../hooks/useAvatar";
 
 function User({ user }: { user: IPerson }): JSX.Element {
 	const { light, dark } = useTheme();
@@ -16,6 +17,7 @@ function User({ user }: { user: IPerson }): JSX.Element {
 	const { id: currentIdUser } = useSelector((state: IState) => state.person.info);
 	const [followUser, setFollowUser] = React.useState<boolean>(user.followers.includes(currentIdUser));
 	const { followClick } = useFollow(+user.id, setText, setFollowUser);
+	const avatar = useAvatar(user.avatar.base64);
 
 	return (
 		<li className={cn(classes.user, {
@@ -25,7 +27,7 @@ function User({ user }: { user: IPerson }): JSX.Element {
 			<div className={classes.userLeft}>
 				<div
 					className={classes.userAvatar}
-					style={{ backgroundImage: `url(${user.avatar.base64})` }}
+					style={{ backgroundImage: `url(${avatar})` }}
 				></div>
 				<div className={classes.userInfo}>
 					<header className={classes.userInfoHeader}>
