@@ -11,6 +11,7 @@ function readerImages(
 ) {
 	const resultPhotos: Array<IPhoto> = [];
 	const fileReaders: any = [];
+
 	let isCancel = false;
 
 	if (selectedImages.length) {
@@ -22,6 +23,7 @@ function readerImages(
 
 			reader.onload = () => {
 				const result = reader.result;
+
 				let obj: any = {
 					id: index + 1,
 					img: result

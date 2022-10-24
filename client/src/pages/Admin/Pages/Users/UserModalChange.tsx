@@ -10,6 +10,9 @@ import AlertContext from "../../../../context/alert.context";
 import Label from "../../../../components/UI/Label/Label";
 import { IUserActionInfo } from "./PageUsers";
 import { ReactComponent as CrossIcon } from "../../../../assets/images/close.svg";
+import uploadImages from "../../../../utils/uploadImages.util";
+import readerImages from "../../../../utils/readerImages.util";
+import uploadAvatar from "../../../../http/files/uploadAvatar.http";
 
 export interface IModalChange {
 	setClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,8 +24,8 @@ interface IUserModalChange extends IModalChange {
 
 function UserModalChange({ setClose, actionInfo }: IUserModalChange) {
 	const { setText } = React.useContext(AlertContext);
-	const [addRole, setAddRole] = React.useState<boolean>(false);
 	const avatarRef = React.useRef<HTMLInputElement | null>(null);
+
 	const [currentUser, setCurrentUser] = React.useState<IPerson>({
 		id: -1,
 		full_name: "",
@@ -39,6 +42,14 @@ function UserModalChange({ setClose, actionInfo }: IUserModalChange) {
 		following: []
 	});
 	const currentUserAvatar = useAvatar(currentUser.avatar.base64);
+	const [addRole, setAddRole] = React.useState<boolean>(false);
+	const [selectFile, setSelectFile] = React.useState<any>([]);
+	const [avatar, setAvatar] = React.useState<any>([currentUserAvatar]);
+	const [roleValue, setRoleValue] = React.useState<string>("");
+
+	React.useEffect(() => {
+		readerImages(selectFile, setAvatar, setText, true);
+	}, [selectFile]);
 
 	React.useEffect(() => {
 		if (actionInfo.userId === -1) return;
@@ -53,11 +64,51 @@ function UserModalChange({ setClose, actionInfo }: IUserModalChange) {
 				}
 
 				setCurrentUser(person);
+				setAvatar([useAvatar(person.avatar.base64)]);
 			});
 	}, [actionInfo]);
 
-	function changeSubmit(event: React.FormEvent<HTMLFormElement>) {
-		event.preventDefault();
+	function changeSubmit() {
+		// send photo
+		const formData = new FormData();
+		formData.append("avatar", selectFile[0]);
+
+		uploadAvatar(formData, { updateUser: true, userId: actionInfo.userId })
+			.then((data) => {
+				const { success, message, error, dataFile } = data;
+
+				if (!success) {
+					setText(message || error);
+					return;
+				}
+
+				setCurrentUser({
+					...currentUser, avatar: dataFile
+				});
+			});
+
+		// send updated user
+		// ...code
+	}
+
+	function addRoleHandler(event: React.FormEvent<HTMLInputElement> | any) {
+		if (event.key === "Enter") {
+			if (currentUser.roles.includes(roleValue.toUpperCase())) {
+				setText("This role exist");
+				return;
+			}
+
+			setCurrentUser({
+				...currentUser, roles: currentUser.roles.concat(roleValue.toUpperCase())
+			});
+			setRoleValue("");
+		}
+	}
+
+	function removeRoleClick(role: string) {
+		setCurrentUser({
+			...currentUser, roles: currentUser.roles.filter((r) => r !== role)
+		});
 	}
 
 	return (
@@ -68,8 +119,7 @@ function UserModalChange({ setClose, actionInfo }: IUserModalChange) {
 						Edit user by id {actionInfo.userId}
 					</h3>
 				</header>
-				<form
-					onSubmit={(event: React.FormEvent<HTMLFormElement>) => changeSubmit(event)}
+				<div
 					className={classes.modalChangeContent}
 				>
 					<div className={classes.modalChangeContentInput}>
@@ -78,15 +128,23 @@ function UserModalChange({ setClose, actionInfo }: IUserModalChange) {
 							{currentUser.roles.map((role, index) => (
 								<li key={`${role}_${index + 1}`}>
 									{role}
-									<CrossIcon title="Remove this role" />
+									<span onClick={() => removeRoleClick(role)}>
+										<CrossIcon title="Remove this role" />
+									</span>
 								</li>
 							))}
 						</ul>
 						<div className={classes.modalChangeContentInputAddRole}>
-							{addRole && <Input
-								type="text"
-								placeholder="Write name of role"
-							/>}
+							{
+								addRole &&
+								<Input
+									onKeyPress={addRoleHandler}
+									type="text"
+									placeholder="Write name of role"
+									value={roleValue}
+									onChange={(event: React.ChangeEvent<HTMLInputElement>) => setRoleValue(event.target.value)}
+								/>
+							}
 							<Button
 								className={classes.modalChangeContentInputAddRoleBtn}
 								onClick={() => setAddRole(!addRole)}
@@ -118,6 +176,7 @@ function UserModalChange({ setClose, actionInfo }: IUserModalChange) {
 					<div className={classes.modalChangeContentInput}>
 						<Label htmlFor="email">Email</Label>
 						<Input
+							id="email"
 							type="text"
 							placeholder="Email"
 							value={currentUser.email}
@@ -127,21 +186,22 @@ function UserModalChange({ setClose, actionInfo }: IUserModalChange) {
 					<div className={classes.modalChangeContentInput}>
 						<Label htmlFor="avatar">Avatar</Label>
 						<div className={classes.modalChangeContentAvatar}>
-							<Input
+							<input
+								ref={avatarRef}
 								type="file"
 								hidden
-								ref={avatarRef}
 								accept="image/*"
+								onChange={(event: React.ChangeEvent<HTMLInputElement>) => uploadImages(event, setSelectFile, setText)}
 							/>
 							<Button onClick={() => avatarRef.current?.click()}>Upload photo</Button>
 							<div
-								style={{ backgroundImage: `url(${currentUserAvatar})` }}
+								style={{ backgroundImage: `url(${avatar[0].base64 || avatar[0]})` }}
 								className={classes.modalChangeContentAvatarImage}
 							></div>
 						</div>
 					</div>
-					<Button type="submit">Done</Button>
-				</form>
+					<Button type="submit" onClick={changeSubmit}>Done</Button>
+				</div>
 			</div>
 		</Modal>
 	);

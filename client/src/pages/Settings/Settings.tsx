@@ -62,7 +62,7 @@ function Settings(): JSX.Element {
 			const result = reader.result;
 			setAvatar({ ...avatar, base64: result });
 
-			uploadAvatar(formData, true)
+			uploadAvatar(formData, { updateUser: true, userId: -1 })
 				.then((data) => {
 					const { success, message, error, dataFile: { inBase64, filename } } = data;
 

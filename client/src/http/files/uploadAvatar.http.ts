@@ -4,10 +4,15 @@ import { trackPromise } from "react-promise-tracker";
 
 const { REACT_APP_API_URL } = process.env;
 
-function uploadAvatar(formData: any, updateUser = false) {
+interface IUploadAvatarParams {
+	updateUser: boolean;
+	userId: number;
+}
+
+function uploadAvatar(formData: any, params: IUploadAvatarParams) {
 	return trackPromise(axios({
 		method: "POST",
-		url: `${REACT_APP_API_URL}/upload/avatar/?update-user=${updateUser}`,
+		url: `${REACT_APP_API_URL}/upload/avatar/?update-user=${params.updateUser}&id=${params.userId}`,
 		headers: {
 			Authorization: `Bearer ${Cookies.get("token")}`
 		},

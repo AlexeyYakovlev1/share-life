@@ -1,7 +1,6 @@
 const db = require("../db");
 const path = require("path");
 const fs = require("fs");
-const findAndQuery = require("../utils/findAndQuery.util");
 
 const { PROJECT_ROOT } = process.env;
 
@@ -21,7 +20,7 @@ class AdminController {
 		return new Promise((resolve) => resolve(deletedComment));
 	}
 
-	// search by id for users
+	// search for users
 	searchUsers(req, res) {
 		if (!Object.entries(req.query).length || !req.query.q) {
 			return res.status(400).json({ success: false, message: "Query `q` must be" });
@@ -37,7 +36,7 @@ class AdminController {
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}
 
-	// search by id for posts
+	// search for posts
 	searchPosts(req, res) {
 		if (!Object.entries(req.query).length || !req.query.q) {
 			return res.status(400).json({ success: false, message: "Query `q` must be" });
@@ -53,7 +52,7 @@ class AdminController {
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}
 
-	// search by id for comments
+	// search for comments
 	searchComments(req, res) {
 		if (!Object.entries(req.query).length || !req.query.q) {
 			return res.status(400).json({ success: false, message: "Query `q` must be exist" });
@@ -69,7 +68,7 @@ class AdminController {
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}
 
-	//  remove user by id
+	//  remove user
 	removeUser(req, res) {
 		if (!Object.entries(req.params).length || !req.params.id) {
 			return res.status(400).json({ success: false, message: "Params must be exist" });
@@ -127,7 +126,7 @@ class AdminController {
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}
 
-	//  remove post by id
+	//  remove post
 	removePost(req, res) {
 		if (!Object.entries(req.params).length || !req.params.id) {
 			return res.status(400).json({ success: false, message: "Params must exist" });
@@ -170,7 +169,7 @@ class AdminController {
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}
 
-	//  remove comment by id
+	//  remove comment
 	removeComment(req, res) {
 		if (!Object.entries(req.params).length || !req.params.id) {
 			return res.status(400).json({ success: false, message: "Params has been exist" });
