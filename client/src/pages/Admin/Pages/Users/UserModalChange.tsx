@@ -13,6 +13,7 @@ import { ReactComponent as CrossIcon } from "../../../../assets/images/close.svg
 import uploadImages from "../../../../utils/uploadImages.util";
 import readerImages from "../../../../utils/readerImages.util";
 import uploadAvatar from "../../../../http/files/uploadAvatar.http";
+import changeUserAdmin from "../../../../http/admin/changeUserAdmin.http";
 
 export interface IModalChange {
 	setClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -69,26 +70,38 @@ function UserModalChange({ setClose, actionInfo }: IUserModalChange) {
 	}, [actionInfo]);
 
 	function changeSubmit() {
-		// send photo
-		const formData = new FormData();
-		formData.append("avatar", selectFile[0]);
+		if (selectFile[0]) {
+			// send photo
+			const formData = new FormData();
+			formData.append("avatar", selectFile[0]);
 
-		uploadAvatar(formData, { updateUser: true, userId: actionInfo.userId })
+			uploadAvatar(formData, { updateUser: true, userId: actionInfo.userId })
+				.then((data) => {
+					const { success, message, error, dataFile } = data;
+
+					if (!success) {
+						setText(message || error);
+						return;
+					}
+
+					setCurrentUser({
+						...currentUser, avatar: dataFile
+					});
+				});
+		}
+
+		// send updated user
+		changeUserAdmin(actionInfo.userId, currentUser)
 			.then((data) => {
-				const { success, message, error, dataFile } = data;
+				const { success, message, error } = data;
 
 				if (!success) {
 					setText(message || error);
 					return;
 				}
 
-				setCurrentUser({
-					...currentUser, avatar: dataFile
-				});
+				setClose(true);
 			});
-
-		// send updated user
-		// ...code
 	}
 
 	function addRoleHandler(event: React.FormEvent<HTMLInputElement> | any) {
@@ -183,6 +196,7 @@ function UserModalChange({ setClose, actionInfo }: IUserModalChange) {
 							onChange={(event: React.ChangeEvent<HTMLInputElement>) => setCurrentUser({ ...currentUser, email: event.target.value })}
 						/>
 					</div>
+					<Button type="submit" onClick={changeSubmit}>Done</Button>
 					<div className={classes.modalChangeContentInput}>
 						<Label htmlFor="avatar">Avatar</Label>
 						<div className={classes.modalChangeContentAvatar}>
@@ -200,7 +214,6 @@ function UserModalChange({ setClose, actionInfo }: IUserModalChange) {
 							></div>
 						</div>
 					</div>
-					<Button type="submit" onClick={changeSubmit}>Done</Button>
 				</div>
 			</div>
 		</Modal>

@@ -16,4 +16,7 @@ router.delete("/remove/post/:id", RoleMiddleware(["ADMIN"]), AdminController.rem
 // for example: /admin/remove/comment/3
 router.delete("/remove/comment/:id", RoleMiddleware(["ADMIN"]), AdminController.removeComment);
 
+// for example: /admin/change/user/3
+router.put("/change/user/:id", RoleMiddleware(["ADMIN"]), AdminController.changeUser);
+
 module.exports = router;

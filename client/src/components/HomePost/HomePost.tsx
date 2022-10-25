@@ -168,7 +168,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 					<span className={classes.bodyDescriptionLikesNum}>{likesNum} likes</span>
 					<div>
 						{info.description &&
-							<pre
+							<p
 								className={cn(classes.bodyDescriptionText, {
 									[classes.bodyDescriptionTextHideSide]: dotsToEnd
 								})}
@@ -176,7 +176,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 								<span className={classes.headerName}>{userPost.user_name}</span>
 								&nbsp;
 								{info.description}
-							</pre>
+							</p>
 						}
 						<div className={classes.bodyDescriptionActions}>
 							{dotsToEnd &&

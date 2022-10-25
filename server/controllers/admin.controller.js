@@ -191,6 +191,52 @@ class AdminController {
 			.then(() => res.status(200).json({ success: true, message: "Comment has been removed" }))
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}
+
+	// change user
+	changeUser(req, res) {
+		if (!Object.entries(req.params).length || !req.params.id) {
+			return res.status(400).json({ success: false, message: "Params must be exist" });
+		}
+
+		const { id: changeUserId } = req.params;
+		const { roles, full_name, user_name, email } = req.body;
+
+		if (!roles.length || !roles.includes("USER")) {
+			return res.status(400).json({ success: false, message: "Required role USER" });
+		}
+
+		const queryForFindChangeUser = `SELECT id FROM person WHERE id = $1`;
+		const findChangeUser = db.query(queryForFindChangeUser, [changeUserId]);
+
+		new Promise((resolve) => resolve(findChangeUser))
+			.then((changeUser) => {
+				if (!changeUser.rows.length || !changeUser.rows[0]) return Promise.reject("User is not found");
+
+				const queryForFindUserByEmail = `SELECT id FROM person WHERE email = $1`;
+				const findUserByEmail = db.query(queryForFindUserByEmail, [email]);
+
+				return Promise.resolve(findUserByEmail);
+			})
+			.then((findUser) => {
+				if (findUser.rows.length && findUser.rows[0].id) {
+					return Promise.reject("User with this email already exists");
+				}
+
+				const queryForUpdatePerson = `
+					UPDATE person
+					SET user_name=COALESCE(NULLIF($1, ''), person.user_name),
+					full_name=COALESCE(NULLIF($2, ''), person.full_name),
+					email=COALESCE(NULLIF($3, ''), person.email),
+					roles=$4
+					WHERE id=$5
+				`;
+				const updatePerson = db.query(queryForUpdatePerson, [user_name, full_name, email, roles, changeUserId]);
+
+				return Promise.resolve(updatePerson);
+			})
+			.then(() => res.status(200).json({ success: true, message: "User has been updated" }))
+			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
+	}
 }
 
 module.exports = new AdminController();

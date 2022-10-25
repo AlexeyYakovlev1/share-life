@@ -73,7 +73,7 @@ function Comment({ info }: { info: IComment }): JSX.Element {
 			></div>
 			<div className={classes.commentInfo}>
 				<div className={classes.commentInfoWrapper}>
-					<pre className={classes.commentText}>
+					<p className={classes.commentText}>
 						<span className={classes.commentName}>
 							<Link to={`/profile/${userComment.id}`}>
 								{userComment.user_name}
@@ -81,7 +81,7 @@ function Comment({ info }: { info: IComment }): JSX.Element {
 						</span>
 						&nbsp;
 						{info.text}
-					</pre>
+					</p>
 					{checkOwner && <span
 						title="Remove comment"
 						className={classes.commentRemove}
