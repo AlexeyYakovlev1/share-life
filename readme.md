@@ -1,5 +1,9 @@
 # About application. share-life
 
+<p align="center">
+  <img src="./logo.svg" />	
+</p>
+
 ## Description
 
 This application is social network were you can posting your interests or your life and get feedback.
@@ -76,7 +80,6 @@ $ npm start
 
 ## In future
 
--   Icon for application
 -   Page for notifications (also maybe send to email)
 -   Adaptive for mobile
 -   Tests (Jest)
