@@ -205,20 +205,24 @@ class AdminController {
 			return res.status(400).json({ success: false, message: "Required role USER" });
 		}
 
-		const queryForFindChangeUser = `SELECT id FROM person WHERE id = $1`;
+		const queryForFindChangeUser = `SELECT email FROM person WHERE id = $1`;
 		const findChangeUser = db.query(queryForFindChangeUser, [changeUserId]);
 
 		new Promise((resolve) => resolve(findChangeUser))
 			.then((changeUser) => {
-				if (!changeUser.rows.length || !changeUser.rows[0]) return Promise.reject("User is not found");
+				if (!changeUser.rows.length || !changeUser.rows[0].email) return Promise.reject("User is not found");
 
 				const queryForFindUserByEmail = `SELECT id FROM person WHERE email = $1`;
 				const findUserByEmail = db.query(queryForFindUserByEmail, [email]);
 
-				return Promise.resolve(findUserByEmail);
+				return Promise.all([findUserByEmail, changeUser]);
 			})
-			.then((findUser) => {
-				if (findUser.rows.length && findUser.rows[0].id) {
+			.then(([findUser, changeUser]) => {
+				if (
+					findUser.rows.length &&
+					findUser.rows[0].id &&
+					changeUser.rows[0].email !== email
+				) {
 					return Promise.reject("User with this email already exists");
 				}
 
