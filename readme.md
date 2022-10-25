@@ -1,4 +1,4 @@
-# About application. share-life
+# About application
 
 <p align="center">
   <img src="./logo.svg" width="500" />	
