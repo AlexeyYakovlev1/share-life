@@ -1,7 +1,7 @@
 # About application. share-life
 
 <p align="center">
-  <img src="./logo.svg" width="300" />	
+  <img src="./logo.svg" width="500" />	
 </p>
 
 ## Description
