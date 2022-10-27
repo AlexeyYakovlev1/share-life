@@ -44,7 +44,7 @@ function Admin() {
 
 	return (
 		<MainLayout>
-			<div className={cn(classes.wrapper, {
+			<article className={cn(classes.wrapper, {
 				[classes.light]: light,
 				[classes.dark]: dark
 			})}>
@@ -74,7 +74,7 @@ function Admin() {
 					{pagePosts && <PagePosts />}
 					{pageComments && <PageComments />}
 				</div>
-			</div>
+			</article>
 		</MainLayout>
 	);
 }

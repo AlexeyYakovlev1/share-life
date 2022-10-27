@@ -9,6 +9,7 @@ import Settings from "../pages/Settings/Settings";
 import ChangePost from "../pages/ChangePost/ChangePost";
 import Error from "../pages/Error/Error";
 import Admin from "../pages/Admin/Admin";
+import Notifications from "../pages/Notifications/Notifications";
 
 function useRoutes() {
 	return (
@@ -22,6 +23,7 @@ function useRoutes() {
 			<Route path="/settings" element={<Settings />} />
 			<Route path="/interaction/:id" element={<Interaction />} />
 			<Route path="/change-post/:id" element={<ChangePost />} />
+			<Route path="/notifications" element={<Notifications />} />
 
 			<Route path="/admin" element={<Admin />} />
 

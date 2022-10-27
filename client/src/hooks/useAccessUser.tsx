@@ -1,14 +1,15 @@
 import React from "react";
-import { NavigateFunction } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import AlertContext from "../context/alert.context";
 import userAccess from "../http/access/userAccess.http";
-import { IPost } from "../models/post.models";
 
 function useAccessUser(
-	post: IPost,
-	userId: number,
-	setText: (text: string | ((text: string) => string)) => void,
-	navigate: NavigateFunction
+	deps: Array<any>,
+	userId: number
 ) {
+	const { setText } = React.useContext(AlertContext);
+	const navigate = useNavigate();
+
 	React.useEffect(() => {
 		if (userId === -1) return;
 
@@ -22,7 +23,7 @@ function useAccessUser(
 					return;
 				}
 			});
-	}, [post]);
+	}, [...deps]);
 }
 
 export default useAccessUser;

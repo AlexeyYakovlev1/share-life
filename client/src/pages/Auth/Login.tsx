@@ -56,7 +56,7 @@ function Login() {
 		<React.Fragment>
 			{text && <Alert />}
 			{promiseInProgress === true && <Loader />}
-			<div className={cn(classes.wrapper, {
+			<article className={cn(classes.wrapper, {
 				[classes.light]: light,
 				[classes.dark]: dark
 			})}>
@@ -80,7 +80,7 @@ function Login() {
 				<p className={classes.text}>
 					Dont have an account? <Link to="/auth/register">Sign up</Link>
 				</p>
-			</div>
+			</article>
 		</React.Fragment>
 	);
 }

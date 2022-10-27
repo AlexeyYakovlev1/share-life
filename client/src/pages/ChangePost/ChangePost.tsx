@@ -41,7 +41,7 @@ function ChangePost(): JSX.Element {
 	const [imagesUpload, setImagesUpload] = React.useState<boolean>(false);
 
 	const disabled = (changePost.description.length >= 2200) || (changePost.location.length < 3) || (changePost.location.length >= 20) || !photos.length;
-	useAccessUser(post, post.owner_id, setText, navigate);
+	useAccessUser([post], post.owner_id);
 
 	React.useEffect(() => {
 		if (!postId) return;
@@ -119,7 +119,7 @@ function ChangePost(): JSX.Element {
 
 	return (
 		<MainLayout>
-			<div className={cn(classes.wrapper, {
+			<article className={cn(classes.wrapper, {
 				[classes.light]: light,
 				[classes.dark]: dark
 			})}>
@@ -185,7 +185,7 @@ function ChangePost(): JSX.Element {
 				>
 					Done
 				</Button>
-			</div>
+			</article>
 		</MainLayout>
 	);
 }

@@ -18,7 +18,6 @@ class AccessController {
 				const findPageUser = db.query(queryForFindPerson, [pageIdUser]);
 
 				return Promise.all([findPageUser, findCurrentUser]);
-
 			})
 			.then(([findPageUser, findCurrentUser]) => {
 				if (!findPageUser.rows || !findPageUser.rows[0]) return Promise.reject("User is not found");

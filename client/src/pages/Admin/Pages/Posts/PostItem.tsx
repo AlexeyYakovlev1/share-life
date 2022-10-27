@@ -19,13 +19,6 @@ function PostItem({ post, setClose, setActionInfo }: IPostItem) {
 		}));
 	}
 
-	function changeClick() {
-		setClose(false);
-		setActionInfo((prevState) => ({
-			...prevState, postId: post.id, remove: false, change: true
-		}));
-	}
-
 	return (
 		<React.Fragment>
 			<td className={classes.contentItem}>
@@ -35,13 +28,6 @@ function PostItem({ post, setClose, setActionInfo }: IPostItem) {
 			</td>
 			<td className={classes.contentItem}>{post.description}</td>
 			<td className={classes.contentItem}>{post.owner_id}</td>
-			<td className={classes.contentItem}>
-				<Button
-					onClick={changeClick}
-				>
-					Edit
-				</Button>
-			</td>
 			<td className={classes.contentItem}>
 				<Button
 					onClick={removeClick}

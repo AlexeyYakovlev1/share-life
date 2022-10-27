@@ -8,7 +8,7 @@ function Error(): JSX.Element {
 	const { light, dark } = useTheme();
 
 	return (
-		<div className={cn(classes.wrapper, {
+		<article className={cn(classes.wrapper, {
 			[classes.light]: light,
 			[classes.dark]: dark
 		})}>
@@ -23,7 +23,7 @@ function Error(): JSX.Element {
 			<Button>
 				<Link to="/">Return home</Link>
 			</Button>
-		</div>
+		</article>
 	);
 }
 

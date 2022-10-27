@@ -112,7 +112,7 @@ function Settings(): JSX.Element {
 
 	return (
 		<MainLayout>
-			<div className={cn(classes.wrapper, {
+			<article className={cn(classes.wrapper, {
 				[classes.light]: light,
 				[classes.dark]: dark
 			})}>
@@ -218,7 +218,7 @@ function Settings(): JSX.Element {
 						</Button>
 					</div>
 				</form>
-			</div>
+			</article>
 		</MainLayout>
 	);
 }

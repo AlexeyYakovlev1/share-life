@@ -50,7 +50,7 @@ function Register() {
 		<React.Fragment>
 			{text && <Alert />}
 			{promiseInProgress === true && <Loader />}
-			<div className={cn(classes.wrapper, {
+			<article className={cn(classes.wrapper, {
 				[classes.light]: light,
 				[classes.dark]: dark
 			})}>
@@ -90,7 +90,7 @@ function Register() {
 				<p className={classes.text}>
 					Have an account? <Link to="/auth/login">Log in</Link>
 				</p>
-			</div>
+			</article>
 		</React.Fragment>
 	);
 }

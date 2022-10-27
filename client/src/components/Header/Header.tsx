@@ -16,6 +16,7 @@ import getAllPosts from "../../http/posts/getAllPosts.http";
 import { setPosts } from "../../redux/actions/posts.actions";
 import searchPostsByKeyWords from "../../http/posts/searchPosts.http";
 import useTheme from "../../hooks/useTheme";
+import NotificationCount from "../../context/notificationCount.context";
 
 interface IHeaderProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> { }
 
@@ -31,21 +32,11 @@ function Header({ className }: IHeaderProps): JSX.Element {
 	const { info: { avatar, id, user_name }, isAuth } = useSelector((state: IState) => state.person);
 	const [searchVal, setSearchVal] = React.useState<string>("");
 	const dispatch = useDispatch();
+
 	const { setText } = React.useContext(AlertContext);
+	const { count, setCount } = React.useContext(NotificationCount);
 
 	const currentAvatarUser = useAvatar(avatar.base64);
-	const menu: Array<IMenu> = [
-		{
-			name: "Add post",
-			url: "/write",
-			img: PlusIcon
-		},
-		{
-			name: "Likes",
-			url: "/likes",
-			img: LikeIcon
-		}
-	];
 
 	// search
 	function searchHandler(event: any) {
@@ -96,22 +87,27 @@ function Header({ className }: IHeaderProps): JSX.Element {
 					/>
 				</div>
 				<div className={classes.user}>
-					{isAuth ? <nav className={classes.nav}>
-						<ul className={classes.list}>
-							{menu.map((item: IMenu) => (
-								<li key={item.url} className={classes.item}>
-									<Link title={item.name} to={item.url}>
-										<item.img />
+					{isAuth ?
+						<nav className={classes.nav}>
+							<ul className={classes.list}>
+								<li className={classes.item}>
+									<Link title={"Add post"} to={"/write"}>
+										<PlusIcon />
 									</Link>
 								</li>
-							))}
-							<li className={cn(classes.item, classes.itemUser)}>
-								<Link title="user" to={`/profile/${id}`}>
-									<img src={currentAvatarUser} title={`Avatar ${user_name}`} />
-								</Link>
-							</li>
-						</ul>
-					</nav>
+								<li className={cn(classes.item, classes.itemLike)}>
+									<Link title={"Likes"} to={"/notifications"}>
+										<LikeIcon />
+										{count > 0 && <span className={classes.itemLikeCount}>{count}</span>}
+									</Link>
+								</li>
+								<li className={cn(classes.item, classes.itemUser)}>
+									<Link title="user" to={`/profile/${id}`}>
+										<img src={currentAvatarUser} title={`Avatar ${user_name}`} />
+									</Link>
+								</li>
+							</ul>
+						</nav>
 						:
 						<Button><Link to="/auth/login">Log in</Link></Button>
 					}

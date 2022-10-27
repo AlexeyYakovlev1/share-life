@@ -7,7 +7,6 @@ import PostItem from "./PostItem";
 import { IActionInfo } from "../../Admin";
 import searchAdminAction from "../actions/search.adminAction";
 import getAdminAction from "../actions/get.adminAction";
-import PostModalChange from "./PostModalChange";
 import PostModalRemove from "./PostModalRemove";
 
 export interface IPostActionInfo extends IActionInfo {
@@ -15,7 +14,7 @@ export interface IPostActionInfo extends IActionInfo {
 }
 
 function PagePosts() {
-	const tableTitles = ["id", "description", "author id", "edit", "delete"];
+	const tableTitles = ["id", "description", "author id", "delete"];
 	const { setText } = React.useContext(AlertContext);
 
 	const [posts, setPosts] = React.useState<Array<IPost>>([]);
@@ -43,9 +42,6 @@ function PagePosts() {
 
 	return (
 		<React.Fragment>
-			{(!close && actionInfo.change) &&
-				<PostModalChange setClose={setClose} actionInfo={actionInfo} />
-			}
 			{(!close && actionInfo.remove) &&
 				<PostModalRemove setClose={setClose} actionInfo={actionInfo} />
 			}

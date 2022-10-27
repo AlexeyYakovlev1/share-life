@@ -50,7 +50,7 @@ function Home(): JSX.Element {
 
 	return (
 		<MainLayout>
-			<div className={classes.wrapper}>
+			<article className={classes.wrapper}>
 				<ul className={classes.list}>
 					{(posts && posts.length) ? posts.map((post: IPost) => (
 						<Suspense key={post.id} fallback={<HomePostLoading />}>
@@ -58,7 +58,7 @@ function Home(): JSX.Element {
 						</Suspense>
 					)) : <span className={classes.noPosts}>Be the first to publish post!</span>}
 				</ul>
-			</div>
+			</article>
 		</MainLayout>
 	);
 }

@@ -111,7 +111,7 @@ function Profile(): JSX.Element {
 
 	return (
 		<MainLayout>
-			<div className={cn(classes.wrapper, {
+			<article className={cn(classes.wrapper, {
 				[classes.light]: light,
 				[classes.dark]: dark
 			})}>
@@ -213,7 +213,7 @@ function Profile(): JSX.Element {
 							</div>
 					}
 				</div>
-			</div>
+			</article>
 		</MainLayout>
 	);
 }

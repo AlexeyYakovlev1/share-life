@@ -75,7 +75,7 @@ function AddPost(): JSX.Element {
 
 	return (
 		<MainLayout>
-			<div className={cn(classes.wrapper, {
+			<article className={cn(classes.wrapper, {
 				[classes.light]: light,
 				[classes.dark]: dark
 			})}>
@@ -170,7 +170,7 @@ function AddPost(): JSX.Element {
 						</form>
 					</div>
 				</div>
-			</div>
+			</article>
 		</MainLayout>
 	);
 }
