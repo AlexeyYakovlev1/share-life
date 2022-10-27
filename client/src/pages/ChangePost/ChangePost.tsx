@@ -19,6 +19,9 @@ import useTheme from "../../hooks/useTheme";
 function ChangePost(): JSX.Element {
 	const { light, dark } = useTheme();
 	const { id: postId } = useParams();
+	const { setText } = React.useContext(AlertContext);
+	const navigate = useNavigate();
+
 	const [post, setPost] = React.useState<IPost>({
 		id: -1,
 		owner_id: -1,
@@ -28,7 +31,6 @@ function ChangePost(): JSX.Element {
 		date: "",
 		person_id_likes: []
 	});
-	const { setText } = React.useContext(AlertContext);
 	const uploadRef = React.useRef<HTMLInputElement | null>(null);
 	const [selectedImages, setSelectedImages] = React.useState<Array<any>>([]);
 	const [photos, setPhotos] = React.useState<Array<IPostPhoto>>(post.photos);
@@ -36,10 +38,9 @@ function ChangePost(): JSX.Element {
 		description: post.description || "", location: post.location || "",
 		photos: photos.map(photo => photo.filename)
 	});
-	const navigate = useNavigate();
 	const [imagesUpload, setImagesUpload] = React.useState<boolean>(false);
-	const disabled = (changePost.description.length >= 2200) || (changePost.location.length < 3) || (changePost.location.length >= 20) || !photos.length;
 
+	const disabled = (changePost.description.length >= 2200) || (changePost.location.length < 3) || (changePost.location.length >= 20) || !photos.length;
 	useAccessUser(post, post.owner_id, setText, navigate);
 
 	React.useEffect(() => {
@@ -92,21 +93,23 @@ function ChangePost(): JSX.Element {
 	function submitHandler(event: any) {
 		event.preventDefault();
 
-		const formData = new FormData();
-		selectedImages.map((image) => formData.append("photos", image));
+		if (selectedImages.length) {
+			const formData = new FormData();
+			selectedImages.map((image) => formData.append("photos", image));
 
-		uploadPhotos(formData)
-			.then((data) => {
-				const { success, message, error, fileNames } = data;
+			uploadPhotos(formData)
+				.then((data) => {
+					const { success, message, error, fileNames } = data;
 
-				if (!success) {
-					setText(message || error);
-					return;
-				}
+					if (!success) {
+						setText(message || error);
+						return;
+					}
 
-				setChangePost({ ...changePost, photos: fileNames });
-				setImagesUpload(success && fileNames.length);
-			});
+					setChangePost({ ...changePost, photos: fileNames });
+					setImagesUpload(success && fileNames.length);
+				});
+		} else setImagesUpload(true);
 	}
 
 	function deletePhoto(filename: string) {
