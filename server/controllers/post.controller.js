@@ -277,7 +277,7 @@ class PostController {
 		const { id: userId } = req.user;
 		const { id: postId } = req.params;
 
-		const queryForFindPost = `SELECT id, person_id_likes FROM post WHERE id = $1`;
+		const queryForFindPost = `SELECT id, person_id_likes, owner_id FROM post WHERE id = $1`;
 		const findPost = db.query(queryForFindPost, [postId]);
 
 		new Promise((resolve) => resolve(findPost))
@@ -290,7 +290,17 @@ class PostController {
 				);
 				const io = req.app.get("socketio");
 
-				io.on("connection", (socket) => io.emit("likePost", likeAsBool));
+				io.on("connection", (socket) => {
+					io.emit("likePost", likeAsBool);
+				});
+
+				const payloadForNotificationLike = {
+					access: !likeAsBool,
+					fromId: userId,
+					toId: findPost.rows[0].owner_id
+				};
+
+				io.emit("notification-like", payloadForNotificationLike);
 
 				// если пользователь не ставил лайк (раньше), то вносим его в массив
 				if (!likeAsBool) {

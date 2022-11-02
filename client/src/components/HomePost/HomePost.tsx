@@ -23,7 +23,7 @@ import useLike from "../../hooks/useLike";
 
 function HomePost({ info }: { info: IPost }): JSX.Element {
 	const currentUser = useSelector((state: IState) => state.person.info);
-	const { setCount, count, sliderWrapperRef, widthSlider } = useSlider({ list: info.photos });
+	const { setCount, count, sliderWrapperRef, widthSlider, sliderOffsetWidth } = useSlider({ list: info.photos });
 	const { setText } = React.useContext(AlertContext);
 
 	const { light, dark } = useTheme();
@@ -144,9 +144,8 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 								className={classes.bodyListItem}
 								key={`${photo.filename}_${index}`}
 								style={{
-									width: `${widthSlider}px`,
-									height: "530px",
-									transform: `translate(-${count * widthSlider}px)`,
+									width: `${sliderOffsetWidth}px`,
+									transform: `translate(-${count * sliderOffsetWidth}px)`,
 									backgroundImage: `url(${photo.base64})`
 								}}
 							>

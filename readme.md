@@ -39,8 +39,6 @@ JWT_KEY=
 PROJECT_ROOT=
 ```
 
-Also you must create folder templates for photos user and post
-
 ```bash
 $ npm install
 ```

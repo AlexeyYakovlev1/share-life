@@ -32,7 +32,7 @@ function AddPost(): JSX.Element {
 	});
 	const [errors, setErrors] = React.useState<boolean>(false);
 
-	const { setCount, sliderWrapperRef, count, widthSlider } = useSlider({ list: photos });
+	const { setCount, sliderWrapperRef, count, widthSlider, sliderOffsetWidth } = useSlider({ list: photos });
 	const uploadRef = React.useRef<HTMLInputElement | null>(null);
 	const avatar = useAvatar(avatarRedux.base64);
 	const navigate = useNavigate();
@@ -110,11 +110,11 @@ function AddPost(): JSX.Element {
 						>
 							{photos.length ? photos.map(photo => (
 								<li
+									className={classes.sliderListItem}
 									key={photo.id}
 									style={{
-										width: `${widthSlider}px`,
-										height: "500px",
-										transform: `translate(-${count * widthSlider}px)`,
+										width: `${sliderOffsetWidth}px`,
+										transform: `translate(-${count * sliderOffsetWidth}px)`,
 										backgroundImage: `url(${photo.img})`
 									}}
 								></li>

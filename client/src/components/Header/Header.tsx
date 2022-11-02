@@ -16,7 +16,7 @@ import getAllPosts from "../../http/posts/getAllPosts.http";
 import { setPosts } from "../../redux/actions/posts.actions";
 import searchPostsByKeyWords from "../../http/posts/searchPosts.http";
 import useTheme from "../../hooks/useTheme";
-import NotificationCount from "../../context/notificationCount.context";
+import NotificationCount from "../../context/notification.context";
 
 interface IHeaderProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> { }
 
