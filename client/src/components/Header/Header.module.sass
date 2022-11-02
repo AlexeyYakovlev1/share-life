@@ -70,10 +70,13 @@
 	gap: 20px
 
 .item
-	&User img
+	&UserAvatar
 		border-radius: 50%
 		width: 30px
 		height: 30px
+		background-position: center
+		background-repeat: no-repeat
+		background-size: cover
 	&Like
 		& a
 			position: relative
@@ -90,3 +93,12 @@
 			display: flex
 			justify-content: center
 			user-select: none
+
+@media screen and (max-width: 620px)
+	.logoHeader
+		display: none
+	.container
+		grid-template-columns: 1fr auto
+		grid-template-areas: "search user"
+	.search
+		width: 100%

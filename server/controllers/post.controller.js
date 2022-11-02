@@ -176,7 +176,7 @@ class PostController {
 					newPosts.push({ ...post, photos: newPhotos });
 				};
 
-				return res.status(200).json({ success: true, posts: newPosts });
+				return res.status(200).json({ success: true, posts: newPosts, totalCount: posts.rows.length });
 			})
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
 	}

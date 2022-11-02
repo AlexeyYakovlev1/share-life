@@ -131,10 +131,10 @@ function Settings(): JSX.Element {
 					</div>
 				</div>
 				<div className={classes.user}>
-					<img
-						src={useAvatar(info.avatar.base64)}
-						alt={user.user_name}
-					/>
+					<div
+						className={classes.userAvatar}
+						style={{ backgroundImage: `url(${useAvatar(info.avatar.base64)})` }}
+					></div>
 					<div className={classes.userInfo}>
 						<span className={classes.userInfoName}>
 							<Link to={`/profile/${info.id}`}>{info.user_name}</Link>

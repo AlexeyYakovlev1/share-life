@@ -103,7 +103,10 @@ function Header({ className }: IHeaderProps): JSX.Element {
 								</li>
 								<li className={cn(classes.item, classes.itemUser)}>
 									<Link title="user" to={`/profile/${id}`}>
-										<img src={currentAvatarUser} title={`Avatar ${user_name}`} />
+										<div
+											style={{ backgroundImage: `url(${currentAvatarUser})` }}
+											className={classes.itemUserAvatar}
+										></div>
 									</Link>
 								</li>
 							</ul>

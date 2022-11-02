@@ -2,7 +2,7 @@
 
 .post
 	display: grid
-	grid-template-rows: 70px minmax(300px, 1fr)
+	grid-template-rows: 70px 1fr
 	border: 1px solid $grayDark
 	&.light
 		background-color: $white
@@ -76,42 +76,19 @@
 	width: 40px
 	height: 40px
 	border-radius: 50%
+	background-position: center
+	background-repeat: no-repeat
+	background-size: cover
 
 .body
 	display: grid
-	grid-template-rows: minmax(300px, 1fr) repeat(2, auto) 50px
-	&SwitchBtn
-		position: absolute
-		top: 50%
-		z-index: 9
-		display: flex
-		align-items: center
-		justify-content: center
-		padding: 2px !important
-		width: 5%
-		& svg path
-			fill: #fff !important
-		&Right
-			right: 3%
-			& svg
-				transform: rotate(180deg)
-		&Left
-			left: 3%
+	grid-template-rows: 1fr repeat(2, auto) 50px
 	&Photos
 		position: relative
 		user-select: none
 		overflow: hidden
-		height: 300px
-	&List
-		display: flex
-		height: 100%
-		align-items: center
-		&Item
-			height: 100%
-			transition: all .5s ease
-			background-size: contain
-			background-repeat: no-repeat
-			background-position: center
+		&ListItem img
+			width: 100% !important
 	&Description
 		display: grid
 		grid-template-rows: 1fr

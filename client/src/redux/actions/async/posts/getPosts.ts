@@ -1,3 +1,4 @@
+import React from "react";
 import getAllPosts from "../../../../http/posts/getAllPosts.http";
 import { IPost } from "../../../../models/post.models";
 import { setPosts } from "../../posts.actions";
@@ -12,26 +13,26 @@ function getPostsAsyncAction(
 	pagination: IPagination,
 	setPage: React.Dispatch<React.SetStateAction<number>>,
 	setFetching: React.Dispatch<React.SetStateAction<boolean>>,
+	setTotalCount: React.Dispatch<React.SetStateAction<number>>,
 	posts: Array<IPost>
 ) {
 	return (dispatch: React.Dispatch<any>) => {
-		getAllPosts(pagination)
+		getAllPosts(pagination, setFetching, setTotalCount)
 			.then((data) => {
-				const { success, message } = data;
+				const { success, message, posts: postsFromServer } = data;
 
 				if (!success) {
 					setText(message);
 					return;
 				}
 
-				const postsFromServer = data.posts.filter((p: IPost) => {
+				const newPosts = postsFromServer.filter((p: IPost) => {
 					return !posts.map(post => post.id).includes(+p.id);
 				});
 
-				dispatch(setPosts([...posts, ...postsFromServer]));
-				setPage((prevState) => prevState + 2);
-			})
-			.finally(() => setFetching(false));
+				dispatch(setPosts([...posts, ...newPosts]));
+				setPage((prevState) => prevState + 1);
+			});
 	};
 }
 

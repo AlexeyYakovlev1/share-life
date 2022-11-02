@@ -2,12 +2,10 @@ import { IComment, IPost } from "../../models/post.models";
 import classes from "./OpenPost.module.sass";
 import { ReactComponent as ThreeDotsIcon } from "../../assets/images/three_dots.svg";
 import { ReactComponent as LikeIcon } from "../../assets/images/heart.svg";
-import { ReactComponent as ArrowLeftIcon } from "../../assets/images/arrow-left.svg";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Comment from "./Comment";
 import cn from "classnames";
 import AddComment from "../AddComment/AddComment";
-import { useSlider } from "../../hooks/useSlider";
 import React from "react";
 import PostMenu from "../PostMenu/PostMenu";
 import { IPerson } from "../../models/person.models";
@@ -20,9 +18,11 @@ import { IState } from "../../models/redux.models";
 import { useSelector } from "react-redux";
 import getDatePost from "../../utils/getDatePost.util";
 import checkFollow from "../../http/follow/checkFollow.http";
-import Button from "../UI/Button/Button";
 import useTheme from "../../hooks/useTheme";
 import useLike from "../../hooks/useLike";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/scss";
+import "swiper/css";
 
 function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 	const currentUser = useSelector((state: IState) => state.person.info);
@@ -63,10 +63,7 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 	const queryPostId = searchParams.get("post_id");
 
 	const navigate = useNavigate();
-	const { setCount, sliderWrapperRef, count, widthSlider } = useSlider({ list: currentPost.photos });
-
 	const { setText } = React.useContext(AlertContext);
-
 	const { likeClick, likesNum, putedLike } = useLike(currentPost, setText, currentUser);
 
 	// comments
@@ -127,8 +124,6 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 		}
 	}, [ownerId]);
 
-
-
 	const createdAt = getDatePost(currentPost.date);
 
 	return (
@@ -139,24 +134,24 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 			})}
 			onClick={event => event.stopPropagation()}
 		>
-			<div className={classes.left} ref={sliderWrapperRef}>
-				{currentPost.photos.length > 1 &&
-					<React.Fragment>
-						<Button
-							className={cn(classes.leftBtn, classes.leftBtnLeft)}
-							onClick={() => setCount(count - 1)}
-						>
-							<ArrowLeftIcon />
-						</Button>
-						<Button
-							className={cn(classes.leftBtn, classes.leftBtnRight)}
-							onClick={() => setCount(count + 1)}
-						>
-							<ArrowLeftIcon />
-						</Button>
-					</React.Fragment>
-				}
-				<ul
+			<div className={classes.left}>
+				<Swiper
+					className={classes.bodyPhotosList}
+					spaceBetween={50}
+					slidesPerView={1}
+				>
+					{currentPost.photos.map((photo, index) => {
+						return (
+							<SwiperSlide
+								className={classes.bodyPhotosListItem}
+								key={`${photo.filename}_${index}`}
+							>
+								<img src={photo.base64} alt="photo" />
+							</SwiperSlide>
+						);
+					})}
+				</Swiper>
+				{/* <ul
 					className={classes.leftList}
 					style={{ width: `${widthSlider * currentPost.photos.length}px` }}
 				>
@@ -172,7 +167,7 @@ function OpenPost({ ownerId }: { ownerId: number }): JSX.Element {
 							}}
 						></li>
 					))}
-				</ul>
+				</ul> */}
 			</div>
 			<div className={classes.info}>
 				<header className={classes.infoHeader}>

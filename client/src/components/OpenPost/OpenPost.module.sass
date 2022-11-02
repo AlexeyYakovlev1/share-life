@@ -9,7 +9,7 @@
 	max-height: 65vh
 	display: grid
 	grid-template-columns: 1fr 350px
-	align-items: flex-start
+	align-items: center
 	&.light
 		background-color: $white
 		color: $black
@@ -39,31 +39,6 @@
 	width: 100%
 	max-height: 65vh
 	overflow: hidden
-	&Btn
-		position: absolute !important
-		top: 60%
-		z-index: 99
-		display: flex
-		align-items: center
-		justify-content: center
-		padding: 2px !important
-		width: 5% !important
-		& svg, path
-			fill: $white !important
-			stroke: $white !important
-		&Right
-			right: 3%
-			& svg
-				transform: rotate(180deg)
-		&Left
-			left: 3%
-	&List
-		display: flex
-		height: 65vh
-		&Item
-			transition: all .5s ease
-			background-size: contain
-			background-repeat: no-repeat
 
 .info
 	display: grid

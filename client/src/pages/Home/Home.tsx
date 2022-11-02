@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import MainLayout from "../../components/Layouts/MainLayout/MainLayout";
 import HomePostLoading from "../../components/Loading/HomePost/HomePostLoading";
 import AlertContext from "../../context/alert.context";
-import useMounted from "../../hooks/useIsMounted";
 import { IPost } from "../../models/post.models";
 import { IState } from "../../models/redux.models";
 import getPostsAsyncAction from "../../redux/actions/async/posts/getPosts";
@@ -16,19 +15,19 @@ function Home(): JSX.Element {
 	const { setText } = React.useContext(AlertContext);
 	const [currentPage, setCurrentPage] = React.useState<number>(0);
 	const [fetching, setFetching] = React.useState<boolean>(true);
-	const mounted = useMounted();
+	const [totalCount, setTotalCount] = React.useState<number>(0);
 
 	React.useEffect(() => {
-		if (fetching && mounted) {
-			dispatch(getPostsAsyncAction(
-				setText,
-				{ limit: 2, page: currentPage },
-				setCurrentPage,
-				setFetching,
-				posts
-			));
-		}
-	}, [fetching, mounted]);
+		if (!fetching) return;
+		dispatch(getPostsAsyncAction(
+			setText,
+			{ limit: 2, page: currentPage },
+			setCurrentPage,
+			setFetching,
+			setTotalCount,
+			posts
+		));
+	}, [fetching]);
 
 	React.useEffect(() => {
 		document.addEventListener("scroll", scrollPosts);
@@ -36,14 +35,14 @@ function Home(): JSX.Element {
 		return function () {
 			document.removeEventListener("scroll", scrollPosts);
 		};
-	}, []);
+	}, [totalCount]);
 
 	function scrollPosts(event: any) {
 		const { scrollHeight, scrollTop } = event.target.documentElement;
 		const height = window.innerHeight;
 
 		// долистали до конца страницы
-		if (scrollHeight - (scrollTop + height) < 100) {
+		if (scrollHeight - (scrollTop + height) < 100 && posts.length <= totalCount) {
 			setFetching(true);
 		}
 	}

@@ -3,8 +3,6 @@ import Button from "../../components/UI/Button/Button";
 import Input from "../../components/UI/Input/Input";
 import classes from "./AddPost.module.sass";
 import cn from "classnames";
-import { ReactComponent as ArrowLeftIcon } from "../../assets/images/arrow-left.svg";
-import { useSlider } from "../../hooks/useSlider";
 import React from "react";
 import { IState } from "../../models/redux.models";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +15,9 @@ import addPostAsyncAction from "../../redux/actions/async/posts/addPost";
 import { useNavigate } from "react-router-dom";
 import Textarea from "../../components/UI/Textarea/Textarea";
 import useTheme from "../../hooks/useTheme";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/scss";
+import "swiper/css";
 
 function AddPost(): JSX.Element {
 	const { light, dark } = useTheme();
@@ -32,7 +33,6 @@ function AddPost(): JSX.Element {
 	});
 	const [errors, setErrors] = React.useState<boolean>(false);
 
-	const { setCount, sliderWrapperRef, count, widthSlider, sliderOffsetWidth } = useSlider({ list: photos });
 	const uploadRef = React.useRef<HTMLInputElement | null>(null);
 	const avatar = useAvatar(avatarRedux.base64);
 	const navigate = useNavigate();
@@ -84,42 +84,23 @@ function AddPost(): JSX.Element {
 					{errors && <span className={classes.errors}>Submit failed. Check your data</span>}
 				</header>
 				<div className={classes.content}>
-					<div className={classes.slider} ref={sliderWrapperRef}>
-						{photos.length > 1 ?
-							<React.Fragment>
-								<Button
-									className={cn(classes.sliderBtn, classes.sliderBtnLeft)}
-									onClick={() => setCount(count - 1)}
-								>
-									<ArrowLeftIcon />
-								</Button>
-								<Button
-									className={cn(classes.sliderBtn, classes.sliderBtnRight)}
-									onClick={() => setCount(count + 1)}
-								>
-									<ArrowLeftIcon />
-								</Button>
-							</React.Fragment>
-							: false
-						}
-						<ul
-							className={cn(classes.sliderList, {
-								[classes.sliderListEmpty]: !photos.length
-							})}
-							style={{ width: photos.length ? widthSlider * photos.length + "px" : "100%" }}
+					<div className={classes.slider}>
+						<Swiper
+							className={classes.bodyPhotosList}
+							spaceBetween={50}
+							slidesPerView={1}
 						>
-							{photos.length ? photos.map(photo => (
-								<li
-									className={classes.sliderListItem}
-									key={photo.id}
-									style={{
-										width: `${sliderOffsetWidth}px`,
-										transform: `translate(-${count * sliderOffsetWidth}px)`,
-										backgroundImage: `url(${photo.img})`
-									}}
-								></li>
-							)) : <span className={classes.sliderNoPhotos}>Add photos in this post</span>}
-						</ul>
+							{photos.length ? photos.map(photo => {
+								return (
+									<SwiperSlide
+										className={classes.bodyPhotosListItem}
+										key={photo.id}
+									>
+										<img src={photo.img} alt="photo" />
+									</SwiperSlide>
+								);
+							}) : <span className={classes.sliderNoPhotos}>Add photos in this post</span>}
+						</Swiper>
 					</div>
 					<div className={classes.right}>
 						<div className={classes.rightHeader}>
@@ -141,11 +122,10 @@ function AddPost(): JSX.Element {
 								</Button>
 							</div>
 							<div className={classes.rightHeaderUser}>
-								<img
+								<div
 									className={classes.rightAvatar}
-									src={avatar}
-									alt={user_name}
-								/>
+									style={{ backgroundImage: `url(${avatar})` }}
+								></div>
 								<span className={classes.rightUserName}>{user_name}</span>
 							</div>
 						</div>

@@ -2,13 +2,11 @@ import { IPost } from "../../models/post.models";
 import classes from "./HomePost.module.sass";
 import { ReactComponent as ThreeDotsIcon } from "../../assets/images/three_dots.svg";
 import { ReactComponent as LikeIcon } from "../../assets/images/heart.svg";
-import { ReactComponent as ArrowLeftIcon } from "../../assets/images/arrow-left.svg";
 import AddComment from "../AddComment/AddComment";
 import { Link } from "react-router-dom";
 import cn from "classnames";
 import React from "react";
 import Button from "../UI/Button/Button";
-import { useSlider } from "../../hooks/useSlider";
 import PostMenu from "../PostMenu/PostMenu";
 import { IPerson } from "../../models/person.models";
 import getOneUser from "../../http/user/getOneUser.http";
@@ -20,10 +18,12 @@ import { useSelector } from "react-redux";
 import { IState } from "../../models/redux.models";
 import useTheme from "../../hooks/useTheme";
 import useLike from "../../hooks/useLike";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/scss";
+import "swiper/css";
 
 function HomePost({ info }: { info: IPost }): JSX.Element {
 	const currentUser = useSelector((state: IState) => state.person.info);
-	const { setCount, count, sliderWrapperRef, widthSlider, sliderOffsetWidth } = useSlider({ list: info.photos });
 	const { setText } = React.useContext(AlertContext);
 
 	const { light, dark } = useTheme();
@@ -89,11 +89,10 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 		})}>
 			<header className={classes.header}>
 				<div className={classes.headerLeft}>
-					<img
+					<div
+						style={{ backgroundImage: `url(${useAvatar(userPost.avatar.base64)})` }}
 						className={classes.avatar}
-						src={useAvatar(userPost.avatar.base64)}
-						alt={userPost.user_name}
-					/>
+					></div>
 					<div className={classes.headerInfo}>
 						<span className={classes.headerName}>
 							<Link to={`/profile/${userPost.id}`}>{userPost.user_name}</Link>
@@ -118,40 +117,23 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 				</div>}
 			</header>
 			<div className={classes.body}>
-				<div className={classes.bodyPhotos} ref={sliderWrapperRef}>
-					{info.photos.length > 1 &&
-						<React.Fragment>
-							<Button
-								className={cn(classes.bodySwitchBtn, classes.bodySwitchBtnLeft)}
-								onClick={() => setCount(count - 1)}
-							>
-								<ArrowLeftIcon />
-							</Button>
-							<Button
-								className={cn(classes.bodySwitchBtn, classes.bodySwitchBtnRight)}
-								onClick={() => setCount(count + 1)}
-							>
-								<ArrowLeftIcon />
-							</Button>
-						</React.Fragment>
-					}
-					<ul
-						className={classes.bodyList}
-						style={{ width: `${widthSlider * info.photos.length}px` }}
+				<div className={classes.bodyPhotos}>
+					<Swiper
+						className={classes.bodyPhotosList}
+						spaceBetween={50}
+						slidesPerView={1}
 					>
-						{info.photos.map((photo, index) => (
-							<li
-								className={classes.bodyListItem}
-								key={`${photo.filename}_${index}`}
-								style={{
-									width: `${sliderOffsetWidth}px`,
-									transform: `translate(-${count * sliderOffsetWidth}px)`,
-									backgroundImage: `url(${photo.base64})`
-								}}
-							>
-							</li>
-						))}
-					</ul>
+						{info.photos.map((photo, index) => {
+							return (
+								<SwiperSlide
+									className={classes.bodyPhotosListItem}
+									key={`${photo.filename}_${index}`}
+								>
+									<img src={photo.base64} alt="photo" />
+								</SwiperSlide>
+							);
+						})}
+					</Swiper>
 				</div>
 				<div className={classes.bodyDescription}>
 					<div className={classes.bodyDescriptionBtns}>

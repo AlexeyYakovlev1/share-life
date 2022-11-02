@@ -2,7 +2,7 @@
 
 .wrapper
 	display: grid
-	grid-template-rows: 160px 1fr
+	grid-template-rows: auto 1fr
 	gap: 50px
 	position: relative
 	&.light
@@ -22,7 +22,7 @@
 
 .top
 	display: grid
-	grid-template-columns: 152px 1fr
+	grid-template-columns: minmax(60px, 152px) 1fr
 	align-items: center
 	gap: 65px
 
@@ -59,6 +59,7 @@
 		text-overflow: ellipsis
 		line-height: 22px
 		font-size: 15px
+		max-width: 360px
 
 .name
 	font-size: 32px
@@ -131,3 +132,36 @@
 	left: 0
 	background-color: rgba(0,0,0,.4)
 	z-index: 99
+
+@media screen and (max-width: 651px)
+	.name
+		font-size: 26px
+	.content
+		&List
+			grid-template-columns: repeat(auto-fill, 200px)
+			gap: 10px
+		&Item
+			width: 200px
+			height: 200px
+	.info
+		&Top
+			flex-direction: column
+			align-items: baseline
+			gap: 10px
+
+@media screen and (max-width: 440px)
+	.top
+		grid-template-columns: 60px 1fr
+	.avatar
+		width: 100px
+		height: 100px
+		justify-content: space-between
+	.info
+		margin-left: auto
+	.content
+		&List
+			grid-template-columns: repeat(auto-fill, 114px)
+			gap: 10px
+		&Item
+			width: 114px
+			height: 114px
