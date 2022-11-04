@@ -54,17 +54,17 @@ function Admin() {
 							<li className={cn(classes.navbarListItem, {
 								[classes.active]: pageUsers
 							})}>
-								<Link to="/admin/?page=users">Users</Link>
+								<Link to="/admin/?page=users">Пользователи</Link>
 							</li>
 							<li className={cn(classes.navbarListItem, {
 								[classes.active]: pagePosts
 							})}>
-								<Link to="/admin/?page=posts">Posts</Link>
+								<Link to="/admin/?page=posts">Посты</Link>
 							</li>
 							<li className={cn(classes.navbarListItem, {
 								[classes.active]: pageComments
 							})}>
-								<Link to="/admin/?page=comments">Comments</Link>
+								<Link to="/admin/?page=comments">Комментарии</Link>
 							</li>
 						</ul>
 					</nav>

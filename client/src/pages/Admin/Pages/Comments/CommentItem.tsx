@@ -30,7 +30,7 @@ function CommentItem({ setActionInfo, comment, setClose }: ICommentItem) {
 			<td className={classes.contentItem}>{comment.owner_id}</td>
 			<td className={classes.contentItem}>{comment.post_id}</td>
 			<td className={classes.contentItem}>
-				<Button onClick={removeClick}>Delete</Button>
+				<Button onClick={removeClick}>Удалить</Button>
 			</td>
 		</React.Fragment>
 	);

@@ -34,7 +34,7 @@ function Register() {
 
 				if (!success) {
 					if (message) {
-						setText(`Server error: ${message}`);
+						setText(`Ошибка сервера: ${message}`);
 						return;
 					}
 
@@ -55,40 +55,40 @@ function Register() {
 				[classes.dark]: dark
 			})}>
 				<Logo className={classes.title} />
-				{errors && <span className={classes.wrong}>Submit failed. Check your data</span>}
+				{errors && <span className={classes.wrong}>Ошибка отправки. Проверьте корректность данных</span>}
 				<form onSubmit={regisSubmit} className={classes.form}>
 					<Input
 						type="text"
 						value={user.userName}
-						placeholder="User Name"
+						placeholder="Имя пользователя"
 						onChange={event => setUser({ ...user, userName: event.target.value })}
 					/>
 					<Input
 						type="text"
 						value={user.fullName}
-						placeholder="Full Name"
+						placeholder="Полное имя"
 						onChange={event => setUser({ ...user, fullName: event.target.value })}
 					/>
 					<Input
 						type="email"
 						value={user.email}
-						placeholder="Email"
+						placeholder="Электронная почта"
 						onChange={event => setUser({ ...user, email: event.target.value })}
 					/>
 					<Input
 						type="password"
 						value={user.password}
-						placeholder="Password"
+						placeholder="Пароль"
 						onChange={event => setUser({ ...user, password: event.target.value })}
 					/>
 					<Button
 						className={classes.submit}
 					>
-						Sign up
+						Зарегистрироваться
 					</Button>
 				</form>
 				<p className={classes.text}>
-					Have an account? <Link to="/auth/login">Log in</Link>
+					Есть аккаунт? <Link to="/auth/login">Войти</Link>
 				</p>
 			</article>
 		</React.Fragment>

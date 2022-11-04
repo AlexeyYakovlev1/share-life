@@ -47,31 +47,27 @@ function PageComments() {
 		setClose(true);
 	}
 
-	function changeCommentClick() {
-		console.log("change comment");
-	}
-
 	return (
 		<React.Fragment>
 			{!close && <Modal setClose={setClose}>
 				<div className={classes.modal}>
 					<header className={classes.modalHeader}>
-						<h3 className={classes.modalTitle}>You sure?</h3>
+						<h3 className={classes.modalTitle}>Вы уверены?</h3>
 						<p className={classes.modalDescription}>
-							Comment by id {actionInfo.commentId} will be removed full!
+							Комментарий по id {actionInfo.commentId} будет удален полностью!
 						</p>
 					</header>
 					<div className={classes.modalActions}>
 						<Button
-							onClick={actionInfo.remove ? removeCommentClick : changeCommentClick}
+							onClick={removeCommentClick}
 						>
-							Yes
+							Да
 						</Button>
 						<Button
 							className={classes.modalButtonActive}
 							onClick={() => setClose(true)}
 						>
-							No
+							Нет
 						</Button>
 					</div>
 				</div>
@@ -79,7 +75,7 @@ function PageComments() {
 			<header className={classes.contentHeader}>
 				<Input
 					type="text"
-					placeholder="Write id comment"
+					placeholder="Напишите id комментария"
 					className={classes.contentSearch}
 					onKeyDown={searchCommentsHandler}
 				/>
@@ -103,7 +99,7 @@ function PageComments() {
 							</tr>
 						))}
 					</thead>
-				</table> : <h3 className={classes.contentEmptyTitle}>Nothing found</h3>}
+				</table> : <h3 className={classes.contentEmptyTitle}>Ничего не найдено</h3>}
 			</div>
 		</React.Fragment>
 	);

@@ -7,7 +7,11 @@ import getAllCommentsByPost from "../../http/comments/getAllCommentsByPost.http"
 import AlertContext from "../../context/alert.context";
 import { IPost } from "../../models/post.models";
 
-function Post({ photos, id, owner_id, person_id_likes }: IPost): JSX.Element {
+interface IPostComponent extends IPost {
+	photo: string;
+}
+
+function Post({ photo, id, owner_id, person_id_likes }: IPostComponent): JSX.Element {
 	const [hover, setHover] = React.useState<boolean>(false);
 	const [commentsLength, setCommentsLength] = React.useState<number>(0);
 
@@ -28,18 +32,23 @@ function Post({ photos, id, owner_id, person_id_likes }: IPost): JSX.Element {
 			});
 	}, [id]);
 
+	const $postInfo = <div className={classes.contentItemInfo}>
+		<span><LikeIcon /> {person_id_likes.length}</span>
+		<span><CommentsIcon /> {commentsLength}</span>
+	</div>;
+
 	return (
 		<li
 			onMouseEnter={() => setHover(!hover)}
 			onMouseLeave={() => setHover(!hover)}
-			style={{ backgroundImage: `url(${photos[0].base64})` }}
+			style={{ backgroundImage: `url(${photo})` }}
 			className={classes.contentItem}
 		>
-			{hover && <Link to={`/profile/${owner_id}?watch=true&post_id=${id}`}>
-				<div className={classes.contentItemInfo}>
-					<span><LikeIcon /> {person_id_likes.length}</span>
-					<span><CommentsIcon /> {commentsLength}</span>
-				</div>
+			{hover && <Link
+				to={`/post/${id}`}
+				className={classes.contentItemLink}
+			>
+				{$postInfo}
 			</Link>}
 		</li>
 	);

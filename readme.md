@@ -40,16 +40,14 @@ PROJECT_ROOT=
 ```
 
 ```bash
-$ npm install
-```
-
-```bash
 $ cd ./server
+$ npm install
 $ npm run dev
 ```
 
 ```bash
 $ cd ./client
+$ npm install
 $ npm start
 ```
 
@@ -96,7 +94,7 @@ I hope you don't forget to rate this project. Good luck!
 ![view application](https://sun9-4.userapi.com/impg/z1daLE_x6CDWBkI0gK-ezsnnKNII8274I0VOyA/mGPhpY6Dfjc.jpg?size=1920x1080&quality=96&sign=6811aa9be36b50dc1a2f00bd6b3b5336&type=album)
 ![view application](https://sun9-84.userapi.com/impg/AHOJItgCkze8hdvtXa2HdlaDBQHORz4Sb1Bwlg/ShvcQnaZgfA.jpg?size=1920x1080&quality=96&sign=877c2d01198bd1109c89c24a931b6774&type=album)
 ![view application](https://sun9-70.userapi.com/impg/ROPOLWhW2XP76VefqvLG1vq4pAg56NZ6YJ1Glw/zwAU88hdlYg.jpg?size=1920x1080&quality=96&sign=0770936f8f3bb1b5b51283d90d3b7515&type=album)
-![view application](https://sun9-56.userapi.com/impg/Jkxvjcw9Fe9GCFNF6kCjQHygUc_wNOywsTRNrw/RDDveJi4b_A.jpg?size=1920x1080&quality=96&sign=c6bd05419dfbdd766470808ebd8ebfa7&type=album)
+![view application](https://sun9-33.userapi.com/impg/kCnaFtOg4sZuQbZoV4XaO39tXijAYkB8I-Lq4A/PSruZSRPcfg.jpg?size=1920x1080&quality=96&sign=393e1a90fe6a6af90b38cb16a420eeb3&type=album)
 ![view application](https://sun9-32.userapi.com/impg/YXPBzAlY_ZVCiygJNObzx-Gkew0twtQWqTPGmQ/3ElqhfSixn0.jpg?size=1920x1080&quality=96&sign=89313652f16c5f03f7db4a769534e3a6&type=album)
 ![view application](https://sun9-82.userapi.com/impg/ugVZ2I2ejCRpaxjpiu6-0S5dmb1uuuDeXgK1wA/snvVLD8h1Vk.jpg?size=1920x1080&quality=96&sign=2a1fde34596413160f7ba214eddccec5&type=album)
 ![view application](https://sun7-14.userapi.com/impg/s_9kIm4ATNB2YS6bFJUyNIwLIEwt9Hc1qy2poQ/6cRjCBThU6U.jpg?size=1920x1080&quality=96&sign=a9b593aaa2eae9b11285a408b1b08fb8&type=album)

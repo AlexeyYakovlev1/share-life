@@ -38,7 +38,7 @@ function Login() {
 
 				if (!success) {
 					if (message) {
-						setText(`Server error: ${message}`);
+						setText(`Ошибка сервера: ${message}`);
 						return;
 					}
 
@@ -61,24 +61,24 @@ function Login() {
 				[classes.dark]: dark
 			})}>
 				<Logo className={classes.title} />
-				{errors && <span className={classes.wrong}>Submit failed. Check your data</span>}
+				{errors && <span className={classes.wrong}>Ошибка отправки. Проверьте корректность данных</span>}
 				<form onSubmit={logSubmit} className={classes.form}>
 					<Input
 						type="email"
 						value={user.email}
-						placeholder="Email"
+						placeholder="Электронная почта"
 						onChange={event => setUser({ ...user, email: event.target.value })}
 					/>
 					<Input
 						type="password"
 						value={user.password}
-						placeholder="Password"
+						placeholder="Пароль"
 						onChange={event => setUser({ ...user, password: event.target.value })}
 					/>
-					<Button className={classes.submit}>Log in</Button>
+					<Button className={classes.submit}>Войти</Button>
 				</form>
 				<p className={classes.text}>
-					Dont have an account? <Link to="/auth/register">Sign up</Link>
+					Нет аккаунта? <Link to="/auth/register">Зерегистрироваться</Link>
 				</p>
 			</article>
 		</React.Fragment>

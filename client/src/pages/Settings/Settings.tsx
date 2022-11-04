@@ -117,16 +117,16 @@ function Settings(): JSX.Element {
 				[classes.dark]: dark
 			})}>
 				<div className={classes.theme}>
-					<h2 className={classes.themeTitle}>Select theme</h2>
+					<h2 className={classes.themeTitle}>Тема</h2>
 					<div className={classes.themeSelect}>
 						<Button
 							onClick={() => selectTheme("LIGHT")}
 							className={theme === "LIGHT" ? classes.themeSelectActive : undefined}
 						>
-							Light
+							Светлая
 						</Button>
 						<Button onClick={() => selectTheme("DARK")}>
-							Dark
+							Темная
 						</Button>
 					</div>
 				</div>
@@ -150,13 +150,13 @@ function Settings(): JSX.Element {
 							className={classes.userInfoChangeAvatarBtn}
 							onClick={() => avatarRef.current?.click()}
 						>
-							Change Profile Photo
+							Выбрать другое фото
 						</Button>
 					</div>
 				</div>
 				<form onSubmit={submitUpdate} className={classes.form}>
 					<div className={classes.formInputBlock}>
-						<Label htmlFor="fullName">Full Name</Label>
+						<Label htmlFor="fullName">Полное имя</Label>
 						<Input
 							onChange={event => setUser({ ...user, full_name: event.target.value })}
 							id="fullName"
@@ -165,7 +165,7 @@ function Settings(): JSX.Element {
 						/>
 					</div>
 					<div className={classes.formInputBlock}>
-						<Label htmlFor="userName">User Name</Label>
+						<Label htmlFor="userName">Имя пользователя</Label>
 						<Input
 							onChange={event => setUser({ ...user, user_name: event.target.value })}
 							id="userName"
@@ -174,7 +174,7 @@ function Settings(): JSX.Element {
 						/>
 					</div>
 					<div className={classes.formInputBlock}>
-						<Label htmlFor="description">Description</Label>
+						<Label htmlFor="description">Описание профиля</Label>
 						<Textarea
 							onChange={event => setUser({ ...user, description: event.target.value })}
 							id="description"
@@ -182,7 +182,7 @@ function Settings(): JSX.Element {
 						/>
 					</div>
 					<div className={classes.formInputBlock}>
-						<Label htmlFor="email">Email</Label>
+						<Label htmlFor="email">Электронная почта</Label>
 						<Input
 							onChange={event => setUser({ ...user, email: event.target.value })}
 							id="email"
@@ -191,7 +191,7 @@ function Settings(): JSX.Element {
 						/>
 					</div>
 					<div className={classes.formInputBlock}>
-						<Label htmlFor="oldPassword">Old password</Label>
+						<Label htmlFor="oldPassword">Старый пароль</Label>
 						<Input
 							value={user.oldPassword || ""}
 							onChange={event => setUser({ ...user, oldPassword: event.target.value })}
@@ -200,7 +200,7 @@ function Settings(): JSX.Element {
 						/>
 					</div>
 					<div className={classes.formInputBlock}>
-						<Label htmlFor="newPassword">New password</Label>
+						<Label htmlFor="newPassword">Новый пароль</Label>
 						<Input
 							value={user.newPassword || ""}
 							onChange={event => setUser({ ...user, newPassword: event.target.value })}
@@ -209,12 +209,12 @@ function Settings(): JSX.Element {
 						/>
 					</div>
 					<div className={classes.downActions}>
-						<Button className={classes.formSubmit}>Submit</Button>
+						<Button className={classes.formSubmit}>Отправить</Button>
 						<Button
 							onClick={logout}
 							className={classes.logout}
 						>
-							Logout
+							Выйти
 						</Button>
 					</div>
 				</form>

@@ -53,7 +53,7 @@ function PageUsers() {
 			<header className={classes.contentHeader}>
 				<Input
 					type="text"
-					placeholder="Write id user"
+					placeholder="Напишите id пользователя"
 					className={classes.contentSearch}
 					onKeyDown={searchUsersHandler}
 				/>
@@ -77,7 +77,7 @@ function PageUsers() {
 							</tr>
 						))}
 					</thead>
-				</table> : <h3 className={classes.contentEmptyTitle}>Nothing found</h3>}
+				</table> : <h3 className={classes.contentEmptyTitle}>Ничего не найдено</h3>}
 			</div>
 		</React.Fragment>
 	);

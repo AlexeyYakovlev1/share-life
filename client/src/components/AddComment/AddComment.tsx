@@ -64,11 +64,11 @@ function AddComment({ className, postId, setComments, comments, ...props }: IAdd
 			{...props}
 		>
 			<Input
-				placeholder="Add a comment..."
+				placeholder="Добавить комментарий..."
 				value={message.text}
 				onChange={(event) => setMessage({ ...message, text: event.target.value })}
 			/>
-			<Button disabled={disabled}>Post</Button>
+			<Button disabled={disabled}>Готово</Button>
 		</form>
 	);
 }

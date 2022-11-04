@@ -15,7 +15,7 @@ function Alert(): JSX.Element {
 			[classes.dark]: dark
 		})}>
 			<span className={classes.text}>{text}</span>
-			<Button onClick={() => setText("")}>close</Button>
+			<Button onClick={() => setText("")}>закрыть</Button>
 		</div >
 	);
 }

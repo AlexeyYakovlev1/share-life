@@ -125,7 +125,7 @@ function ChangePost(): JSX.Element {
 			})}>
 				<div className={classes.content}>
 					<div className={cn(classes.contentChange, classes.photos)}>
-						<h2 className={classes.contentChangeTitle}>Photos</h2>
+						<h2 className={classes.contentChangeTitle}>Фотографии</h2>
 						<ul className={classes.photosList}>
 							{photos.length ? photos.map((photo: IPostPhoto, index: number) => (
 								<li
@@ -137,16 +137,16 @@ function ChangePost(): JSX.Element {
 										onClick={() => deletePhoto(photo.filename)}
 										className={classes.photosItemDelete}
 									>
-										Delete
+										Удалить
 									</Button>
 								</li>
-							)) : <span className={classes.photosEmpty}>Need at least one photo</span>}
+							)) : <span className={classes.photosEmpty}>Нужно хотя-бы одно фото</span>}
 						</ul>
 						<Button
 							onClick={() => uploadRef.current?.click()}
 							className={classes.photosAdd}
 						>
-							Upload other images
+							Загрузить другие фотографии
 						</Button>
 						<input
 							onChange={(event) => uploadImages(event, setSelectedImages, setText)}
@@ -160,7 +160,7 @@ function ChangePost(): JSX.Element {
 						/>
 					</div>
 					<div className={cn(classes.contentChange, classes.description)}>
-						<h2 className={classes.contentChangeTitle}>Caption</h2>
+						<h2 className={classes.contentChangeTitle}>Описание</h2>
 						<Textarea
 							value={changePost.description}
 							className={classes.captionInput}
@@ -168,7 +168,7 @@ function ChangePost(): JSX.Element {
 						/>
 					</div>
 					<div className={cn(classes.contentChange, classes.location)}>
-						<h2 className={classes.contentChangeTitle}>Location</h2>
+						<h2 className={classes.contentChangeTitle}>Место</h2>
 						<Input
 							type="text"
 							className={classes.locationInput}
@@ -183,7 +183,7 @@ function ChangePost(): JSX.Element {
 					className={classes.submit}
 					disabled={disabled}
 				>
-					Done
+					Готово
 				</Button>
 			</article>
 		</MainLayout>

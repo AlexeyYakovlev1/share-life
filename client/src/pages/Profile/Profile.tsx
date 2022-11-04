@@ -1,12 +1,10 @@
-import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import MainLayout from "../../components/Layouts/MainLayout/MainLayout";
 import Button from "../../components/UI/Button/Button";
 import { IPost } from "../../models/post.models";
 import classes from "./Profile.module.sass";
 import React from "react";
-import { ReactComponent as ArrowLeftIcon } from "../../assets/images/arrow-left.svg";
 import cn from "classnames";
-import { useSlider } from "../../hooks/useSlider";
 import AlertContext from "../../context/alert.context";
 import { IPerson } from "../../models/person.models";
 import getOneUser from "../../http/user/getOneUser.http";
@@ -16,12 +14,10 @@ import { useSelector } from "react-redux";
 import { useFollow } from "../../hooks/useFollow";
 import useTheme from "../../hooks/useTheme";
 import { Suspense } from "react";
-import OpenPostLoading from "../../components/Loading/OpenPost/OpenPostLoading";
 import ProfilePostLoading from "../../components/Loading/ProfilePost/ProfilePostLoading";
 import getPostsByUser from "../../http/posts/getPostsByUser.http";
 
 function Profile(): JSX.Element {
-	const OpenPost = React.lazy(() => import("../../components/OpenPost/OpenPost"));
 	const Post = React.lazy(() => import("./Post"));
 
 	const { light, dark } = useTheme();
@@ -42,19 +38,12 @@ function Profile(): JSX.Element {
 	});
 
 	const { id: currentIdUser } = useSelector((state: IState) => state.person.info);
-	// const posts = useSelector((state: IState) => state.posts);
-	// const userPosts = posts.filter((post: IPost) => +post.owner_id === +pageUser.id);
 	const [userPosts, setUserPosts] = React.useState<Array<IPost>>([]);
 
 	const [currentUser, setCurrentUser] = React.useState<boolean>(false);
 	const [followUser, setFollowUser] = React.useState<boolean>(pageUser.followers.includes(currentIdUser));
 
 	const pageAvatarUser = useAvatar(pageUser.avatar.base64);
-	const [searchParams, setSearchParams] = useSearchParams();
-	const queryWatch = searchParams.get("watch") === "true";
-	const queryPostOpen = searchParams.get("watch") === "true";
-	const queryPostId = searchParams.get("post_id");
-	const { setCount, count } = useSlider({ list: userPosts });
 	const { id: pageIdUser } = useParams();
 	const { setText } = React.useContext(AlertContext);
 	const navigate = useNavigate();
@@ -92,52 +81,12 @@ function Profile(): JSX.Element {
 		}
 	}, [pageIdUser, currentIdUser, followUser]);
 
-	React.useEffect(() => {
-		if (userPosts[count] && queryPostOpen) {
-			setSearchParams({ watch: `${queryPostOpen}`, post_id: `${userPosts[count].id}` });
-		}
-	}, [count]);
-
-	React.useEffect(() => {
-		if (queryPostId) {
-			setCount(userPosts.findIndex(item => item.id === +queryPostId));
-		}
-	}, [queryPostId]);
-
-	function closePost() {
-		const params = new URLSearchParams({ watch: `${!queryWatch}` });
-		navigate({ pathname: location.pathname, search: params.toString() });
-	}
-
 	return (
 		<MainLayout>
 			<article className={cn(classes.wrapper, {
 				[classes.light]: light,
 				[classes.dark]: dark
 			})}>
-				{queryPostOpen &&
-					<React.Fragment>
-						{userPosts.length > 1 && <div className={classes.switchPost}>
-							<button
-								className={cn(classes.switchBtn, classes.switchLeft)}
-								onClick={() => setCount(count - 1)}
-							>
-								<ArrowLeftIcon />
-							</button>
-							<button
-								className={cn(classes.switchBtn, classes.switchRight)}
-								onClick={() => setCount(count + 1)}
-							>
-								<ArrowLeftIcon />
-							</button>
-						</div>}
-						<div className={classes.modalWrapper} onClick={closePost}>
-							<Suspense fallback={<OpenPostLoading />}>
-								<OpenPost ownerId={pageUser.id} />
-							</Suspense>
-						</div>
-					</React.Fragment>
-				}
 				<div className={classes.top}>
 					<div
 						className={classes.avatar}
@@ -152,11 +101,11 @@ function Profile(): JSX.Element {
 									onClick={followClick}
 									className={classes.infoTopButton}
 								>
-									{followUser ? "Unfollow" : "Follow"}
+									{followUser ? "Отписаться" : "Подписаться"}
 								</Button>
 								:
 								<Button className={classes.infoTopButton}>
-									<Link to="/settings">Settings</Link>
+									<Link to="/settings">Настройки</Link>
 								</Button>
 							}
 						</div>
@@ -164,20 +113,20 @@ function Profile(): JSX.Element {
 							<ul className={classes.infoNumsList}>
 								<li className={classes.infoNumsItem}>
 									<span>
-										<Link to="/"><strong>{userPosts.length}</strong> post</Link>
+										<Link to="/"><strong>{userPosts.length}</strong> постов</Link>
 									</span>
 								</li>
 								<li className={classes.infoNumsItem}>
 									<span>
 										<Link to={`/interaction/${pageUser.id}?followers=y`}>
-											<strong>{pageUser.followers.length}</strong> followers
+											<strong>{pageUser.followers.length}</strong> подписчиков
 										</Link>
 									</span>
 								</li>
 								<li className={classes.infoNumsItem}>
 									<span>
 										<Link to={`/interaction/${pageUser.id}?following=y`}>
-											<strong>{pageUser.following.length}</strong> following
+											<strong>{pageUser.following.length}</strong> подписок
 										</Link>
 									</span>
 								</li>
@@ -195,21 +144,23 @@ function Profile(): JSX.Element {
 						userPosts.length ?
 							<ul className={classes.contentList}>
 								{userPosts.map((post: IPost) => {
+									const payload = {
+										...post, photo: post.photos[0].base64
+									};
+
 									return (
 										<Suspense
 											key={post.id}
 											fallback={<ProfilePostLoading />}
 										>
-											<Post
-												{...post}
-											/>
+											<Post {...payload} />
 										</Suspense>
 
 									);
 								})}
 							</ul> :
 							<div className={classes.contentNoPosts}>
-								<p>This user hasn`t uploaded any posts yet</p>
+								<p>Здесь ничего нет</p>
 							</div>
 					}
 				</div>

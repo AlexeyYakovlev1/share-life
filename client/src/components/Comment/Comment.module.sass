@@ -1,0 +1,46 @@
+@import "../../styles/_vars"
+
+.comment
+	display: grid
+	grid-template-columns: 40px 1fr
+	gap: 15px
+	align-items: flex-start
+	justify-content: space-between
+	&.light
+		& .commentName, .commentText:not(a), .commentRemove
+		& .commentRemove svg, path
+			fill: $black !important
+			stroke: $black !important
+	&.dark
+		& .commentName, .commentText:not(a), .commentRemove
+			color: $white
+	&Avatar
+		border-radius: 50%
+		width: 40px
+		height: 40px
+		background-position: center
+		background-repeat: no-repeat
+		background-size: cover
+	&Info
+		display: flex
+		flex-direction: column
+		gap: 15px
+		&Wrapper
+			display: grid
+			grid-template-columns: 1fr 11px
+			align-items: flex-top
+			gap: 20px
+	&Remove
+		cursor: pointer
+		font-size: 11px
+	&:not(:first-child)
+		margin-top: 20px
+	&Name
+		font-weight: 600
+		font-size: 15px
+	&CreatedAt
+		font-size: 14px
+		color: $grayDark
+	&Text:not(a)
+		font-size: 15px
+		line-height: 22px

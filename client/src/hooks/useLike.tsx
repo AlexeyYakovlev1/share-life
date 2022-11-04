@@ -4,6 +4,7 @@ import { IPost } from "../models/post.models";
 import socket from "socket.io-client";
 import putLike from "../http/posts/putLike.http";
 import { IPerson } from "../models/person.models";
+import AlertContext from "../context/alert.context";
 
 export interface IPutedLike {
 	puted: boolean;
@@ -14,7 +15,6 @@ const { REACT_APP_API_URL } = process.env;
 
 function useLike(
 	info: IPost,
-	setText: (text: string | ((text: string) => string)) => void,
 	currentUser: IPerson
 ) {
 	const [likesNum, setLikesNum] = React.useState<number>(info.person_id_likes.length);
@@ -22,6 +22,7 @@ function useLike(
 		puted: info.person_id_likes.includes(+currentUser.id),
 		submit: false
 	});
+	const { setText } = React.useContext(AlertContext);
 
 	// puted like
 	React.useEffect(() => {

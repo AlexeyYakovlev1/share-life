@@ -7,11 +7,8 @@ import interactionFetch from "../../http/user/interaction.http";
 import { IPerson } from "../../models/person.models";
 import classes from "./Interaction.module.sass";
 import User from "./User";
-import cn from "classnames";
-import useTheme from "../../hooks/useTheme";
 
 function Interaction(): JSX.Element {
-	const { light, dark } = useTheme();
 	const [followersUsr, setFollowersUsr] = React.useState<Array<IPerson>>([]);
 	const [followingUsr, setFollowingUsr] = React.useState<Array<IPerson>>([]);
 	const [pageUser, setPageUser] = React.useState<IPerson>({
@@ -75,7 +72,7 @@ function Interaction(): JSX.Element {
 	if (queryFollowers && !followersUsr.length) {
 		return (
 			<MainLayout>
-				<h1 className={classes.title}>No one has subscribed to this user yet</h1>
+				<h1 className={classes.title}>На этого пользователя еще никто не подписался</h1>
 			</MainLayout>
 		);
 	}
@@ -84,7 +81,7 @@ function Interaction(): JSX.Element {
 		return (
 			<MainLayout>
 				<h1 className={classes.title}>
-					This user hasn`t followed anyone yet
+					Этот пользователь еще ни на кого не подписан
 				</h1>
 			</MainLayout>
 		);

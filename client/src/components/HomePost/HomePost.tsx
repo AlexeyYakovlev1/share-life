@@ -13,7 +13,7 @@ import getOneUser from "../../http/user/getOneUser.http";
 import AlertContext from "../../context/alert.context";
 import useAvatar from "../../hooks/useAvatar";
 import getAllCommentsByPost from "../../http/comments/getAllCommentsByPost.http";
-import Comment from "../OpenPost/Comment";
+import Comment from "../Comment/Comment";
 import { useSelector } from "react-redux";
 import { IState } from "../../models/redux.models";
 import useTheme from "../../hooks/useTheme";
@@ -27,7 +27,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 	const { setText } = React.useContext(AlertContext);
 
 	const { light, dark } = useTheme();
-	const { likeClick, likesNum, putedLike } = useLike(info, setText, currentUser);
+	const { likeClick, likesNum, putedLike } = useLike(info, currentUser);
 
 	const [dotsToEnd, setDotsToEnd] = React.useState<boolean>(
 		info.description ? info.description.trim().length >= 200 : false
@@ -120,7 +120,6 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 				<div className={classes.bodyPhotos}>
 					<Swiper
 						className={classes.bodyPhotosList}
-						spaceBetween={50}
 						slidesPerView={1}
 					>
 						{info.photos.map((photo, index) => {

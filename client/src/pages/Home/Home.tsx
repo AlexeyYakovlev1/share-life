@@ -55,7 +55,7 @@ function Home(): JSX.Element {
 						<Suspense key={post.id} fallback={<HomePostLoading />}>
 							<HomePost info={post} />
 						</Suspense>
-					)) : <span className={classes.noPosts}>Be the first to publish post!</span>}
+					)) : <span className={classes.noPosts}>Постов нет</span>}
 				</ul>
 			</article>
 		</MainLayout>

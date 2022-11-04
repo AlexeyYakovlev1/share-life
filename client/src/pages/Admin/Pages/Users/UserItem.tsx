@@ -38,14 +38,14 @@ function UserItem({ setActionInfo, setClose, user }: IUserItem) {
 				<Button
 					onClick={changeClick}
 				>
-					Edit
+					Изменить
 				</Button>
 			</td>
 			<td className={classes.contentItem}>
 				<Button
 					onClick={removeClick}
 				>
-					Delete
+					Удалить
 				</Button>
 			</td>
 		</React.Fragment>

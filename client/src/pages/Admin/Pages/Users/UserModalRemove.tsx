@@ -23,22 +23,22 @@ function UserModalRemove({ setClose, actionInfo }: IUserModalRemove) {
 		<Modal setClose={setClose}>
 			<div className={classes.modalRemove}>
 				<header className={classes.modalRemoveHeader}>
-					<h3 className={classes.modalTitle}>You sure?</h3>
+					<h3 className={classes.modalTitle}>Вы уверены?</h3>
 					<p className={classes.modalDescription}>
-						User by id {actionInfo.userId} will be removed full!
+						Пользователь по id {actionInfo.userId} будет удален полностью!
 					</p>
 				</header>
 				<div className={classes.modalRemoveActions}>
 					<Button
 						onClick={removeUserClick}
 					>
-						Yes
+						Да
 					</Button>
 					<Button
 						className={classes.modalButtonActive}
 						onClick={() => setClose(true)}
 					>
-						No
+						Нет
 					</Button>
 				</div>
 			</div>

@@ -42,9 +42,9 @@ function User({ user }: { user: IPerson }): JSX.Element {
 			{+user.id !== +currentIdUser ? <Button
 				onClick={followClick}
 			>
-				{followUser ? "Unfollow" : "Follow"}
+				{followUser ? "Отписаться" : "Подписаться"}
 			</Button> : <Button>
-				<Link to={`/profile/${user.id}`}>View</Link>
+				<Link to={`/profile/${user.id}`}>Перейти</Link>
 			</Button>}
 		</li>
 	);

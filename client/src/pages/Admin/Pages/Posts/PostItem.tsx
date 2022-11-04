@@ -32,7 +32,7 @@ function PostItem({ post, setClose, setActionInfo }: IPostItem) {
 				<Button
 					onClick={removeClick}
 				>
-					Delete
+					Удалить
 				</Button>
 			</td>
 		</React.Fragment>

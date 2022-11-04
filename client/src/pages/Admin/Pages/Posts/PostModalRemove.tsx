@@ -23,18 +23,18 @@ function PostModalRemove({ setClose, actionInfo }: IPostModalRemove) {
 		<Modal setClose={setClose}>
 			<div className={classes.modalRemove}>
 				<header className={classes.modalRemoveHeader}>
-					<h3 className={classes.modalTitle}>You sure?</h3>
+					<h3 className={classes.modalTitle}>Вы уверены?</h3>
 					<p className={classes.modalDescription}>
-						Post by id {actionInfo.postId} will be removed full!
+						Пост по id {actionInfo.postId} будет полностью удален!
 					</p>
 				</header>
 				<div className={classes.modalRemoveActions}>
-					<Button onClick={removePostClick}>Yes</Button>
+					<Button onClick={removePostClick}>Да</Button>
 					<Button
 						className={classes.modalButtonActive}
 						onClick={() => setClose(true)}
 					>
-						No
+						Нет
 					</Button>
 				</div>
 			</div>

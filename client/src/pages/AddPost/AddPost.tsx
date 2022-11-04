@@ -80,8 +80,8 @@ function AddPost(): JSX.Element {
 				[classes.dark]: dark
 			})}>
 				<header className={classes.header}>
-					<h3 className={classes.title}>Create new post</h3>
-					{errors && <span className={classes.errors}>Submit failed. Check your data</span>}
+					<h3 className={classes.title}>Создать новый пост</h3>
+					{errors && <span className={classes.errors}>Ошибка отправки. Проверьте корректность данных</span>}
 				</header>
 				<div className={classes.content}>
 					<div className={classes.slider}>
@@ -99,7 +99,7 @@ function AddPost(): JSX.Element {
 										<img src={photo.img} alt="photo" />
 									</SwiperSlide>
 								);
-							}) : <span className={classes.sliderNoPhotos}>Add photos in this post</span>}
+							}) : <span className={classes.sliderNoPhotos}>Добавьте фото к этому посту</span>}
 						</Swiper>
 					</div>
 					<div className={classes.right}>
@@ -118,7 +118,7 @@ function AddPost(): JSX.Element {
 									onClick={() => uploadRef.current?.click()}
 									className={classes.rightHeaderUploadBtn}
 								>
-									Upload photos
+									Загрузить фотографии
 								</Button>
 							</div>
 							<div className={classes.rightHeaderUser}>
@@ -136,17 +136,17 @@ function AddPost(): JSX.Element {
 						>
 							<Textarea
 								className={classes.rightCaption}
-								placeholder="Write a caption..."
+								placeholder="Напишите описание..."
 								value={post.description}
 								onChange={(event) => setPost({ ...post, description: event.target.value })}
 							/>
 							<Input
 								type="text"
-								placeholder="Add location"
+								placeholder="Добавить место"
 								value={post.location}
 								onChange={(event) => setPost({ ...post, location: event.target.value })}
 							/>
-							<Button disabled={disabled}>Share</Button>
+							<Button disabled={disabled}>Поделиться</Button>
 						</form>
 					</div>
 				</div>

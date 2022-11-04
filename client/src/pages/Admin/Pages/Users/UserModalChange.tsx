@@ -129,7 +129,7 @@ function UserModalChange({ setClose, actionInfo }: IUserModalChange) {
 			<div className={classes.modalChange}>
 				<header className={classes.modalChangeHeader}>
 					<h3 className={classes.modalChangeTitle}>
-						Edit user by id {actionInfo.userId}
+						Изменить пользователя по id {actionInfo.userId}
 					</h3>
 				</header>
 				<div
@@ -142,7 +142,7 @@ function UserModalChange({ setClose, actionInfo }: IUserModalChange) {
 								<li key={`${role}_${index + 1}`}>
 									{role}
 									<span onClick={() => removeRoleClick(role)}>
-										<CrossIcon title="Remove this role" />
+										<CrossIcon title="Удалить эту роль" />
 									</span>
 								</li>
 							))}
@@ -153,7 +153,7 @@ function UserModalChange({ setClose, actionInfo }: IUserModalChange) {
 								<Input
 									onKeyPress={addRoleHandler}
 									type="text"
-									placeholder="Write name of role"
+									placeholder="Название роли"
 									value={roleValue}
 									onChange={(event: React.ChangeEvent<HTMLInputElement>) => setRoleValue(event.target.value)}
 								/>
@@ -162,43 +162,43 @@ function UserModalChange({ setClose, actionInfo }: IUserModalChange) {
 								className={classes.modalChangeContentInputAddRoleBtn}
 								onClick={() => setAddRole(!addRole)}
 							>
-								{!addRole ? "Add role" : "Close"}
+								{!addRole ? "Добавить роль" : "Закрыть"}
 							</Button>
 						</div>
 					</div>
 					<div className={classes.modalChangeContentInput}>
-						<Label htmlFor="fullname">Fullname</Label>
+						<Label htmlFor="fullname">Полное имя</Label>
 						<Input
 							id="fullname"
 							type="text"
-							placeholder="Fullname"
+							placeholder="Полное имя"
 							value={currentUser.full_name}
 							onChange={(event: React.ChangeEvent<HTMLInputElement>) => setCurrentUser({ ...currentUser, full_name: event.target.value })}
 						/>
 					</div>
 					<div className={classes.modalChangeContentInput}>
-						<Label htmlFor="username">Username</Label>
+						<Label htmlFor="username">Имя пользователя</Label>
 						<Input
 							id="username"
 							type="text"
-							placeholder="Username"
+							placeholder="Имя пользователя"
 							value={currentUser.user_name}
 							onChange={(event: React.ChangeEvent<HTMLInputElement>) => setCurrentUser({ ...currentUser, user_name: event.target.value })}
 						/>
 					</div>
 					<div className={classes.modalChangeContentInput}>
-						<Label htmlFor="email">Email</Label>
+						<Label htmlFor="email">Электронная почта</Label>
 						<Input
 							id="email"
 							type="text"
-							placeholder="Email"
+							placeholder="Электронная почта"
 							value={currentUser.email}
 							onChange={(event: React.ChangeEvent<HTMLInputElement>) => setCurrentUser({ ...currentUser, email: event.target.value })}
 						/>
 					</div>
-					<Button type="submit" onClick={changeSubmit}>Done</Button>
+					<Button type="submit" onClick={changeSubmit}>Готово</Button>
 					<div className={classes.modalChangeContentInput}>
-						<Label htmlFor="avatar">Avatar</Label>
+						<Label htmlFor="avatar">Аватар</Label>
 						<div className={classes.modalChangeContentAvatar}>
 							<input
 								ref={avatarRef}
@@ -207,7 +207,7 @@ function UserModalChange({ setClose, actionInfo }: IUserModalChange) {
 								accept="image/*"
 								onChange={(event: React.ChangeEvent<HTMLInputElement>) => uploadImages(event, setSelectFile, setText)}
 							/>
-							<Button onClick={() => avatarRef.current?.click()}>Upload photo</Button>
+							<Button onClick={() => avatarRef.current?.click()}>Загрузить фото</Button>
 							<div
 								style={{ backgroundImage: `url(${avatar[0].base64 || avatar[0]})` }}
 								className={classes.modalChangeContentAvatarImage}

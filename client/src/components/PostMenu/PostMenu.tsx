@@ -35,13 +35,13 @@ function PostMenu({ post, setVisible, visible, className = "", ...props }: IPost
 			</span>
 			<ul className={classes.list}>
 				<li className={classes.item}>
-					<Link to={`/change-post/${post.id}`}>Change</Link>
+					<Link to={`/change-post/${post.id}`}>Изменить</Link>
 				</li>
 				<li
 					onClick={() => dispatch(removePostAsyncAction(post.id, setText))}
 					className={cn(classes.item, classes.itemDelete)}
 				>
-					Delete
+					Удалить
 				</li>
 			</ul>
 		</div>
