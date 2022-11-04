@@ -145,7 +145,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 							} />
 						</button>
 					</div>
-					<span className={classes.bodyDescriptionLikesNum}>{likesNum} likes</span>
+					<span className={classes.bodyDescriptionLikesNum}>{likesNum} лайков</span>
 					<div>
 						{info.description &&
 							<p
@@ -164,7 +164,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 									className={classes.bodyDescriptionMore}
 									onClick={() => setDotsToEnd(!dotsToEnd)}
 								>
-									Read more
+									Читать полностью
 								</Button>
 							}
 							{viewComments &&
@@ -172,7 +172,7 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 									className={classes.bodyDescriptionMore}
 									onClick={() => setViewComments(!viewComments)}
 								>
-									View all {comments.length} comments
+									Смотреть все {comments.length} комментарии
 								</Button>
 							}
 						</div>

@@ -114,13 +114,15 @@ class AdminController {
 
 				const queryForDeletePosts = `DELETE FROM post WHERE owner_id = $1`;
 				const queryForDeleteFollow = `DELETE FROM follow WHERE user_id = $1 OR follower_id = $1`;
+				const queryForDeleteComment = `DELETE FROM comment WHERE owner_id = $1`;
 				const queryForDeleteUser = `DELETE FROM person WHERE id = $1`;
 
 				const deletedPost = db.query(queryForDeletePosts, [userId]);
 				const deleteFollow = db.query(queryForDeleteFollow, [userId]);
+				const deleteComment = db.query(queryForDeleteComment, [userId]);
 				const deleteUser = db.query(queryForDeleteUser, [userId]);
 
-				return Promise.all([deletedPost, deleteFollow, deleteUser]);
+				return Promise.all([deletedPost, deleteFollow, deleteComment, deleteUser]);
 			})
 			.then(() => res.status(200).json({ success: true, message: "User has been removed" }))
 			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));

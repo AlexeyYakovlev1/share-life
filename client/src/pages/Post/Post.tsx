@@ -196,7 +196,7 @@ function Post() {
 							className={classes.bodyDescriptionMore}
 							onClick={() => setViewComments(!viewComments)}
 						>
-							View all {comments.length} комментариев
+							Смотреть все {comments.length} комментарии
 						</Button>
 					}
 					<ul className={classes.commentsList}>

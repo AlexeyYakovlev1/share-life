@@ -78,7 +78,7 @@ function Login() {
 					<Button className={classes.submit}>Войти</Button>
 				</form>
 				<p className={classes.text}>
-					Нет аккаунта? <Link to="/auth/register">Зерегистрироваться</Link>
+					Нет аккаунта? <Link to="/auth/register">Зарегистрироваться</Link>
 				</p>
 			</article>
 		</React.Fragment>

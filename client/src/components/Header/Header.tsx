@@ -82,7 +82,7 @@ function Header({ className }: IHeaderProps): JSX.Element {
 					<Input
 						value={searchVal}
 						onChange={(event) => setSearchVal(event.target.value)}
-						placeholder="Search"
+						placeholder="Поиск постов"
 						onKeyPress={searchHandler}
 					/>
 				</div>
@@ -91,18 +91,18 @@ function Header({ className }: IHeaderProps): JSX.Element {
 						<nav className={classes.nav}>
 							<ul className={classes.list}>
 								<li className={classes.item}>
-									<Link title={"Add post"} to={"/write"}>
+									<Link title={"Добавить пост"} to={"/write"}>
 										<PlusIcon />
 									</Link>
 								</li>
 								<li className={cn(classes.item, classes.itemLike)}>
-									<Link title={"Likes"} to={"/notifications"}>
+									<Link title={"Лайки"} to={"/notifications"}>
 										<LikeIcon />
 										{count > 0 && <span className={classes.itemLikeCount}>{count}</span>}
 									</Link>
 								</li>
 								<li className={cn(classes.item, classes.itemUser)}>
-									<Link title="user" to={`/profile/${id}`}>
+									<Link title="Пользователь" to={`/profile/${id}`}>
 										<div
 											style={{ backgroundImage: `url(${currentAvatarUser})` }}
 											className={classes.itemUserAvatar}
@@ -112,7 +112,7 @@ function Header({ className }: IHeaderProps): JSX.Element {
 							</ul>
 						</nav>
 						:
-						<Button><Link to="/auth/login">Log in</Link></Button>
+						<Button><Link to="/auth/login">Войти</Link></Button>
 					}
 				</div>
 			</div>
