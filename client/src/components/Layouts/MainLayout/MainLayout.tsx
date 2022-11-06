@@ -6,12 +6,13 @@ import Alert from "../../UI/Alert/Alert";
 import Loader from "../../UI/Loader/Loader";
 import classes from "./MainLayout.module.sass";
 import { usePromiseTracker } from "react-promise-tracker";
+import cn from "classnames";
 
 interface IMainLayoutProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
 	children: React.ReactNode;
 }
 
-function MainLayout({ children }: IMainLayoutProps): JSX.Element {
+function MainLayout({ children, className }: IMainLayoutProps): JSX.Element {
 	const { promiseInProgress } = usePromiseTracker();
 	const { text } = React.useContext(AlertContext);
 
@@ -21,7 +22,7 @@ function MainLayout({ children }: IMainLayoutProps): JSX.Element {
 			{text && <Alert />}
 			<Header className={classes.header} />
 			<main className={classes.content}>
-				<div className={classes.container}>{children}</div>
+				<div className={cn(classes.container, className)}>{children}</div>
 			</main>
 			<Footer className={classes.footer} />
 		</div>

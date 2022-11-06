@@ -12,9 +12,21 @@
 			& path
 				fill: $black !important
 				stroke: $black !important
+		& .headerSettingsBtn svg
+			fill: $black !important
+			stroke: $black !important
+			& path
+				fill: $black !important
+				stroke: $black !important
 	&.dark
 		color: $white
 		& .svgLike
+			& path
+				fill: $white !important
+				stroke: $white !important
+		& .headerSettingsBtn svg
+			fill: $white !important
+			stroke: $white !important
 			& path
 				fill: $white !important
 				stroke: $white !important
@@ -71,6 +83,8 @@
 			overflow: hidden
 		&Item img
 			width: 100% !important
+			max-height: 70vh
+			object-fit: contain
 	&Description
 		line-height: 22px
 	&Down

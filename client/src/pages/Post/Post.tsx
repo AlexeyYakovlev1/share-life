@@ -80,7 +80,7 @@ function Post() {
 				}
 
 				setOwner(person);
-				setAvatar(person.avatar.base64);
+				setAvatar(useAvatar(person.avatar.base64));
 			});
 	}, [post]);
 

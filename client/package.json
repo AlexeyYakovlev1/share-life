@@ -7,7 +7,6 @@
         "@testing-library/react": "^13.3.0",
         "@testing-library/user-event": "^13.5.0",
         "@types/classnames": "^2.3.1",
-        "@types/jest": "^27.5.2",
         "@types/js-cookie": "^3.0.2",
         "@types/node": "^16.11.46",
         "@types/react": "^18.0.15",
@@ -37,7 +36,7 @@
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
-        "test": "react-scripts test",
+        "test": "react-scripts test --watchAll --testMatch '**/src/**/*.test.ts'",
         "eject": "react-scripts eject"
     },
     "eslintConfig": {
@@ -59,6 +58,8 @@
         ]
     },
     "devDependencies": {
+        "@types/jest": "^29.2.2",
+        "@types/mocha": "^10.0.0",
         "@typescript-eslint/eslint-plugin": "^5.31.0",
         "@typescript-eslint/parser": "^5.31.0",
         "eslint": "^8.20.0",

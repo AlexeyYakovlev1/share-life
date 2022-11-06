@@ -95,11 +95,8 @@ function UserModalChange({ setClose, actionInfo }: IUserModalChange) {
 			.then((data) => {
 				const { success, message, error } = data;
 
-				if (!success) {
-					setText(message || error);
-					return;
-				}
-
+				setText(message || error);
+				if (!success) return;
 				setClose(true);
 			});
 	}

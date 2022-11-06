@@ -1,4 +1,5 @@
 {
+  "exclude": ["**/tests/*.test.ts"],
   "compilerOptions": {
     "target": "es5",
     "lib": [
@@ -6,6 +7,7 @@
       "dom.iterable",
       "esnext"
     ],
+	"types": ["@types/jest"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

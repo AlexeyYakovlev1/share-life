@@ -1,4 +1,4 @@
-const db = require("../db");
+const FollowLogics = require("../logics/follow.logics");
 
 class FollowController {
 	checkFollow(req, res) {
@@ -11,22 +11,9 @@ class FollowController {
 		const { id: userId } = req.params;
 		const { id: followerId } = req.user;
 
-		const queryForFindFollow = `SELECT follower_id FROM follow WHERE user_id = $1`;
-		const findFollow = db.query(queryForFindFollow, [userId]);
-
-		let follow = false;
-
-		new Promise((resolve) => resolve(findFollow))
-			.then((findFollow) => {
-				if (!findFollow.rows[0]) {
-					return res.status(200).json({ success: true, follow: false });
-				};
-
-				follow = +findFollow.rows[0].follower_id === +followerId;
-
-				return res.status(200).json({ success: true, follow });
-			})
-			.catch((error) => res.status(400).json({ success: false, message: error.message, error }));
+		FollowLogics.checkFollow({ userId, followerId })
+			.then((data) => res.status(200).json({ ...data }))
+			.catch((err) => res.status(400).json({ message: err.message, err: err }));
 	}
 }
 

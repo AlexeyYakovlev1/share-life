@@ -48,7 +48,7 @@ function Home(): JSX.Element {
 	}
 
 	return (
-		<MainLayout>
+		<MainLayout className={classes.mainContainer}>
 			<article className={classes.wrapper}>
 				<ul className={classes.list}>
 					{(posts && posts.length) ? posts.map((post: IPost) => (

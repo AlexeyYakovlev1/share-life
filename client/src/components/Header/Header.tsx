@@ -44,7 +44,7 @@ function Header({ className }: IHeaderProps): JSX.Element {
 
 		if (key !== "Enter") return;
 		if (!searchVal.length) {
-			getAllPosts({ limit: 10, page: 2 })
+			getAllPosts({ limit: 2, page: 0 })
 				.then((data) => {
 					const { success, message, error, posts } = data;
 

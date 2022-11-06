@@ -43,6 +43,7 @@ function ChangePost(): JSX.Element {
 	const disabled = (changePost.description.length >= 2200) || (changePost.location.length < 3) || (changePost.location.length >= 20) || !photos.length;
 	useAccessUser([post], post.owner_id);
 
+	// get post
 	React.useEffect(() => {
 		if (!postId) return;
 
