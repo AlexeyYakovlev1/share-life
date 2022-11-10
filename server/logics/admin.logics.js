@@ -69,7 +69,7 @@ class AdminLogics {
 				if (!findUser.rows || !findUser.rows[0].id) Promise.reject("Пользователь не найден");
 
 				const queryForUpdatePerson = `
-					UPDATE person SET followers = ARRAY_REMOVE(followers, $1), following = ARRAY_REMOVE(following, $1)
+					UPDATE person SET followers = ARRAY_REMOVE(followers, $1), following = ARRAY_REMOVE(following, $1) RETURNING avatar
 				`;
 				const queryForUpdatePost = `
 					UPDATE post SET person_id_likes = ARRAY_REMOVE(person_id_likes, $1)
@@ -80,20 +80,31 @@ class AdminLogics {
 
 				return Promise.all([updatePerson, updatePost]);
 			})
-			.then(() => {
+			.then(([person, _]) => {
 				// FIND POSTS
 				const queryForFindPosts = `SELECT id FROM post WHERE owner_id = $1`;
 				const findPosts = db.query(queryForFindPosts, [userId]);
 
-				return Promise.resolve(findPosts);
+				return Promise.all([findPosts, person]);
 			})
-			.then(async (findPosts) => {
+			.then(async ([findPosts, person]) => {
 				// REMOVE ALL COMMENTS FROM POSTS THEN POSTS FOLLOW AND USER
 				if (findPosts.rows && findPosts.rows.length) {
 					for (let i = 0; i < findPosts.rows.length; i++) {
 						const post = findPosts.rows[i];
 						await this._removeCommentForDeletedPost(post.id, userId);
 					}
+				}
+
+				// remove avatar
+				const pathToAvatar = path.relative(PROJECT_ROOT, `./templates/user/${person.rows[0].avatar}`);
+
+				if (fs.existsSync(pathToAvatar)) {
+					fs.unlink(pathToAvatar, (err) => {
+						if (err) {
+							return { success: false, message: "Ошибка при удалении аватара" };
+						}
+					});
 				}
 
 				const queryForDeletePosts = `DELETE FROM post WHERE owner_id = $1`;

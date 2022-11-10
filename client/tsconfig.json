@@ -1,5 +1,6 @@
 {
-  "exclude": ["**/tests/*.test.ts"],
+	
+  "exclude": ["**/tests/*.test.tsx"],
   "compilerOptions": {
     "target": "es5",
     "lib": [

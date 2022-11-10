@@ -7,7 +7,7 @@ function checkAuth() {
 	return trackPromise(fetch(`${REACT_APP_API_URL}/auth/check`, {
 		method: "GET",
 		headers: {
-			"Authorization": `Bearer ${Cookies.get("token")}`
+			"Authorization": `Bearer ${Cookies.get("token") || ""}`
 		}
 	})
 		.then((response) => response.json())

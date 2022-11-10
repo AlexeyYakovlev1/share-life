@@ -27,6 +27,7 @@ function Settings(): JSX.Element {
 	const avatarRef = React.useRef<HTMLInputElement | null>(null);
 	const navigate = useNavigate();
 	const { light, dark } = useTheme();
+	const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/svg"];
 
 	const info = useSelector((state: IState) => state.person.info);
 	const theme = useSelector((state: IState) => state.theme);
@@ -52,6 +53,12 @@ function Settings(): JSX.Element {
 		if (!event.target?.files.length) return;
 
 		const file = event.target?.files[0];
+
+		if (!allowedTypes.includes(file.type)) {
+			setText("Тип файла не поддерживается");
+			return;
+		}
+
 		const formData = new FormData();
 		formData.append("avatar", file);
 

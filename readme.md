@@ -76,8 +76,6 @@ $ npm start
 
 ## In future
 
--   Page for notifications (also maybe send to email)
--   Tests (Jest)
 -   Docker
 
 ## Conclusion

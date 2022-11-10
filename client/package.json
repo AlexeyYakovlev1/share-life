@@ -12,6 +12,7 @@
         "@types/react": "^18.0.15",
         "@types/react-dom": "^18.0.6",
         "axios": "^0.27.2",
+        "babel-preset-env": "^1.7.0",
         "cn": "^0.1.1",
         "js-cookie": "^3.0.1",
         "node-sass": "^7.0.1",
@@ -30,13 +31,11 @@
         "socket.io-client": "^4.5.2",
         "swiper": "^8.4.4",
         "typescript": "^4.7.4",
-        "use-state-with-callback": "^3.0.2",
         "web-vitals": "^2.1.4"
     },
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
-        "test": "react-scripts test --watchAll --testMatch '**/src/**/*.test.ts'",
         "eject": "react-scripts eject"
     },
     "eslintConfig": {
@@ -58,12 +57,19 @@
         ]
     },
     "devDependencies": {
+        "@babel/preset-env": "^7.20.2",
+        "@babel/preset-react": "^7.18.6",
         "@types/jest": "^29.2.2",
         "@types/mocha": "^10.0.0",
+        "@types/react-test-renderer": "^18.0.0",
         "@typescript-eslint/eslint-plugin": "^5.31.0",
         "@typescript-eslint/parser": "^5.31.0",
+        "babel-jest": "^29.3.1",
+        "babel-preset-stage-0": "^6.24.1",
         "eslint": "^8.20.0",
         "eslint-plugin-react": "^7.30.1",
-        "react-router-dom": "^6.3.0"
+        "jest": "^27.5.1",
+        "react-router-dom": "^6.3.0",
+        "react-test-renderer": "^18.2.0"
     }
 }

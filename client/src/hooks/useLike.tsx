@@ -26,6 +26,8 @@ function useLike(
 
 	// puted like
 	React.useEffect(() => {
+		if (currentUser.id === -1) return;
+
 		checkLike(+info.id)
 			.then((data) => {
 				const { success, result } = data;
