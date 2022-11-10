@@ -47,7 +47,7 @@
 	padding: 0 15px
 	align-items: center
 	grid-auto-rows: 70px
-	grid-template-areas: "logo search search search search search user"
+	grid-template-areas: "logo search search user"
 
 .search
 	justify-self: center
@@ -66,8 +66,8 @@
 
 .list
 	display: grid
-	grid-template-columns: repeat(3, minmax(25px, 30px))
-	gap: 20px
+	grid-template-columns: repeat(2, minmax(25px, 30px))
+	gap: 10px
 
 .item
 	&UserAvatar
@@ -94,7 +94,7 @@
 			justify-content: center
 			user-select: none
 
-@media screen and (max-width: 620px)
+@media screen and (max-width: 570px)
 	.logoHeader
 		display: none
 	.container

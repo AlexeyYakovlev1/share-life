@@ -2,10 +2,9 @@ import Input from "../UI/Input/Input";
 import classes from "./Header.module.sass";
 import Logo from "./Logo";
 import { ReactComponent as SearchIcon } from "../../assets/images/search.svg";
-import { ReactComponent as LikeIcon } from "../../assets/images/heart.svg";
 import { ReactComponent as PlusIcon } from "../../assets/images/plus.svg";
 import { Link } from "react-router-dom";
-import React, { DetailedHTMLProps, FunctionComponent, HTMLAttributes, SVGProps } from "react";
+import React, { DetailedHTMLProps, HTMLAttributes } from "react";
 import cn from "classnames";
 import Button from "../UI/Button/Button";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,25 +15,17 @@ import getAllPosts from "../../http/posts/getAllPosts.http";
 import { setPosts } from "../../redux/actions/posts.actions";
 import searchPostsByKeyWords from "../../http/posts/searchPosts.http";
 import useTheme from "../../hooks/useTheme";
-import NotificationCount from "../../context/notification.context";
 
 interface IHeaderProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> { }
 
 function Header({ className }: IHeaderProps): JSX.Element {
-	interface IMenu {
-		name: string;
-		url: string;
-		img: FunctionComponent<SVGProps<SVGSVGElement>>;
-	}
-
 	const { light, dark } = useTheme();
 
-	const { info: { avatar, id, user_name }, isAuth } = useSelector((state: IState) => state.person);
+	const { info: { avatar, id }, isAuth } = useSelector((state: IState) => state.person);
 	const [searchVal, setSearchVal] = React.useState<string>("");
 	const dispatch = useDispatch();
 
 	const { setText } = React.useContext(AlertContext);
-	const { count, setCount } = React.useContext(NotificationCount);
 
 	const currentAvatarUser = useAvatar(avatar.base64);
 
@@ -93,12 +84,6 @@ function Header({ className }: IHeaderProps): JSX.Element {
 								<li className={classes.item}>
 									<Link title={"Добавить пост"} to={"/write"}>
 										<PlusIcon />
-									</Link>
-								</li>
-								<li className={cn(classes.item, classes.itemLike)}>
-									<Link title={"Лайки"} to={"/notifications"}>
-										<LikeIcon />
-										{count > 0 && <span className={classes.itemLikeCount}>{count}</span>}
 									</Link>
 								</li>
 								<li className={cn(classes.item, classes.itemUser)}>

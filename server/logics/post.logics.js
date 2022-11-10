@@ -282,14 +282,6 @@ class PostLogics {
 					io.emit("likePost", likeAsBool);
 				});
 
-				const payloadForNotificationLike = {
-					access: !likeAsBool,
-					fromId: userId,
-					toId: findPost.rows[0].owner_id
-				};
-
-				io.emit("notification-like", payloadForNotificationLike);
-
 				// если пользователь не ставил лайк (раньше), то вносим его в массив
 				if (!likeAsBool) {
 					const queryForAddIdToLikes = `
