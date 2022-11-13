@@ -20,3 +20,9 @@ export interface IComment {
 	text: string;
 	date: Date | string;
 }
+
+export interface IPostForAdd {
+	description: string;
+	location: string;
+	photos: Array<IPostPhoto>;
+}

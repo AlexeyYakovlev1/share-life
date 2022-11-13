@@ -1,9 +1,10 @@
+import React from "react";
 import createPost from "../../../../http/posts/createPost.http";
-import { IPost } from "../../../../models/post.models";
+import { IPost, IPostForAdd } from "../../../../models/post.models";
 import { addPost } from "../../posts.actions";
 
 function addPostAsyncAction(
-	post: IPost,
+	post: IPost | IPostForAdd,
 	setErrors: React.Dispatch<React.SetStateAction<boolean>>,
 	setText: React.Dispatch<React.SetStateAction<string>>
 ) {

@@ -7,17 +7,15 @@ import Input from "../../components/UI/Input/Input";
 import Loader from "../../components/UI/Loader/Loader";
 import AlertContext from "../../context/alert.context";
 import classes from "./Auth.module.sass";
-import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
-import { setUser as setUserToReducer } from "../../redux/actions/user.actions";
-import login from "../../http/auth/login.http";
 import { usePromiseTracker } from "react-promise-tracker";
 import cn from "classnames";
 import useTheme from "../../hooks/useTheme";
+import loginAsyncAction from "../../redux/actions/async/auth/login";
 
 function Login() {
 	const { light, dark } = useTheme();
-	const dispatch = useDispatch();
+	const dispatch: any = useDispatch();
 	const [user, setUser] = React.useState({ email: "", password: "" });
 	const [errors, setErrors] = React.useState<boolean>(false);
 	const { text, setText } = React.useContext(AlertContext);
@@ -26,30 +24,7 @@ function Login() {
 
 	function logSubmit(event: React.FormEvent<HTMLFormElement>): void {
 		event.preventDefault();
-
-		login(user)
-			.then((data) => {
-				const { errors: dataErrors, success, message, error, token, person }: any = data;
-
-				if (dataErrors && dataErrors.length) {
-					setErrors(!errors);
-					return;
-				}
-
-				if (!success) {
-					if (message) {
-						setText(`Ошибка сервера: ${message}`);
-						return;
-					}
-
-					setText(error);
-					return;
-				}
-
-				Cookies.set("token", token);
-				dispatch(setUserToReducer(person));
-				navigation("/");
-			});
+		dispatch(loginAsyncAction(user, setErrors, setText, navigation));
 	}
 
 	return (

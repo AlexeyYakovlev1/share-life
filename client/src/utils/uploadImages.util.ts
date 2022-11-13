@@ -3,10 +3,9 @@ function uploadImages(
 	setSelectedImages: React.Dispatch<React.SetStateAction<any[]>>,
 	setText: React.Dispatch<React.SetStateAction<string>>
 ) {
-	const imageTypeRegex = /image\/(png|jpg|jpeg|gif)/gm;
-
 	if (!event.target?.files.length) return;
 
+	const imageTypeRegex = /image\/(png|jpg|jpeg|gif)/gm;
 	const files = Array.from(event.target?.files);
 	const validImages: any = [];
 

@@ -8,23 +8,20 @@ import cn from "classnames";
 import React from "react";
 import Button from "../UI/Button/Button";
 import PostMenu from "../PostMenu/PostMenu";
-import { IPerson } from "../../models/person.models";
-import getOneUser from "../../http/user/getOneUser.http";
-import AlertContext from "../../context/alert.context";
-import useAvatar from "../../hooks/useAvatar";
-import getAllCommentsByPost from "../../http/comments/getAllCommentsByPost.http";
+import useAvatar from "../../hooks/user/useAvatar";
 import Comment from "../Comment/Comment";
 import { useSelector } from "react-redux";
 import { IState } from "../../models/redux.models";
 import useTheme from "../../hooks/useTheme";
-import useLike from "../../hooks/useLike";
+import useLike from "../../hooks/post/useLike";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/scss";
 import "swiper/css";
+import useComments from "../../hooks/useComments";
+import useUser from "../../hooks/user/useUser";
 
 function HomePost({ info }: { info: IPost }): JSX.Element {
 	const currentUser = useSelector((state: IState) => state.person.info);
-	const { setText } = React.useContext(AlertContext);
 
 	const { light, dark } = useTheme();
 	const { likeClick, likesNum, putedLike } = useLike(info, currentUser);
@@ -32,55 +29,10 @@ function HomePost({ info }: { info: IPost }): JSX.Element {
 	const [dotsToEnd, setDotsToEnd] = React.useState<boolean>(
 		info.description ? info.description.trim().length >= 200 : false
 	);
-	const [comments, setComments] = React.useState<Array<any>>([]);
-	const [viewComments, setViewComments] = React.useState<boolean>(comments.length >= 3);
+
+	const { comments, setComments, viewComments, setViewComments } = useComments("NONE", info.id, [info]);
+	const { user: userPost } = useUser("NONE", info.owner_id, [info]);
 	const [visible, setVisible] = React.useState<boolean>(false);
-	const [userPost, setUserPost] = React.useState<IPerson>({
-		id: -1,
-		user_name: "",
-		full_name: "",
-		email: "",
-		avatar: {
-			base64: "",
-			filename: ""
-		},
-		password: "",
-		description: "",
-		roles: [""],
-		followers: [],
-		following: []
-	});
-
-	// user
-	React.useEffect(() => {
-		getOneUser(info.owner_id)
-			.then((data) => {
-				const { success, message, person } = data;
-
-				if (!success) {
-					setText(message);
-					return;
-				}
-
-				setUserPost(person);
-			});
-	}, [info]);
-
-	// comments
-	React.useEffect(() => {
-		getAllCommentsByPost(info.id)
-			.then((data) => {
-				const { success, error, comments } = data;
-
-				if (!success) {
-					setText(error);
-					return;
-				}
-
-				setComments(comments);
-				setViewComments(comments.length >= 3);
-			});
-	}, [info]);
 
 	return (
 		<li className={cn(classes.post, {

@@ -1,8 +1,8 @@
 import React from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import MainLayout from "../../components/Layouts/MainLayout/MainLayout";
 import AlertContext from "../../context/alert.context";
-import getOneUser from "../../http/user/getOneUser.http";
+import useUser from "../../hooks/user/useUser";
 import interactionFetch from "../../http/user/interaction.http";
 import { IPerson } from "../../models/person.models";
 import classes from "./Interaction.module.sass";
@@ -11,46 +11,13 @@ import User from "./User";
 function Interaction(): JSX.Element {
 	const [followersUsr, setFollowersUsr] = React.useState<Array<IPerson>>([]);
 	const [followingUsr, setFollowingUsr] = React.useState<Array<IPerson>>([]);
-	const [pageUser, setPageUser] = React.useState<IPerson>({
-		id: -1,
-		full_name: "",
-		user_name: "",
-		email: "",
-		avatar: {
-			base64: "",
-			filename: ""
-		},
-		password: "",
-		roles: [""],
-		description: "",
-		followers: [],
-		following: []
-	});
-
 	const { id: pageUserId } = useParams();
+	const { user: pageUser } = useUser(pageUserId, pageUserId, [pageUserId]);
 	const [searchParams, setSearchParams] = useSearchParams();
 	const queryFollowers = searchParams.get("followers") === "y";
 	const queryFollowing = searchParams.get("following") === "y";
-	const navigate = useNavigate();
 
 	const { setText } = React.useContext(AlertContext);
-
-	React.useEffect(() => {
-		if (!pageUserId) return;
-
-		getOneUser(+pageUserId)
-			.then((data) => {
-				const { success, person, message, error } = data;
-
-				if (!success) {
-					setText(message || error);
-					navigate("/");
-					return;
-				}
-
-				setPageUser(person);
-			});
-	}, [pageUserId]);
 
 	React.useEffect(() => {
 		if (pageUser.id === -1) return;

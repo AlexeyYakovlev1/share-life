@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AlertContext from "../../context/alert.context";
 import readerImages, { IPhoto } from "../../utils/readerImages.util";
 import uploadImages from "../../utils/uploadImages.util";
-import useAvatar from "../../hooks/useAvatar";
+import useAvatar from "../../hooks/user/useAvatar";
 import uploadPhotos from "../../http/files/uploadPhotos.http";
 import addPostAsyncAction from "../../redux/actions/async/posts/addPost";
 import { useNavigate } from "react-router-dom";
@@ -44,15 +44,14 @@ function AddPost(): JSX.Element {
 		readerImages(selectedImages, setPhotos, setText);
 	}, [selectedImages]);
 
-	// send all data for new post
+	// submit
 	React.useEffect(() => {
 		if (!post.photos.length) return;
 		dispatch(addPostAsyncAction(post, setErrors, setText));
 		navigate("/");
 	}, [post.photos]);
 
-	// upload photos
-	function submitPost(event: React.ChangeEvent<HTMLFormElement>) {
+	function uploadPhotosSubm(event: React.ChangeEvent<HTMLFormElement>) {
 		event.preventDefault();
 
 		if (selectedImages.length) {
@@ -132,7 +131,7 @@ function AddPost(): JSX.Element {
 						<form
 							encType="multipart/form-data"
 							className={classes.rightDown}
-							onSubmit={submitPost}
+							onSubmit={uploadPhotosSubm}
 						>
 							<Textarea
 								className={classes.rightCaption}

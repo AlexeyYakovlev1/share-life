@@ -9,7 +9,7 @@ import cn from "classnames";
 import Button from "../UI/Button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { IState } from "../../models/redux.models";
-import useAvatar from "../../hooks/useAvatar";
+import useAvatar from "../../hooks/user/useAvatar";
 import AlertContext from "../../context/alert.context";
 import getAllPosts from "../../http/posts/getAllPosts.http";
 import { setPosts } from "../../redux/actions/posts.actions";

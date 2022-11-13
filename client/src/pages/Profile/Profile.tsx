@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import MainLayout from "../../components/Layouts/MainLayout/MainLayout";
 import Button from "../../components/UI/Button/Button";
 import { IPost } from "../../models/post.models";
@@ -6,80 +6,33 @@ import classes from "./Profile.module.sass";
 import React from "react";
 import cn from "classnames";
 import AlertContext from "../../context/alert.context";
-import { IPerson } from "../../models/person.models";
-import getOneUser from "../../http/user/getOneUser.http";
-import useAvatar from "../../hooks/useAvatar";
+import useAvatar from "../../hooks/user/useAvatar";
 import { IState } from "../../models/redux.models";
 import { useSelector } from "react-redux";
-import { useFollow } from "../../hooks/useFollow";
+import { useFollow } from "../../hooks/user/useFollow";
 import useTheme from "../../hooks/useTheme";
 import { Suspense } from "react";
 import ProfilePostLoading from "../../components/Loading/ProfilePost/ProfilePostLoading";
-import getPostsByUser from "../../http/posts/getPostsByUser.http";
+import useUser from "../../hooks/user/useUser";
+import usePostsByUser from "../../hooks/post/usePostsByUser";
 
 function Profile(): JSX.Element {
 	const Post = React.lazy(() => import("./Post"));
-
 	const { light, dark } = useTheme();
-	const [pageUser, setPageUser] = React.useState<IPerson>({
-		id: -1,
-		full_name: "",
-		user_name: "",
-		email: "",
-		avatar: {
-			base64: "",
-			filename: ""
-		},
-		password: "",
-		description: "",
-		roles: [""],
-		followers: [],
-		following: []
-	});
 
-	const { id: currentIdUser } = useSelector((state: IState) => state.person.info);
-	const [userPosts, setUserPosts] = React.useState<Array<IPost>>([]);
-
-	const [currentUser, setCurrentUser] = React.useState<boolean>(false);
-	const [followUser, setFollowUser] = React.useState<boolean>(pageUser.followers.includes(currentIdUser));
-
-	const pageAvatarUser = useAvatar(pageUser.avatar.base64);
 	const { id: pageIdUser } = useParams();
 	const { setText } = React.useContext(AlertContext);
-	const navigate = useNavigate();
 
+	const { id: currentIdUser } = useSelector((state: IState) => state.person.info);
+	const { user: pageUser } = useUser(pageIdUser, pageIdUser, [pageIdUser, currentIdUser], () => {
+		pageIdUser && setCurrentUser(+pageIdUser === +currentIdUser);
+	});
+	const { posts: userPosts } = usePostsByUser(pageIdUser, pageIdUser, [pageIdUser, currentIdUser]);
+
+	const [followUser, setFollowUser] = React.useState<boolean>(pageUser.followers.includes(currentIdUser));
+	const [currentUser, setCurrentUser] = React.useState<boolean>(false);
+	const pageAvatarUser = useAvatar(pageUser.avatar.base64);
 	const { followClick } = useFollow(+pageUser.id, setText, setFollowUser);
-
-	// get user and get posts for user
-	React.useEffect(() => {
-		if (pageIdUser) {
-			getOneUser(+pageIdUser)
-				.then((data: any) => {
-					const { success, person, message } = data;
-
-					if (!success) {
-						setText(message);
-						navigate("/");
-						return;
-					}
-
-					setPageUser(person);
-					setCurrentUser(+pageIdUser === +currentIdUser);
-				});
-
-			getPostsByUser(+pageIdUser)
-				.then((data) => {
-					const { success, posts, message, error } = data;
-
-					if (!success) {
-						setText(message || error);
-						return;
-					}
-
-					setUserPosts(posts);
-				});
-		}
-	}, [pageIdUser, currentIdUser, followUser]);
 
 	return (
 		<MainLayout>

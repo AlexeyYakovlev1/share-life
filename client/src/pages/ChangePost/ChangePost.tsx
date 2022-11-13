@@ -1,9 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
 import MainLayout from "../../components/Layouts/MainLayout/MainLayout";
-import { IPost, IPostPhoto } from "../../models/post.models";
+import { IPostPhoto } from "../../models/post.models";
 import classes from "./ChangePost.module.sass";
 import React from "react";
-import getOnePost from "../../http/posts/getOnePost.http";
 import AlertContext from "../../context/alert.context";
 import cn from "classnames";
 import Button from "../../components/UI/Button/Button";
@@ -12,9 +11,10 @@ import uploadImages from "../../utils/uploadImages.util";
 import readerImages from "../../utils/readerImages.util";
 import updatePost, { IUpdateBody } from "../../http/posts/updatePost.http";
 import uploadPhotos from "../../http/files/uploadPhotos.http";
-import useAccessUser from "../../hooks/useAccessUser";
+import useAccessUser from "../../hooks/access/useAccessUser";
 import Textarea from "../../components/UI/Textarea/Textarea";
 import useTheme from "../../hooks/useTheme";
+import usePost from "../../hooks/post/usePost";
 
 function ChangePost(): JSX.Element {
 	const { light, dark } = useTheme();
@@ -22,15 +22,8 @@ function ChangePost(): JSX.Element {
 	const { setText } = React.useContext(AlertContext);
 	const navigate = useNavigate();
 
-	const [post, setPost] = React.useState<IPost>({
-		id: -1,
-		owner_id: -1,
-		photos: [],
-		description: "",
-		location: "",
-		date: "",
-		person_id_likes: []
-	});
+	const { post } = usePost(postId, postId, [postId]);
+
 	const uploadRef = React.useRef<HTMLInputElement | null>(null);
 	const [selectedImages, setSelectedImages] = React.useState<Array<any>>([]);
 	const [photos, setPhotos] = React.useState<Array<IPostPhoto>>(post.photos);
@@ -43,29 +36,15 @@ function ChangePost(): JSX.Element {
 	const disabled = (changePost.description.length >= 2200) || (changePost.location.length < 3) || (changePost.location.length >= 20) || !photos.length;
 	useAccessUser([post], post.owner_id);
 
-	// get post
 	React.useEffect(() => {
-		if (!postId) return;
+		setChangePost({
+			description: post.description || "",
+			location: post.location,
+			photos: photos.map(photo => photo.filename)
+		});
 
-		getOnePost(+postId)
-			.then((data) => {
-				const { success, message, error, post: currentPost } = data;
-
-				if (!success) {
-					setText(message || error);
-					navigate("/");
-					return;
-				}
-
-				setPost(currentPost);
-				setChangePost({
-					description: currentPost.description,
-					location: currentPost.location,
-					photos: photos.map(photo => photo.filename)
-				});
-				setPhotos(currentPost.photos);
-			});
-	}, [postId]);
+		setPhotos(post.photos);
+	}, [post]);
 
 	React.useEffect(() => {
 		setChangePost({ ...changePost, photos: photos.map((p) => p.filename) });
@@ -75,7 +54,7 @@ function ChangePost(): JSX.Element {
 		readerImages(selectedImages, setPhotos, setText, true);
 	}, [selectedImages]);
 
-	// give all data from change post
+	// submit post
 	React.useEffect(() => {
 		if (!imagesUpload) return;
 
@@ -83,15 +62,12 @@ function ChangePost(): JSX.Element {
 			.then((data) => {
 				const { success, message, error } = data;
 				setText(message || error);
-
 				if (!success) return;
-
 				navigate(`/profile/${post.owner_id}`);
 			});
 	}, [imagesUpload]);
 
-	// upload photos
-	function submitHandler(event: any) {
+	function uploadPhotosSubmt(event: any) {
 		event.preventDefault();
 
 		if (selectedImages.length) {
@@ -110,7 +86,9 @@ function ChangePost(): JSX.Element {
 					setChangePost({ ...changePost, photos: fileNames });
 					setImagesUpload(success && fileNames.length);
 				});
-		} else setImagesUpload(true);
+		} else {
+			setImagesUpload(true);
+		}
 	}
 
 	function deletePhoto(filename: string) {
@@ -180,7 +158,7 @@ function ChangePost(): JSX.Element {
 				</div>
 				<Button
 					type="submit"
-					onClick={submitHandler}
+					onClick={uploadPhotosSubmt}
 					className={classes.submit}
 					disabled={disabled}
 				>

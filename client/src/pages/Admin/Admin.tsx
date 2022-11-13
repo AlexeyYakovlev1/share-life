@@ -4,7 +4,7 @@ import useTheme from "../../hooks/useTheme";
 import classes from "./Admin.module.sass";
 import cn from "classnames";
 import PageComments from "./Pages/Comments/PageComments";
-import useAccessAdmin from "../../hooks/useAccessAdmin";
+import useAccessAdmin from "../../hooks/access/useAccessAdmin";
 import PageUsers from "./Pages/Users/PageUsers";
 import PagePosts from "./Pages/Posts/PagePosts";
 

@@ -1,11 +1,8 @@
 import classes from "../../Admin.module.sass";
 import React from "react";
-import { IPerson } from "../../../../models/person.models";
-import useAvatar from "../../../../hooks/useAvatar";
 import Modal from "../../../../components/UI/Modal/Modal";
 import Input from "../../../../components/UI/Input/Input";
 import Button from "../../../../components/UI/Button/Button";
-import getOneUser from "../../../../http/user/getOneUser.http";
 import AlertContext from "../../../../context/alert.context";
 import Label from "../../../../components/UI/Label/Label";
 import { IUserActionInfo } from "./PageUsers";
@@ -14,6 +11,7 @@ import uploadImages from "../../../../utils/uploadImages.util";
 import readerImages from "../../../../utils/readerImages.util";
 import uploadAvatar from "../../../../http/files/uploadAvatar.http";
 import changeUserAdmin from "../../../../http/admin/changeUserAdmin.http";
+import useUser from "../../../../hooks/user/useUser";
 
 export interface IModalChange {
 	setClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -27,47 +25,17 @@ function UserModalChange({ setClose, actionInfo }: IUserModalChange) {
 	const { setText } = React.useContext(AlertContext);
 	const avatarRef = React.useRef<HTMLInputElement | null>(null);
 
-	const [currentUser, setCurrentUser] = React.useState<IPerson>({
-		id: -1,
-		full_name: "",
-		user_name: "",
-		email: "",
-		avatar: {
-			base64: "",
-			filename: ""
-		},
-		password: "",
-		description: "",
-		roles: [""],
-		followers: [],
-		following: []
-	});
-	const currentUserAvatar = useAvatar(currentUser.avatar.base64);
+	const { user: currentUser, setUser: setCurrentUser, avatar: defAvatar } = useUser(
+		actionInfo.userId, actionInfo.userId, [actionInfo]
+	);
+	const [avatar, setAvatar] = React.useState<Array<any>>([defAvatar]);
 	const [addRole, setAddRole] = React.useState<boolean>(false);
 	const [selectFile, setSelectFile] = React.useState<any>([]);
-	const [avatar, setAvatar] = React.useState<any>([currentUserAvatar]);
 	const [roleValue, setRoleValue] = React.useState<string>("");
 
 	React.useEffect(() => {
 		readerImages(selectFile, setAvatar, setText, true);
 	}, [selectFile]);
-
-	React.useEffect(() => {
-		if (actionInfo.userId === -1) return;
-
-		getOneUser(actionInfo.userId)
-			.then((data) => {
-				const { success, message, error, person } = data;
-
-				if (!success) {
-					setText(message || error);
-					return;
-				}
-
-				setCurrentUser(person);
-				setAvatar([useAvatar(person.avatar.base64)]);
-			});
-	}, [actionInfo]);
 
 	function changeSubmit() {
 		if (selectFile[0]) {
@@ -84,9 +52,7 @@ function UserModalChange({ setClose, actionInfo }: IUserModalChange) {
 						return;
 					}
 
-					setCurrentUser({
-						...currentUser, avatar: dataFile
-					});
+					setCurrentUser({ ...currentUser, avatar: dataFile });
 				});
 		}
 

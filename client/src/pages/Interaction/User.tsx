@@ -6,10 +6,10 @@ import { IPerson } from "../../models/person.models";
 import classes from "./Interaction.module.sass";
 import { useSelector } from "react-redux";
 import { IState } from "../../models/redux.models";
-import { useFollow } from "../../hooks/useFollow";
+import { useFollow } from "../../hooks/user/useFollow";
 import cn from "classnames";
 import useTheme from "../../hooks/useTheme";
-import useAvatar from "../../hooks/useAvatar";
+import useAvatar from "../../hooks/user/useAvatar";
 
 function User({ user }: { user: IPerson }): JSX.Element {
 	const { light, dark } = useTheme();

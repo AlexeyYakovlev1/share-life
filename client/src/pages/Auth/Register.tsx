@@ -33,12 +33,7 @@ function Register() {
 				}
 
 				if (!success) {
-					if (message) {
-						setText(`Ошибка сервера: ${message}`);
-						return;
-					}
-
-					setText(error);
+					setText(`Ошибка сервера: ${message | error}`);
 					return;
 				}
 

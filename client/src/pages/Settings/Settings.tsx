@@ -8,15 +8,15 @@ import AlertContext from "../../context/alert.context";
 import { IState } from "../../models/redux.models";
 import classes from "./Settings.module.sass";
 import { setUser as setUserToReducer } from "../../redux/actions/user.actions";
-import updateUser from "../../http/user/updateUser.http";
-import uploadAvatar from "../../http/files/uploadAvatar.http";
-import useAvatar from "../../hooks/useAvatar";
+import useAvatar from "../../hooks/user/useAvatar";
 import { IPerson } from "../../models/person.models";
 import { setTheme } from "../../redux/actions/theme.actions";
 import Textarea from "../../components/UI/Textarea/Textarea";
 import Label from "../../components/UI/Label/Label";
 import useTheme from "../../hooks/useTheme";
 import cn from "classnames";
+import updateUserAsyncAction from "../../redux/actions/async/user/updateUser";
+import updateAvatarAsyncAction from "../../redux/actions/async/user/updateAvatar";
 
 interface IPersonForSettings extends IPerson {
 	oldPassword?: string;
@@ -27,17 +27,11 @@ function Settings(): JSX.Element {
 	const avatarRef = React.useRef<HTMLInputElement | null>(null);
 	const navigate = useNavigate();
 	const { light, dark } = useTheme();
-	const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/svg"];
 
 	const info = useSelector((state: IState) => state.person.info);
 	const theme = useSelector((state: IState) => state.theme);
 
-	const dispatch = useDispatch();
-
-	const [avatar, setAvatar] = React.useState({
-		base64: info.avatar.base64,
-		file: ""
-	});
+	const dispatch: any = useDispatch();
 	const [user, setUser] = React.useState<IPersonForSettings>({
 		...info, newPassword: undefined, oldPassword: undefined
 	});
@@ -48,62 +42,13 @@ function Settings(): JSX.Element {
 		setUser({ ...info });
 	}, [info]);
 
-	// update avatar
-	function uploadHandler(event: any) {
-		if (!event.target?.files.length) return;
-
-		const file = event.target?.files[0];
-
-		if (!allowedTypes.includes(file.type)) {
-			setText("Тип файла не поддерживается");
-			return;
-		}
-
-		const formData = new FormData();
-		formData.append("avatar", file);
-
-		const reader: any = new FileReader();
-		reader.readAsDataURL(file);
-
-		reader.onload = () => {
-			const result = reader.result;
-			setAvatar({ ...avatar, base64: result });
-
-			uploadAvatar(formData, { updateUser: true, userId: -1 })
-				.then((data) => {
-					const { success, message, error, dataFile: { inBase64, filename } } = data;
-
-					setText(message || error);
-
-					if (!success) return;
-
-					dispatch(setUserToReducer({ ...info, avatar: { base64: inBase64, filename } }));
-				});
-		};
-
-		reader.onerror = () => {
-			setText(reader.error.message);
-			return;
-		};
+	function uploadAvatarHandler(event: any) {
+		dispatch(updateAvatarAsyncAction(event, setText, info));
 	}
 
-	// update user
 	function submitUpdate(event: React.FormEvent<HTMLFormElement>): void {
 		event.preventDefault();
-
-		updateUser(info.id, user)
-			.then((data) => {
-				const { success, message, error, person } = data;
-
-				setText(message || error);
-
-				if (!success) {
-					return;
-				}
-
-				dispatch(setUserToReducer(person));
-			});
-
+		dispatch(updateUserAsyncAction(info.id, user, setText));
 		setUser({ ...info, newPassword: "", oldPassword: "" });
 	}
 
@@ -151,7 +96,7 @@ function Settings(): JSX.Element {
 							hidden
 							ref={avatarRef}
 							accept="image/*"
-							onChange={uploadHandler}
+							onChange={uploadAvatarHandler}
 						/>
 						<Button
 							className={classes.userInfoChangeAvatarBtn}
